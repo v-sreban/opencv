@@ -9,6 +9,8 @@
 #include <wrl\client.h>
 #include <Robuffer.h>
 #include <vector>
+#include <opencv2\imgproc\types_c.h>
+
 using namespace OcvImageProcessing;
 
 using namespace Microsoft::WRL;
