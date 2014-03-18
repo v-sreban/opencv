@@ -45,6 +45,8 @@
 #include "opencv2/videostab/ring_buffer.hpp"
 
 #include "opencv2/opencv_modules.hpp"
+#include "opencv2/core/types_c.h"
+
 #ifdef HAVE_OPENCV_HIGHGUI
 #  include "opencv2/highgui.hpp"
 #endif
