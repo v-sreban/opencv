@@ -1,0 +1,308 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|ARM">
+      <Configuration>Debug</Configuration>
+      <Platform>ARM</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|ARM">
+      <Configuration>Release</Configuration>
+      <Platform>ARM</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{16158860-1AF7-45A0-88DC-98B7013CFB92}</ProjectGuid>
+    <RootNamespace>opencv_legacy</RootNamespace>
+    <DefaultLanguage>en-US</DefaultLanguage>
+    <MinimumVisualStudioVersion>11.0</MinimumVisualStudioVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v110_wp80</PlatformToolset>
+    <IgnoreImportLibrary>false</IgnoreImportLibrary>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v110_wp80</PlatformToolset>
+    <IgnoreImportLibrary>false</IgnoreImportLibrary>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <PlatformToolset>v110_wp80</PlatformToolset>
+    <IgnoreImportLibrary>false</IgnoreImportLibrary>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <PlatformToolset>v110_wp80</PlatformToolset>
+    <IgnoreImportLibrary>false</IgnoreImportLibrary>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <GenerateManifest>false</GenerateManifest>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PreprocessorDefinitions>_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <CompileAsWinRT>false</CompileAsWinRT>
+      <AdditionalUsingDirectories>$(WindowsSDK_MetadataPath);$(AdditionalUsingDirectories)</AdditionalUsingDirectories>
+      <AdditionalIncludeDirectories>..\..\..\modules\video\include;..\..\..\modules\ml\include;..\..\..\modules\calib3d\include;..\..\..\modules\features2d\include;..\..\..\modules\imgproc\include;..\..\..\modules\flann\include;..\..\..\modules\core\include;..\..\..\binWP8\modules\legacy;..\..\..\modules\legacy\src;..\..\..\modules\legacy\include;..\..\..\binWP8;%(AdditionalIncludeDirectories);</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;_DEBUG;OPENCV_NOSTL;WINVER=0x0602;NTDDI_VERSION=NTDDI_WIN8;_WIN32_WINNT=0x0602;_VARIADIC_MAX=10;__OPENCV_BUILD=1;CMAKE_INTDIR="Debug";CVAPI_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeaderFile>precomp.hpp</PrecompiledHeaderFile>
+      <ForcedIncludeFiles>precomp.hpp</ForcedIncludeFiles>
+      <DisableSpecificWarnings>4251</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <GenerateWindowsMetadata>false</GenerateWindowsMetadata>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <PreprocessorDefinitions>_USRDLL;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <CompileAsWinRT>false</CompileAsWinRT>
+      <AdditionalUsingDirectories>$(WindowsSDK_MetadataPath);$(AdditionalUsingDirectories)</AdditionalUsingDirectories>
+      <AdditionalIncludeDirectories>..\..\..\modules\video\include;..\..\..\modules\ml\include;..\..\..\modules\calib3d\include;..\..\..\modules\features2d\include;..\..\..\modules\imgproc\include;..\..\..\modules\flann\include;..\..\..\modules\core\include;..\..\..\binWP8\modules\legacy;..\..\..\modules\legacy\src;..\..\..\modules\legacy\include;..\..\..\binWP8;%(AdditionalIncludeDirectories);</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;NDEBUG;OPENCV_NOSTL;WINVER=0x0602;NTDDI_VERSION=NTDDI_WIN8;_WIN32_WINNT=0x0602;_VARIADIC_MAX=10;__OPENCV_BUILD=1;CMAKE_INTDIR="Release";CVAPI_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeaderFile>precomp.hpp</PrecompiledHeaderFile>
+      <ForcedIncludeFiles>precomp.hpp</ForcedIncludeFiles>
+      <DisableSpecificWarnings>4251</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <GenerateWindowsMetadata>false</GenerateWindowsMetadata>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
+    <ClCompile>
+      <PreprocessorDefinitions>_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <CompileAsWinRT>false</CompileAsWinRT>
+      <AdditionalUsingDirectories>$(WindowsSDK_MetadataPath);$(AdditionalUsingDirectories)</AdditionalUsingDirectories>
+      <AdditionalIncludeDirectories>..\..\..\modules\video\include;..\..\..\modules\ml\include;..\..\..\modules\calib3d\include;..\..\..\modules\features2d\include;..\..\..\modules\imgproc\include;..\..\..\modules\flann\include;..\..\..\modules\core\include;..\..\..\binWP8\modules\legacy;..\..\..\modules\legacy\src;..\..\..\modules\legacy\include;..\..\..\binWP8;%(AdditionalIncludeDirectories);</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;_DEBUG;OPENCV_NOSTL;WINVER=0x0602;NTDDI_VERSION=NTDDI_WIN8;_WIN32_WINNT=0x0602;_VARIADIC_MAX=10;__OPENCV_BUILD=1;CMAKE_INTDIR="Debug";CVAPI_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeaderFile>precomp.hpp</PrecompiledHeaderFile>
+      <ForcedIncludeFiles>precomp.hpp</ForcedIncludeFiles>
+      <DisableSpecificWarnings>4251</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <GenerateWindowsMetadata>false</GenerateWindowsMetadata>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
+    <ClCompile>
+      <PreprocessorDefinitions>_USRDLL;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <CompileAsWinRT>false</CompileAsWinRT>
+      <AdditionalUsingDirectories>$(WindowsSDK_MetadataPath);$(AdditionalUsingDirectories)</AdditionalUsingDirectories>
+      <AdditionalIncludeDirectories>..\..\..\modules\video\include;..\..\..\modules\ml\include;..\..\..\modules\calib3d\include;..\..\..\modules\features2d\include;..\..\..\modules\imgproc\include;..\..\..\modules\flann\include;..\..\..\modules\core\include;..\..\..\binWP8\modules\legacy;..\..\..\modules\legacy\src;..\..\..\modules\legacy\include;..\..\..\binWP8;%(AdditionalIncludeDirectories);</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;NDEBUG;OPENCV_NOSTL;WINVER=0x0602;NTDDI_VERSION=NTDDI_WIN8;_WIN32_WINNT=0x0602;_VARIADIC_MAX=10;__OPENCV_BUILD=1;CMAKE_INTDIR="Release";CVAPI_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeaderFile>precomp.hpp</PrecompiledHeaderFile>
+      <ForcedIncludeFiles>precomp.hpp</ForcedIncludeFiles>
+      <DisableSpecificWarnings>4251</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <GenerateWindowsMetadata>false</GenerateWindowsMetadata>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <Reference Include="Windows">
+      <IsWinMDFile>true</IsWinMDFile>
+    </Reference>
+    <Reference Include="platform.winmd">
+      <IsWinMDFile>true</IsWinMDFile>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\WindowsPhone\v$(TargetPlatformVersion)\Microsoft.Cpp.WindowsPhone.$(TargetPlatformVersion).targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\modules\legacy\include\opencv2\legacy.hpp" />
+    <ClInclude Include="..\..\..\modules\legacy\include\opencv2\legacy\blobtrack.hpp" />
+    <ClInclude Include="..\..\..\modules\legacy\include\opencv2\legacy\compat.hpp" />
+    <ClInclude Include="..\..\..\modules\legacy\include\opencv2\legacy\legacy.hpp" />
+    <ClInclude Include="..\..\..\modules\legacy\include\opencv2\legacy\streams.hpp" />
+    <ClInclude Include="..\..\..\modules\legacy\src\precomp.hpp" />
+    <ClInclude Include="..\..\..\modules\legacy\src\_kdtree.hpp" />
+    <ClInclude Include="..\..\..\modules\legacy\src\face.h" />
+    <ClInclude Include="..\..\..\modules\legacy\src\facedetection.h" />
+    <ClInclude Include="..\..\..\modules\legacy\src\facetemplate.h" />
+    <ClInclude Include="..\..\..\modules\legacy\src\_facedetection.h" />
+    <ClInclude Include="..\..\..\modules\legacy\src\_featuretree.h" />
+    <ClInclude Include="..\..\..\modules\legacy\src\_matrix.h" />
+    <ClInclude Include="..\..\..\modules\legacy\src\_vectrack.h" />
+    <ClInclude Include="..\..\..\modules\legacy\src\_vm.h" />
+    <ClInclude Include="..\..\cvconfig.h" />
+    <ClInclude Include="..\..\opencv2\opencv_modules.hpp" />
+    <ClCompile Include="..\..\..\modules\legacy\src\3dtracker.cpp" />
+    <ClCompile Include="..\..\..\modules\legacy\src\auxutils.cpp" />
+    <ClCompile Include="..\..\..\modules\legacy\src\bgfg_acmmm2003.cpp" />
+    <ClCompile Include="..\..\..\modules\legacy\src\bgfg_codebook.cpp" />
+    <ClCompile Include="..\..\..\modules\legacy\src\bgfg_common.cpp" />
+    <ClCompile Include="..\..\..\modules\legacy\src\bgfg_estimation.cpp" />
+    <ClCompile Include="..\..\..\modules\legacy\src\bgfg_gaussmix.cpp" />
+    <ClCompile Include="..\..\..\modules\legacy\src\blobtrack.cpp" />
+    <ClCompile Include="..\..\..\modules\legacy\src\blobtrackanalysis.cpp" />
+    <ClCompile Include="..\..\..\modules\legacy\src\blobtrackanalysishist.cpp" />
+    <ClCompile Include="..\..\..\modules\legacy\src\blobtrackanalysisior.cpp" />
+    <ClCompile Include="..\..\..\modules\legacy\src\blobtrackanalysistrackdist.cpp" />
+    <ClCompile Include="..\..\..\modules\legacy\src\blobtrackgen1.cpp" />
+    <ClCompile Include="..\..\..\modules\legacy\src\blobtrackgenyml.cpp" />
+    <ClCompile Include="..\..\..\modules\legacy\src\blobtrackingauto.cpp" />
+    <ClCompile Include="..\..\..\modules\legacy\src\blobtrackingcc.cpp" />
+    <ClCompile Include="..\..\..\modules\legacy\src\blobtrackingccwithcr.cpp" />
+    <ClCompile Include="..\..\..\modules\legacy\src\blobtrackinglist.cpp" />
+    <ClCompile Include="..\..\..\modules\legacy\src\blobtrackingmsfg.cpp" />
+    <ClCompile Include="..\..\..\modules\legacy\src\blobtrackingmsfgs.cpp" />
+    <ClCompile Include="..\..\..\modules\legacy\src\blobtrackpostprockalman.cpp" />
+    <ClCompile Include="..\..\..\modules\legacy\src\blobtrackpostproclinear.cpp" />
+    <ClCompile Include="..\..\..\modules\legacy\src\blobtrackpostproclist.cpp" />
+    <ClCompile Include="..\..\..\modules\legacy\src\calcimagehomography.cpp" />
+    <ClCompile Include="..\..\..\modules\legacy\src\calibfilter.cpp" />
+    <ClCompile Include="..\..\..\modules\legacy\src\calonder.cpp" />
+    <ClCompile Include="..\..\..\modules\legacy\src\camshift.cpp" />
+    <ClCompile Include="..\..\..\modules\legacy\src\clique.cpp" />
+    <ClCompile Include="..\..\..\modules\legacy\src\compat.cpp" />
+    <ClCompile Include="..\..\..\modules\legacy\src\condens.cpp" />
+    <ClCompile Include="..\..\..\modules\legacy\src\contourtree.cpp" />
+    <ClCompile Include="..\..\..\modules\legacy\src\correspond.cpp" />
+    <ClCompile Include="..\..\..\modules\legacy\src\corrimages.cpp" />
+    <ClCompile Include="..\..\..\modules\legacy\src\createhandmask.cpp" />
+    <ClCompile Include="..\..\..\modules\legacy\src\decomppoly.cpp" />
+    <ClCompile Include="..\..\..\modules\legacy\src\dominants.cpp" />
+    <ClCompile Include="..\..\..\modules\legacy\src\dpstereo.cpp" />
+    <ClCompile Include="..\..\..\modules\legacy\src\eigenobjects.cpp" />
+    <ClCompile Include="..\..\..\modules\legacy\src\em.cpp" />
+    <ClCompile Include="..\..\..\modules\legacy\src\enmin.cpp" />
+    <ClCompile Include="..\..\..\modules\legacy\src\enteringblobdetection.cpp" />
+    <ClCompile Include="..\..\..\modules\legacy\src\enteringblobdetectionreal.cpp" />
+    <ClCompile Include="..\..\..\modules\legacy\src\epilines.cpp" />
+    <ClCompile Include="..\..\..\modules\legacy\src\extendededges.cpp" />
+    <ClCompile Include="..\..\..\modules\legacy\src\face.cpp" />
+    <ClCompile Include="..\..\..\modules\legacy\src\facedetection.cpp" />
+    <ClCompile Include="..\..\..\modules\legacy\src\facetemplate.cpp" />
+    <ClCompile Include="..\..\..\modules\legacy\src\features2d.cpp" />
+    <ClCompile Include="..\..\..\modules\legacy\src\featuretree.cpp" />
+    <ClCompile Include="..\..\..\modules\legacy\src\findface.cpp" />
+    <ClCompile Include="..\..\..\modules\legacy\src\findhandregion.cpp" />
+    <ClCompile Include="..\..\..\modules\legacy\src\hmm.cpp" />
+    <ClCompile Include="..\..\..\modules\legacy\src\hmm1d.cpp" />
+    <ClCompile Include="..\..\..\modules\legacy\src\hmmobs.cpp" />
+    <ClCompile Include="..\..\..\modules\legacy\src\image.cpp" />
+    <ClCompile Include="..\..\..\modules\legacy\src\kdtree.cpp" />
+    <ClCompile Include="..\..\..\modules\legacy\src\lcm.cpp" />
+    <ClCompile Include="..\..\..\modules\legacy\src\lee.cpp" />
+    <ClCompile Include="..\..\..\modules\legacy\src\levmar.cpp" />
+    <ClCompile Include="..\..\..\modules\legacy\src\levmarprojbandle.cpp" />
+    <ClCompile Include="..\..\..\modules\legacy\src\levmartrif.cpp" />
+    <ClCompile Include="..\..\..\modules\legacy\src\lines.cpp" />
+    <ClCompile Include="..\..\..\modules\legacy\src\lmeds.cpp" />
+    <ClCompile Include="..\..\..\modules\legacy\src\lsh.cpp" />
+    <ClCompile Include="..\..\..\modules\legacy\src\morphcontours.cpp" />
+    <ClCompile Include="..\..\..\modules\legacy\src\morphing.cpp" />
+    <ClCompile Include="..\..\..\modules\legacy\src\oneway.cpp" />
+    <ClCompile Include="..\..\..\modules\legacy\src\optflowbm.cpp" />
+    <ClCompile Include="..\..\..\modules\legacy\src\optflowhs.cpp" />
+    <ClCompile Include="..\..\..\modules\legacy\src\optflowlk.cpp" />
+    <ClCompile Include="..\..\..\modules\legacy\src\pgh.cpp" />
+    <ClCompile Include="..\..\..\modules\legacy\src\planardetect.cpp" />
+    <ClCompile Include="..\..\..\modules\legacy\src\prewarp.cpp" />
+    <ClCompile Include="..\..\..\modules\legacy\src\pyrsegmentation.cpp" />
+    <ClCompile Include="..\..\..\modules\legacy\src\scanlines.cpp" />
+    <ClCompile Include="..\..\..\modules\legacy\src\segment.cpp" />
+    <ClCompile Include="..\..\..\modules\legacy\src\snakes.cpp" />
+    <ClCompile Include="..\..\..\modules\legacy\src\spilltree.cpp" />
+    <ClCompile Include="..\..\..\modules\legacy\src\stereogc.cpp" />
+    <ClCompile Include="..\..\..\modules\legacy\src\subdiv2.cpp" />
+    <ClCompile Include="..\..\..\modules\legacy\src\testseq.cpp" />
+    <ClCompile Include="..\..\..\modules\legacy\src\texture.cpp" />
+    <ClCompile Include="..\..\..\modules\legacy\src\trifocal.cpp" />
+    <ClCompile Include="..\..\..\modules\legacy\src\vecfacetracking.cpp" />
+    <ClCompile Include="..\..\..\modules\legacy\src\video.cpp" />
+    <ClCompile Include="opencv_legacy_pch.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">precomp.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">precomp.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">precomp.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">precomp.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">precomp.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">precomp.hpp</PrecompiledHeaderFile>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\core\opencv_core.vcxproj">
+      <Project>{8D3BE1F9-3D36-4FC9-8547-7EDE3ADE73B9}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\calib3d\opencv_calib3d.vcxproj">
+      <Project>{25658E48-907C-4962-9969-B4C3E478A5DF}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\features2d\opencv_features2d.vcxproj">
+      <Project>{33931C17-25EE-4086-974F-4F2F2D1D17DA}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\imgproc\opencv_imgproc.vcxproj">
+      <Project>{A74BB3B0-0E22-4B8B-B0E2-0348F80732B1}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ml\opencv_ml.vcxproj">
+      <Project>{0B4226CD-94E2-42B4-B4A3-EB1272F2BB8A}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\video\opencv_video.vcxproj">
+      <Project>{8906AD7F-D3C1-405D-A8C5-A9459DFDBC9E}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\flann\opencv_flann.vcxproj">
+      <Project>{3C802AB3-F8A6-4546-B21E-4289409CFDBF}</Project>
+    </ProjectReference>
+  </ItemGroup>
+</Project>
