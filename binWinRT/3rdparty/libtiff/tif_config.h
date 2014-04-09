@@ -152,7 +152,7 @@
 #endif
 
 /* define to use win32 IO system */
-#define USE_WIN32_FILEIO
+/* #undef USE_WIN32_FILEIO */
 
 /* Define WORDS_BIGENDIAN to 1 if your processor stores words with the most
    significant byte first (like Motorola and SPARC, unlike Intel). */
