@@ -1,7 +1,7 @@
 nuget {
 	nuspec {
 		id = opencv_winrt_dll;
-		version : 1.0.0.2;
+		version : 1.0.0.0;
 		title: OpenCV for Windows Real Time;
 		authors: {Microsoft Corporation};
 		owners: {OpenCV, Dale Stammen, Neil McLaughlin};
