@@ -1,22 +1,22 @@
 nuget {
 	nuspec {
-		id = opencv_winrt_lib;
-		version : 1.0.0.2;
-		title: OpenCV for Windows Real Time;
+		id = opencv_wp8_lib;
+		version : 1.0.0.0;
+		title: OpenCV for Windows Phone 8;
 		authors: {Microsoft Corporation};
 		owners: {OpenCV, Dale Stammen, Neil McLaughlin};
 		licenseUrl: "http://www.microsoft.com";
-		projectUrl: "https://github.com/MSOpenTech/opencv/tree/winrt-contrib";
+		projectUrl: "https://github.com/MSOpenTech/opencv/tree/wp8";
 		// TODO - set iconUrl
 		iconUrl: "https://download-codeplex.sec.s-msft.com/Download?ProjectName=casablanca&DownloadId=630102&Build=20425";
 		requireLicenseAcceptance:false;
-		summary: Installer for WINRT version of the OpenCV lib's;
+		summary: Installer for Windows Phone 8 version of the OpenCV lib's;
 		
 		// if you need to span several lines you can prefix a string with an @ symbol (exactly like c# does).
-		description: @"OpenCV for WinRT";
-		releaseNotes: "Release of OpenCV for WinRT.";
+		description: @"OpenCV for WP8";
+		releaseNotes: "Release of OpenCV for WP8.";
 		copyright: Copyright 2014;
-		tags: { OpenCV, winRT, DirectX };
+		tags: { OpenCV, arm, DirectX };
 	};
 
 	// the files that go into the content folders
@@ -24,7 +24,7 @@ nuget {
 	
 		#defines { // NOTE - this uses a relative path and therefore must be run from the opencv (or your root) directory 
 					// Example : PS C:\Users\YourName\Documents\github\opencv>Write-NuGetPackage opencv_winrt.autopkg
-			OCVPATH 	 =  .\binWinRT\;  
+			OCVPATH 	 =  .\binWP8\;  
 			OCVCALIB3D   =  opencv_calib3d\opencv_calib3d.lib;
 			OCVCORE		 =	opencv_core\opencv_core.lib;
 			OCVFEATURE2D =	opencv_features2d\opencv_features2d.lib;
@@ -60,7 +60,7 @@ nuget {
 				
 		};					
 					
-		[winrt,debug] 
+		[wp8,debug] 
 		{
 			lib: 
 			{
@@ -78,7 +78,7 @@ nuget {
 			}
 		}	
 		
-		[winrt,release] 
+		[wp8,release] 
 		{
 			lib: 
 			{
@@ -89,7 +89,7 @@ nuget {
 				${OCVPATH}ARM\Release\${OCVIMGPROC};  
 				${OCVPATH}ARM\Release\${OCVML};		
 				${OCVPATH}ARM\Release\${OCVOBJDETECT};
-				${OCVPATH}ARM\Release\${OCVPHOTO};    
+				${OCVPATH}ARM\Release\${OCVPHOTO};     
 				${OCVPATH}ARM\Release\${OCVSTITCHING};
 				${OCVPATH}ARM\Release\${OCVVIDEO};	
 				${OCVPATH}ARM\Release\${OCVVIDEOSTAB};
@@ -99,6 +99,6 @@ nuget {
 
 	targets {
 		// For consistency with example
-		Defines += HAS_OCVWINRTLIB;
+		Defines += HAS_OCVWP8LIB;
 	};
 }
