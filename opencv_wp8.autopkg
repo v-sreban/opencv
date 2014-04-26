@@ -14,7 +14,7 @@ nuget {
 		
 		// if you need to span several lines you can prefix a string with an @ symbol (exactly like c# does).
 		description: @"OpenCV for WP8";
-		releaseNotes: "Release of OpenCV for WP8.";
+		releaseNotes: "Release of OpenCV for WP8 (Visual Studio 2012, VC11, v110).";
 		copyright: Copyright 2014;
 		tags: { OpenCV, arm, DirectX };
 	};
@@ -65,7 +65,7 @@ nuget {
 				
 		};					
 					
-		[arm,debug] 
+		[arm,v110,debug] 
 		{
 			lib: 
 			{
@@ -104,7 +104,7 @@ nuget {
 			}
 		}	
 		
-		[arm,release] 
+		[arm,v110,release] 
 		{
 			lib: 
 			{

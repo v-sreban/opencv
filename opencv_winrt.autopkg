@@ -1,7 +1,7 @@
 nuget {
 	nuspec {
 		id = opencv_winrt;
-		version : 1.0.0.0;
+		version : 1.0.0.1;
 		title: OpenCV for Windows Real Time;
 		authors: {Microsoft Corporation};
 		owners: {OpenCV, Dale Stammen, Neil McLaughlin};
@@ -14,7 +14,7 @@ nuget {
 		
 		// if you need to span several lines you can prefix a string with an @ symbol (exactly like c# does).
 		description: @"OpenCV for WinRT";
-		releaseNotes: "Release of OpenCV for WinRT.";
+		releaseNotes: "Release of OpenCV for WinRT (Visual Studio 2013, VC12, v120).";
 		copyright: Copyright 2014;
 		tags: { OpenCV, winRT };
 	};
