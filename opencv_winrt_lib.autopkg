@@ -1,6 +1,6 @@
 nuget {
 	nuspec {
-		id = opencv_winrt;
+		id = opencv_winrt_lib;
 		version : 1.0.0.3;
 		title: OpenCV for Windows Real Time;
 		authors: {Microsoft Corporation};
@@ -10,7 +10,7 @@ nuget {
 		// TODO - set iconUrl
 		iconUrl: "https://download-codeplex.sec.s-msft.com/Download?ProjectName=casablanca&DownloadId=630102&Build=20425";
 		requireLicenseAcceptance:false;
-		summary: Installer for WINRT version of the OpenCV libs and dlls;
+		summary: Installer for WINRT version of the OpenCV libs;
 		
 		// if you need to span several lines you can prefix a string with an @ symbol (exactly like c# does).
 		description: @"OpenCV for WinRT";
@@ -85,23 +85,7 @@ nuget {
 				${OCVPATH}ARM\Debug\${OCVVIDEOSTAB}.lib;
 			}
 
-			bin: 
-			{
-				${OCVPATH}ARM\Debug\${OCVCALIB3D}.dll;
-				${OCVPATH}ARM\Debug\${OCVCONTRIB}.dll;		
-				${OCVPATH}ARM\Debug\${OCVCORE}.dll;		
-				${OCVPATH}ARM\Debug\${OCVFEATURE2D}.dll;
-				${OCVPATH}ARM\Debug\${OCVFLANN}.dll;	
-				${OCVPATH}ARM\Debug\${OCVIMGPROC}.dll;  
-				${OCVPATH}ARM\Debug\${OCVLEGACY}.dll;  
-				${OCVPATH}ARM\Debug\${OCVML}.dll;		
-				${OCVPATH}ARM\Debug\${OCVOBJDETECT}.dll;
-				${OCVPATH}ARM\Debug\${OCVPHOTO}.dll;    
-				${OCVPATH}ARM\Debug\${OCVSHAPE}.dll;
-				${OCVPATH}ARM\Debug\${OCVSTITCHING}.dll;
-				${OCVPATH}ARM\Debug\${OCVVIDEO}.dll;	
-				${OCVPATH}ARM\Debug\${OCVVIDEOSTAB}.dll;
-			}
+		
 		}	
 		
 		[winrt,v120,release] 
@@ -124,28 +108,12 @@ nuget {
 				${OCVPATH}ARM\Release\${OCVVIDEOSTAB}.lib;
 			}
 
-			bin: 
-			{
-				${OCVPATH}ARM\Release\${OCVCALIB3D}.dll;
-				${OCVPATH}ARM\Release\${OCVCONTRIB}.dll;
-				${OCVPATH}ARM\Release\${OCVCORE}.dll;		
-				${OCVPATH}ARM\Release\${OCVFEATURE2D}.dll;
-				${OCVPATH}ARM\Release\${OCVFLANN}.dll;	
-				${OCVPATH}ARM\Release\${OCVIMGPROC}.dll;  
-				${OCVPATH}ARM\Release\${OCVLEGACY}.dll;  
-				${OCVPATH}ARM\Release\${OCVML}.dll;		
-				${OCVPATH}ARM\Release\${OCVOBJDETECT}.dll;
-				${OCVPATH}ARM\Release\${OCVPHOTO}.dll;    
-				${OCVPATH}ARM\Release\${OCVSHAPE}.dll;
-				${OCVPATH}ARM\Release\${OCVSTITCHING}.dll;
-				${OCVPATH}ARM\Release\${OCVVIDEO}.dll;	
-				${OCVPATH}ARM\Release\${OCVVIDEOSTAB}.dll;
-			}
+			
 		}
 	};
 
 	targets {
 		// For consistency with example
-		Defines += HAS_OCVWINRT;
+		Defines += HAS_OCVWINRTLIB;
 	};
 }
