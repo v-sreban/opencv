@@ -50,8 +50,9 @@ Function Convert($OutputDir, $platform)
     $legacy = "modules\legacy\opencv_legacy.vcxproj"
     $shape = "modules\shape\opencv_shape.vcxproj"
     $contrib = "modules\contrib\opencv_contrib.vcxproj"
+    $highgui = "modules\highgui\opencv_highgui.vcxproj"
 
-    $projects = ($zlib, $jpeg, $tiff, $jasper, $png, $core, $imgproc, $flann, $photo, $calib3d, $ml, $objdetect, $video, $videostab, $features2d, $stitching, $legacy, $shape, $contrib)
+    $projects = ($zlib, $jpeg, $tiff, $jasper, $png, $core, $imgproc, $flann, $photo, $calib3d, $ml, $objdetect, $video, $videostab, $features2d, $stitching, $legacy, $shape, $contrib, $highgui)
 
     foreach($project in $projects)
     {
@@ -171,6 +172,10 @@ Function Convert($OutputDir, $platform)
         $allProjects += $contribProject = join-path $OutputDir -childpath $contrib
         Copy-Item (join-path $InputDir "modules\contrib\opencv_contrib_pch.cpp") (join-path $OutputDir "modules\contrib\opencv_contrib_pch.cpp") 
 
+        #opencv_highgui.vcxproj
+        $allProjects += $highguiProject = join-path $OutputDir -childpath $highgui
+        Copy-Item (join-path $InputDir "modules\highgui\opencv_highgui_pch.cpp") (join-path $OutputDir "modules\highgui\opencv_highgui_pch.cpp") 
+
 
         #create libpng sln and project references
         $pngDir = Split-Path -parent $pngProject
@@ -244,11 +249,17 @@ Function Convert($OutputDir, $platform)
         $output = join-path $contribDir "opencv_contrib.sln"
         CreateSolutionFile $output $platform ($contribProject, $coreProject, $features2dProject, $calib3dProject, $flannProject, $imgprocProject, $mlProject, $objdetectProject, $videoProject, $zlibProject)
 
+        #create opencv_highgui sln and project references
+        $highguiDir = Split-Path -parent $highguiProject
+        AddProjectReference $highguiProject ($coreProject, $imgprocProject, $pngProject, $tiffProject, $jpegProject, $jasperProject) >> $null
+        $output = join-path $highguiDir "opencv_highgui.sln"
+        CreateSolutionFile $output $platform ($highguiProject, $coreProject, $imgprocProject, $pngProject, $tiffProject, $jpegProject, $jasperProject)
+
         #create opencv_objdetect sln and project references
         $objdetectDir = Split-Path -parent $objdetectProject
         AddProjectReference $objdetectProject  ($coreProject, $imgprocProject, $mlProject) >> $null
         $output = join-path $objdetectDir "opencv_objdetect.sln"
-        CreateSolutionFile $output $platform ($objdetectProject, $coreProject, $imgprocProject, $mlProject, $zlibProject)
+        CreateSolutionFile $output $platform ($objdetectProject, $coreProject, $imgprocProject, $mlProject, $zlibProject, $pngProject)
 
         #create opencv_video sln and project references
         $videoDir = Split-Path -parent $videoProject

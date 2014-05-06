@@ -113,11 +113,11 @@
     <Filter Include="Include">
       <UniqueIdentifier>{270EF06C-457D-487D-89F9-6B9131DD44E8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Include\opencv2">
-      <UniqueIdentifier>{F3E23CA5-39A5-47C2-8583-DAD526ACBC40}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Include\opencv2\videostab">
       <UniqueIdentifier>{1CB93606-F686-4F9B-89C8-0A09954F9D58}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include\opencv2">
+      <UniqueIdentifier>{F3E23CA5-39A5-47C2-8583-DAD526ACBC40}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

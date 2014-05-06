@@ -137,6 +137,12 @@
     <CustomBuild Include="..\..\..\modules\flann\CMakeLists.txt" />
   </ItemGroup>
   <ItemGroup>
+    <Filter Include="Include\opencv2\flann">
+      <UniqueIdentifier>{06667566-928D-45FA-8AE9-2792DCF4CE9C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include\opencv2">
+      <UniqueIdentifier>{F3E23CA5-39A5-47C2-8583-DAD526ACBC40}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Source Files">
       <UniqueIdentifier>{5A2FE3E6-5038-47EF-888F-B9042F531F5D}</UniqueIdentifier>
     </Filter>
@@ -148,12 +154,6 @@
     </Filter>
     <Filter Include="Include">
       <UniqueIdentifier>{270EF06C-457D-487D-89F9-6B9131DD44E8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Include\opencv2">
-      <UniqueIdentifier>{F3E23CA5-39A5-47C2-8583-DAD526ACBC40}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Include\opencv2\flann">
-      <UniqueIdentifier>{06667566-928D-45FA-8AE9-2792DCF4CE9C}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

@@ -27,10 +27,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{160170A8-D314-41C9-BB56-5662E84D11E5}</ProjectGuid>
+    <ProjectGuid>{F35C9A5D-F897-4C1E-9CB0-B73782E15031}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <ProjectName>opencv_videostab</ProjectName>
-    <RootNamespace>opencv_videostab</RootNamespace>
+    <ProjectName>opencv_highgui</ProjectName>
+    <RootNamespace>opencv_highgui</RootNamespace>
     <DefaultLanguage>en-US</DefaultLanguage>
     <MinimumVisualStudioVersion>12.0</MinimumVisualStudioVersion>
     <AppContainerApplication>true</AppContainerApplication>
@@ -120,8 +120,8 @@
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <CompileAsWinRT>false</CompileAsWinRT>
-      <AdditionalIncludeDirectories>..\..\..\modules\video\include;..\..\..\modules\photo\include;..\..\..\modules\calib3d\include;..\..\..\modules\features2d\include;..\..\..\modules\highgui\include;..\..\..\modules\imgproc\include;..\..\..\modules\flann\include;..\..\..\modules\core\include;..\..\..\binWinRT\modules\videostab;..\..\..\modules\videostab\src;..\..\..\modules\videostab\include;..\..\..\binWinRT;%(AdditionalIncludeDirectories);</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;_DEBUG;OPENCV_NOSTL;WINVER=0x0602;NTDDI_VERSION=NTDDI_WIN8;_WIN32_WINNT=0x0602;_VARIADIC_MAX=10;__OPENCV_BUILD=1;CMAKE_INTDIR="Debug";CVAPI_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\..\modules\imgproc\include;..\..\..\modules\core\include;..\..\..\binWinRT\modules\highgui;..\..\..\modules\highgui\src;..\..\..\modules\highgui\include;..\..\..\3rdparty\libjasper;..\..\..\binWinRT\3rdparty\libtiff;..\..\..\3rdparty\libtiff;..\..\..\3rdparty\libpng;..\..\..\3rdparty\libjpeg;..\..\..\binWinRT\3rdparty\zlib;..\..\..\3rdparty\zlib;..\..\..\binWinRT;..\..\..\3rdparty\include;..\..\..\3rdparty\include\ffmpeg_;%(AdditionalIncludeDirectories);</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;_DEBUG;OPENCV_NOSTL;WINVER=0x0602;NTDDI_VERSION=NTDDI_WIN8;_WIN32_WINNT=0x0602;_VARIADIC_MAX=10;__OPENCV_BUILD=1;HIGHGUI_EXPORTS;CMAKE_INTDIR="Debug";CVAPI_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>precomp.hpp</PrecompiledHeaderFile>
       <ForcedIncludeFiles>precomp.hpp</ForcedIncludeFiles>
       <DisableSpecificWarnings>4251</DisableSpecificWarnings>
@@ -136,8 +136,8 @@
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <CompileAsWinRT>false</CompileAsWinRT>
-      <AdditionalIncludeDirectories>..\..\..\modules\video\include;..\..\..\modules\photo\include;..\..\..\modules\calib3d\include;..\..\..\modules\features2d\include;..\..\..\modules\highgui\include;..\..\..\modules\imgproc\include;..\..\..\modules\flann\include;..\..\..\modules\core\include;..\..\..\binWinRT\modules\videostab;..\..\..\modules\videostab\src;..\..\..\modules\videostab\include;..\..\..\binWinRT;%(AdditionalIncludeDirectories);</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;NDEBUG;OPENCV_NOSTL;WINVER=0x0602;NTDDI_VERSION=NTDDI_WIN8;_WIN32_WINNT=0x0602;_VARIADIC_MAX=10;__OPENCV_BUILD=1;CMAKE_INTDIR="Release";CVAPI_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\..\modules\imgproc\include;..\..\..\modules\core\include;..\..\..\binWinRT\modules\highgui;..\..\..\modules\highgui\src;..\..\..\modules\highgui\include;..\..\..\3rdparty\libjasper;..\..\..\binWinRT\3rdparty\libtiff;..\..\..\3rdparty\libtiff;..\..\..\3rdparty\libpng;..\..\..\3rdparty\libjpeg;..\..\..\binWinRT\3rdparty\zlib;..\..\..\3rdparty\zlib;..\..\..\binWinRT;..\..\..\3rdparty\include;..\..\..\3rdparty\include\ffmpeg_;%(AdditionalIncludeDirectories);</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;NDEBUG;OPENCV_NOSTL;WINVER=0x0602;NTDDI_VERSION=NTDDI_WIN8;_WIN32_WINNT=0x0602;_VARIADIC_MAX=10;__OPENCV_BUILD=1;HIGHGUI_EXPORTS;CMAKE_INTDIR="Release";CVAPI_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>precomp.hpp</PrecompiledHeaderFile>
       <ForcedIncludeFiles>precomp.hpp</ForcedIncludeFiles>
       <DisableSpecificWarnings>4251</DisableSpecificWarnings>
@@ -152,8 +152,8 @@
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <CompileAsWinRT>false</CompileAsWinRT>
-      <AdditionalIncludeDirectories>..\..\..\modules\video\include;..\..\..\modules\photo\include;..\..\..\modules\calib3d\include;..\..\..\modules\features2d\include;..\..\..\modules\highgui\include;..\..\..\modules\imgproc\include;..\..\..\modules\flann\include;..\..\..\modules\core\include;..\..\..\binWinRT\modules\videostab;..\..\..\modules\videostab\src;..\..\..\modules\videostab\include;..\..\..\binWinRT;%(AdditionalIncludeDirectories);</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;_DEBUG;OPENCV_NOSTL;WINVER=0x0602;NTDDI_VERSION=NTDDI_WIN8;_WIN32_WINNT=0x0602;_VARIADIC_MAX=10;__OPENCV_BUILD=1;CMAKE_INTDIR="Debug";CVAPI_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\..\modules\imgproc\include;..\..\..\modules\core\include;..\..\..\binWinRT\modules\highgui;..\..\..\modules\highgui\src;..\..\..\modules\highgui\include;..\..\..\3rdparty\libjasper;..\..\..\binWinRT\3rdparty\libtiff;..\..\..\3rdparty\libtiff;..\..\..\3rdparty\libpng;..\..\..\3rdparty\libjpeg;..\..\..\binWinRT\3rdparty\zlib;..\..\..\3rdparty\zlib;..\..\..\binWinRT;..\..\..\3rdparty\include;..\..\..\3rdparty\include\ffmpeg_;%(AdditionalIncludeDirectories);</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;_DEBUG;OPENCV_NOSTL;WINVER=0x0602;NTDDI_VERSION=NTDDI_WIN8;_WIN32_WINNT=0x0602;_VARIADIC_MAX=10;__OPENCV_BUILD=1;HIGHGUI_EXPORTS;CMAKE_INTDIR="Debug";CVAPI_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>precomp.hpp</PrecompiledHeaderFile>
       <ForcedIncludeFiles>precomp.hpp</ForcedIncludeFiles>
       <DisableSpecificWarnings>4251</DisableSpecificWarnings>
@@ -168,8 +168,8 @@
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <CompileAsWinRT>false</CompileAsWinRT>
-      <AdditionalIncludeDirectories>..\..\..\modules\video\include;..\..\..\modules\photo\include;..\..\..\modules\calib3d\include;..\..\..\modules\features2d\include;..\..\..\modules\highgui\include;..\..\..\modules\imgproc\include;..\..\..\modules\flann\include;..\..\..\modules\core\include;..\..\..\binWinRT\modules\videostab;..\..\..\modules\videostab\src;..\..\..\modules\videostab\include;..\..\..\binWinRT;%(AdditionalIncludeDirectories);</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;NDEBUG;OPENCV_NOSTL;WINVER=0x0602;NTDDI_VERSION=NTDDI_WIN8;_WIN32_WINNT=0x0602;_VARIADIC_MAX=10;__OPENCV_BUILD=1;CMAKE_INTDIR="Release";CVAPI_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\..\modules\imgproc\include;..\..\..\modules\core\include;..\..\..\binWinRT\modules\highgui;..\..\..\modules\highgui\src;..\..\..\modules\highgui\include;..\..\..\3rdparty\libjasper;..\..\..\binWinRT\3rdparty\libtiff;..\..\..\3rdparty\libtiff;..\..\..\3rdparty\libpng;..\..\..\3rdparty\libjpeg;..\..\..\binWinRT\3rdparty\zlib;..\..\..\3rdparty\zlib;..\..\..\binWinRT;..\..\..\3rdparty\include;..\..\..\3rdparty\include\ffmpeg_;%(AdditionalIncludeDirectories);</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;NDEBUG;OPENCV_NOSTL;WINVER=0x0602;NTDDI_VERSION=NTDDI_WIN8;_WIN32_WINNT=0x0602;_VARIADIC_MAX=10;__OPENCV_BUILD=1;HIGHGUI_EXPORTS;CMAKE_INTDIR="Release";CVAPI_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>precomp.hpp</PrecompiledHeaderFile>
       <ForcedIncludeFiles>precomp.hpp</ForcedIncludeFiles>
       <DisableSpecificWarnings>4251</DisableSpecificWarnings>
@@ -184,8 +184,8 @@
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <CompileAsWinRT>false</CompileAsWinRT>
-      <AdditionalIncludeDirectories>..\..\..\modules\video\include;..\..\..\modules\photo\include;..\..\..\modules\calib3d\include;..\..\..\modules\features2d\include;..\..\..\modules\highgui\include;..\..\..\modules\imgproc\include;..\..\..\modules\flann\include;..\..\..\modules\core\include;..\..\..\binWinRT\modules\videostab;..\..\..\modules\videostab\src;..\..\..\modules\videostab\include;..\..\..\binWinRT;%(AdditionalIncludeDirectories);</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;_DEBUG;OPENCV_NOSTL;WINVER=0x0602;NTDDI_VERSION=NTDDI_WIN8;_WIN32_WINNT=0x0602;_VARIADIC_MAX=10;__OPENCV_BUILD=1;CMAKE_INTDIR="Debug";CVAPI_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\..\modules\imgproc\include;..\..\..\modules\core\include;..\..\..\binWinRT\modules\highgui;..\..\..\modules\highgui\src;..\..\..\modules\highgui\include;..\..\..\3rdparty\libjasper;..\..\..\binWinRT\3rdparty\libtiff;..\..\..\3rdparty\libtiff;..\..\..\3rdparty\libpng;..\..\..\3rdparty\libjpeg;..\..\..\binWinRT\3rdparty\zlib;..\..\..\3rdparty\zlib;..\..\..\binWinRT;..\..\..\3rdparty\include;..\..\..\3rdparty\include\ffmpeg_;%(AdditionalIncludeDirectories);</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;_DEBUG;OPENCV_NOSTL;WINVER=0x0602;NTDDI_VERSION=NTDDI_WIN8;_WIN32_WINNT=0x0602;_VARIADIC_MAX=10;__OPENCV_BUILD=1;HIGHGUI_EXPORTS;CMAKE_INTDIR="Debug";CVAPI_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>precomp.hpp</PrecompiledHeaderFile>
       <ForcedIncludeFiles>precomp.hpp</ForcedIncludeFiles>
       <DisableSpecificWarnings>4251</DisableSpecificWarnings>
@@ -200,8 +200,8 @@
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <CompileAsWinRT>false</CompileAsWinRT>
-      <AdditionalIncludeDirectories>..\..\..\modules\video\include;..\..\..\modules\photo\include;..\..\..\modules\calib3d\include;..\..\..\modules\features2d\include;..\..\..\modules\highgui\include;..\..\..\modules\imgproc\include;..\..\..\modules\flann\include;..\..\..\modules\core\include;..\..\..\binWinRT\modules\videostab;..\..\..\modules\videostab\src;..\..\..\modules\videostab\include;..\..\..\binWinRT;%(AdditionalIncludeDirectories);</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;NDEBUG;OPENCV_NOSTL;WINVER=0x0602;NTDDI_VERSION=NTDDI_WIN8;_WIN32_WINNT=0x0602;_VARIADIC_MAX=10;__OPENCV_BUILD=1;CMAKE_INTDIR="Release";CVAPI_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\..\modules\imgproc\include;..\..\..\modules\core\include;..\..\..\binWinRT\modules\highgui;..\..\..\modules\highgui\src;..\..\..\modules\highgui\include;..\..\..\3rdparty\libjasper;..\..\..\binWinRT\3rdparty\libtiff;..\..\..\3rdparty\libtiff;..\..\..\3rdparty\libpng;..\..\..\3rdparty\libjpeg;..\..\..\binWinRT\3rdparty\zlib;..\..\..\3rdparty\zlib;..\..\..\binWinRT;..\..\..\3rdparty\include;..\..\..\3rdparty\include\ffmpeg_;%(AdditionalIncludeDirectories);</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;NDEBUG;OPENCV_NOSTL;WINVER=0x0602;NTDDI_VERSION=NTDDI_WIN8;_WIN32_WINNT=0x0602;_VARIADIC_MAX=10;__OPENCV_BUILD=1;HIGHGUI_EXPORTS;CMAKE_INTDIR="Release";CVAPI_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>precomp.hpp</PrecompiledHeaderFile>
       <ForcedIncludeFiles>precomp.hpp</ForcedIncludeFiles>
       <DisableSpecificWarnings>4251</DisableSpecificWarnings>
@@ -216,37 +216,52 @@
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\modules\videostab\include\opencv2\videostab.hpp" />
-    <ClInclude Include="..\..\..\modules\videostab\include\opencv2\videostab\deblurring.hpp" />
-    <ClInclude Include="..\..\..\modules\videostab\include\opencv2\videostab\fast_marching.hpp" />
-    <ClInclude Include="..\..\..\modules\videostab\include\opencv2\videostab\fast_marching_inl.hpp" />
-    <ClInclude Include="..\..\..\modules\videostab\include\opencv2\videostab\frame_source.hpp" />
-    <ClInclude Include="..\..\..\modules\videostab\include\opencv2\videostab\global_motion.hpp" />
-    <ClInclude Include="..\..\..\modules\videostab\include\opencv2\videostab\inpainting.hpp" />
-    <ClInclude Include="..\..\..\modules\videostab\include\opencv2\videostab\log.hpp" />
-    <ClInclude Include="..\..\..\modules\videostab\include\opencv2\videostab\motion_core.hpp" />
-    <ClInclude Include="..\..\..\modules\videostab\include\opencv2\videostab\motion_stabilizing.hpp" />
-    <ClInclude Include="..\..\..\modules\videostab\include\opencv2\videostab\optical_flow.hpp" />
-    <ClInclude Include="..\..\..\modules\videostab\include\opencv2\videostab\outlier_rejection.hpp" />
-    <ClInclude Include="..\..\..\modules\videostab\include\opencv2\videostab\ring_buffer.hpp" />
-    <ClInclude Include="..\..\..\modules\videostab\include\opencv2\videostab\stabilizer.hpp" />
-    <ClInclude Include="..\..\..\modules\videostab\include\opencv2\videostab\wobble_suppression.hpp" />
-    <ClInclude Include="..\..\..\modules\videostab\src\clp.hpp" />
-    <ClInclude Include="..\..\..\modules\videostab\src\precomp.hpp" />
+    <ClInclude Include="..\..\..\modules\highgui\include\opencv2\highgui.hpp" />
+    <ClInclude Include="..\..\..\modules\highgui\include\opencv2\highgui\highgui.hpp" />
+    <ClInclude Include="..\..\..\modules\highgui\include\opencv2\highgui\cap_ios.h" />
+    <ClInclude Include="..\..\..\modules\highgui\include\opencv2\highgui\highgui_c.h" />
+    <ClInclude Include="..\..\..\modules\highgui\include\opencv2\highgui\ios.h" />
+    <ClInclude Include="..\..\..\modules\highgui\src\precomp.hpp" />
+    <ClInclude Include="..\..\..\modules\highgui\src\utils.hpp" />
+    <ClInclude Include="..\..\..\modules\highgui\src\cap_ffmpeg_impl.hpp" />
+    <ClInclude Include="..\..\..\modules\highgui\src\grfmts.hpp" />
+    <ClInclude Include="..\..\..\modules\highgui\src\grfmt_base.hpp" />
+    <ClInclude Include="..\..\..\modules\highgui\src\grfmt_bmp.hpp" />
+    <ClInclude Include="..\..\..\modules\highgui\src\grfmt_exr.hpp" />
+    <ClInclude Include="..\..\..\modules\highgui\src\grfmt_hdr.hpp" />
+    <ClInclude Include="..\..\..\modules\highgui\src\grfmt_jpeg.hpp" />
+    <ClInclude Include="..\..\..\modules\highgui\src\grfmt_jpeg2000.hpp" />
+    <ClInclude Include="..\..\..\modules\highgui\src\grfmt_png.hpp" />
+    <ClInclude Include="..\..\..\modules\highgui\src\grfmt_pxm.hpp" />
+    <ClInclude Include="..\..\..\modules\highgui\src\grfmt_sunras.hpp" />
+    <ClInclude Include="..\..\..\modules\highgui\src\grfmt_tiff.hpp" />
+    <ClInclude Include="..\..\..\modules\highgui\src\grfmt_webp.hpp" />
+    <ClInclude Include="..\..\..\modules\highgui\src\bitstrm.hpp" />
+    <ClInclude Include="..\..\..\modules\highgui\src\rgbe.hpp" />
     <ClInclude Include="..\..\cvconfig.h" />
     <ClInclude Include="..\..\opencv2\opencv_modules.hpp" />
-    <ClCompile Include="..\..\..\modules\videostab\src\deblurring.cpp" />
-    <ClCompile Include="..\..\..\modules\videostab\src\fast_marching.cpp" />
-    <ClCompile Include="..\..\..\modules\videostab\src\frame_source.cpp" />
-    <ClCompile Include="..\..\..\modules\videostab\src\global_motion.cpp" />
-    <ClCompile Include="..\..\..\modules\videostab\src\inpainting.cpp" />
-    <ClCompile Include="..\..\..\modules\videostab\src\log.cpp" />
-    <ClCompile Include="..\..\..\modules\videostab\src\motion_stabilizing.cpp" />
-    <ClCompile Include="..\..\..\modules\videostab\src\optical_flow.cpp" />
-    <ClCompile Include="..\..\..\modules\videostab\src\outlier_rejection.cpp" />
-    <ClCompile Include="..\..\..\modules\videostab\src\stabilizer.cpp" />
-    <ClCompile Include="..\..\..\modules\videostab\src\wobble_suppression.cpp" />
-    <ClCompile Include="opencv_videostab_pch.cpp">
+    <ClCompile Include="..\..\..\modules\highgui\src\cap.cpp" />
+    <ClCompile Include="..\..\..\modules\highgui\src\cap_images.cpp" />
+    <ClCompile Include="..\..\..\modules\highgui\src\cap_ffmpeg.cpp" />
+    <ClCompile Include="..\..\..\modules\highgui\src\loadsave.cpp" />
+    <ClCompile Include="..\..\..\modules\highgui\src\utils.cpp" />
+    <ClCompile Include="..\..\..\modules\highgui\src\window.cpp" />
+    <ClCompile Include="..\..\..\modules\highgui\src\cap_cmu.cpp" />
+    <ClCompile Include="..\..\..\modules\highgui\src\cap_vfw.cpp" />
+    <ClCompile Include="..\..\..\modules\highgui\src\grfmt_base.cpp" />
+    <ClCompile Include="..\..\..\modules\highgui\src\grfmt_bmp.cpp" />
+    <ClCompile Include="..\..\..\modules\highgui\src\grfmt_exr.cpp" />
+    <ClCompile Include="..\..\..\modules\highgui\src\grfmt_hdr.cpp" />
+    <ClCompile Include="..\..\..\modules\highgui\src\grfmt_jpeg.cpp" />
+    <ClCompile Include="..\..\..\modules\highgui\src\grfmt_jpeg2000.cpp" />
+    <ClCompile Include="..\..\..\modules\highgui\src\grfmt_png.cpp" />
+    <ClCompile Include="..\..\..\modules\highgui\src\grfmt_pxm.cpp" />
+    <ClCompile Include="..\..\..\modules\highgui\src\grfmt_sunras.cpp" />
+    <ClCompile Include="..\..\..\modules\highgui\src\grfmt_tiff.cpp" />
+    <ClCompile Include="..\..\..\modules\highgui\src\grfmt_webp.cpp" />
+    <ClCompile Include="..\..\..\modules\highgui\src\bitstrm.cpp" />
+    <ClCompile Include="..\..\..\modules\highgui\src\rgbe.cpp" />
+    <ClCompile Include="opencv_highgui_pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">precomp.hpp</PrecompiledHeaderFile>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
@@ -267,33 +282,28 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\calib3d\opencv_calib3d.vcxproj">
-      <Project>{4B531696-A8BA-4A19-95AD-346FE45B201F}</Project>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\features2d\opencv_features2d.vcxproj">
-      <Project>{BB1ABC95-4975-4814-8097-508B1F99063D}</Project>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\flann\opencv_flann.vcxproj">
-      <Project>{26BBD092-C917-43BD-B339-824B036FF8FE}</Project>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\imgproc\opencv_imgproc.vcxproj">
       <Project>{1320606C-4689-48F6-B6DD-12EC932C9CEF}</Project>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\photo\opencv_photo.vcxproj">
-      <Project>{C0C53279-946F-46F2-93F1-60A546ADC349}</Project>
+    <ProjectReference Include="..\..\3rdparty\libpng\libpng.vcxproj">
+      <Project>{557519F6-1163-4743-981F-C9B5CA8F5091}</Project>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\video\opencv_video.vcxproj">
-      <Project>{0025707C-A217-4C6D-BCCE-8283D63E0ECE}</Project>
+    <ProjectReference Include="..\..\3rdparty\libtiff\libtiff.vcxproj">
+      <Project>{2306E394-8F5D-497B-BC3A-2B868E6360CF}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\3rdparty\libjpeg\libjpeg.vcxproj">
+      <Project>{D8F9BE2A-CAFE-4EC8-9085-61AF2A380402}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\3rdparty\libjasper\libjasper.vcxproj">
+      <Project>{E6703EFC-70A8-4983-BFC1-C6C08F150BE5}</Project>
     </ProjectReference>
   </ItemGroup>
 </Project>

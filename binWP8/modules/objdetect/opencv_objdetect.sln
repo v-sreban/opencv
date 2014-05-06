@@ -10,6 +10,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "opencv_ml", "..\ml\opencv_m
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zlib", "..\..\3rdparty\zlib\zlib.vcxproj", "{EDF38E37-3312-47CE-B8AC-AACE2073AFC6}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libpng", "..\..\3rdparty\libpng\libpng.vcxproj", "{05BA22DB-E4B9-40B0-A42C-D348C44C74FD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|ARM = Debug|ARM
@@ -80,6 +82,18 @@ Global
 		{EDF38E37-3312-47CE-B8AC-AACE2073AFC6}.Release|Win32.Build.0 = Release|Win32
 		{EDF38E37-3312-47CE-B8AC-AACE2073AFC6}.Release|x64.ActiveCfg = Release|x64
 		{EDF38E37-3312-47CE-B8AC-AACE2073AFC6}.Release|x64.Build.0 = Release|x64
+		{05BA22DB-E4B9-40B0-A42C-D348C44C74FD}.Debug|ARM.ActiveCfg = Debug|ARM
+		{05BA22DB-E4B9-40B0-A42C-D348C44C74FD}.Debug|ARM.Build.0 = Debug|ARM
+		{05BA22DB-E4B9-40B0-A42C-D348C44C74FD}.Debug|Win32.ActiveCfg = Debug|Win32
+		{05BA22DB-E4B9-40B0-A42C-D348C44C74FD}.Debug|Win32.Build.0 = Debug|Win32
+		{05BA22DB-E4B9-40B0-A42C-D348C44C74FD}.Debug|x64.ActiveCfg = Debug|x64
+		{05BA22DB-E4B9-40B0-A42C-D348C44C74FD}.Debug|x64.Build.0 = Debug|x64
+		{05BA22DB-E4B9-40B0-A42C-D348C44C74FD}.Release|ARM.ActiveCfg = Release|ARM
+		{05BA22DB-E4B9-40B0-A42C-D348C44C74FD}.Release|ARM.Build.0 = Release|ARM
+		{05BA22DB-E4B9-40B0-A42C-D348C44C74FD}.Release|Win32.ActiveCfg = Release|Win32
+		{05BA22DB-E4B9-40B0-A42C-D348C44C74FD}.Release|Win32.Build.0 = Release|Win32
+		{05BA22DB-E4B9-40B0-A42C-D348C44C74FD}.Release|x64.ActiveCfg = Release|x64
+		{05BA22DB-E4B9-40B0-A42C-D348C44C74FD}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

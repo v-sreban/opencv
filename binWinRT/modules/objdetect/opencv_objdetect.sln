@@ -12,6 +12,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "opencv_ml", "..\ml\opencv_m
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zlib", "..\..\3rdparty\zlib\zlib.vcxproj", "{656A658B-3EE2-4F94-8899-C65543317D01}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libpng", "..\..\3rdparty\libpng\libpng.vcxproj", "{557519F6-1163-4743-981F-C9B5CA8F5091}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|ARM = Debug|ARM
@@ -82,6 +84,18 @@ Global
 		{656A658B-3EE2-4F94-8899-C65543317D01}.Release|Win32.Build.0 = Release|Win32
 		{656A658B-3EE2-4F94-8899-C65543317D01}.Release|x64.ActiveCfg = Release|x64
 		{656A658B-3EE2-4F94-8899-C65543317D01}.Release|x64.Build.0 = Release|x64
+		{557519F6-1163-4743-981F-C9B5CA8F5091}.Debug|ARM.ActiveCfg = Debug|ARM
+		{557519F6-1163-4743-981F-C9B5CA8F5091}.Debug|ARM.Build.0 = Debug|ARM
+		{557519F6-1163-4743-981F-C9B5CA8F5091}.Debug|Win32.ActiveCfg = Debug|Win32
+		{557519F6-1163-4743-981F-C9B5CA8F5091}.Debug|Win32.Build.0 = Debug|Win32
+		{557519F6-1163-4743-981F-C9B5CA8F5091}.Debug|x64.ActiveCfg = Debug|x64
+		{557519F6-1163-4743-981F-C9B5CA8F5091}.Debug|x64.Build.0 = Debug|x64
+		{557519F6-1163-4743-981F-C9B5CA8F5091}.Release|ARM.ActiveCfg = Release|ARM
+		{557519F6-1163-4743-981F-C9B5CA8F5091}.Release|ARM.Build.0 = Release|ARM
+		{557519F6-1163-4743-981F-C9B5CA8F5091}.Release|Win32.ActiveCfg = Release|Win32
+		{557519F6-1163-4743-981F-C9B5CA8F5091}.Release|Win32.Build.0 = Release|Win32
+		{557519F6-1163-4743-981F-C9B5CA8F5091}.Release|x64.ActiveCfg = Release|x64
+		{557519F6-1163-4743-981F-C9B5CA8F5091}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -157,14 +157,14 @@
     <Filter Include="Include\opencv2">
       <UniqueIdentifier>{F3E23CA5-39A5-47C2-8583-DAD526ACBC40}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Include\opencv2\objdetect">
-      <UniqueIdentifier>{BD498CFC-ECF4-4909-95C4-994BF0711E80}</UniqueIdentifier>
+    <Filter Include="Src\opencl\kernels">
+      <UniqueIdentifier>{7A9C7628-CBF6-4F02-928C-888E6EFD63BF}</UniqueIdentifier>
     </Filter>
     <Filter Include="Src\opencl">
       <UniqueIdentifier>{3202B639-F8FB-43E6-8CD1-BE4EA185271A}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Src\opencl\kernels">
-      <UniqueIdentifier>{7A9C7628-CBF6-4F02-928C-888E6EFD63BF}</UniqueIdentifier>
+    <Filter Include="Include\opencv2\objdetect">
+      <UniqueIdentifier>{BD498CFC-ECF4-4909-95C4-994BF0711E80}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

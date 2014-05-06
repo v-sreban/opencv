@@ -77,11 +77,11 @@
     <Filter Include="Include">
       <UniqueIdentifier>{270EF06C-457D-487D-89F9-6B9131DD44E8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Include\opencv2\shape">
-      <UniqueIdentifier>{678D2D10-DF0F-43F3-8F9E-C58590E54734}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Include\opencv2">
       <UniqueIdentifier>{F3E23CA5-39A5-47C2-8583-DAD526ACBC40}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include\opencv2\shape">
+      <UniqueIdentifier>{678D2D10-DF0F-43F3-8F9E-C58590E54734}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

@@ -19,8 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{25658E48-907C-4962-9969-B4C3E478A5DF}</ProjectGuid>
-    <RootNamespace>opencv_calib3d</RootNamespace>
+    <ProjectGuid>{10E8D01F-A210-466F-966C-F049E999A83A}</ProjectGuid>
+    <RootNamespace>opencv_highgui</RootNamespace>
     <DefaultLanguage>en-US</DefaultLanguage>
     <MinimumVisualStudioVersion>11.0</MinimumVisualStudioVersion>
   </PropertyGroup>
@@ -66,8 +66,8 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <CompileAsWinRT>false</CompileAsWinRT>
       <AdditionalUsingDirectories>$(WindowsSDK_MetadataPath);$(AdditionalUsingDirectories)</AdditionalUsingDirectories>
-      <AdditionalIncludeDirectories>..\..\..\modules\features2d\include;..\..\..\modules\highgui\include;..\..\..\modules\imgproc\include;..\..\..\modules\flann\include;..\..\..\modules\core\include;..\..\..\binWP8\modules\calib3d;..\..\..\modules\calib3d\src;..\..\..\modules\calib3d\include;..\..\..\binWP8;%(AdditionalIncludeDirectories);</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;_DEBUG;OPENCV_NOSTL;WINVER=0x0602;NTDDI_VERSION=NTDDI_WIN8;_WIN32_WINNT=0x0602;_VARIADIC_MAX=10;__OPENCV_BUILD=1;CMAKE_INTDIR="Debug";CVAPI_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\..\modules\imgproc\include;..\..\..\modules\core\include;..\..\..\binWP8\modules\highgui;..\..\..\modules\highgui\src;..\..\..\modules\highgui\include;..\..\..\3rdparty\libjasper;..\..\..\binWP8\3rdparty\libtiff;..\..\..\3rdparty\libtiff;..\..\..\3rdparty\libpng;..\..\..\3rdparty\libjpeg;..\..\..\binWP8\3rdparty\zlib;..\..\..\3rdparty\zlib;..\..\..\binWP8;..\..\..\3rdparty\include;..\..\..\3rdparty\include\ffmpeg_;%(AdditionalIncludeDirectories);</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;_DEBUG;OPENCV_NOSTL;WINVER=0x0602;NTDDI_VERSION=NTDDI_WIN8;_WIN32_WINNT=0x0602;_VARIADIC_MAX=10;__OPENCV_BUILD=1;HIGHGUI_EXPORTS;CMAKE_INTDIR="Debug";CVAPI_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>precomp.hpp</PrecompiledHeaderFile>
       <ForcedIncludeFiles>precomp.hpp</ForcedIncludeFiles>
       <DisableSpecificWarnings>4251</DisableSpecificWarnings>
@@ -86,8 +86,8 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <CompileAsWinRT>false</CompileAsWinRT>
       <AdditionalUsingDirectories>$(WindowsSDK_MetadataPath);$(AdditionalUsingDirectories)</AdditionalUsingDirectories>
-      <AdditionalIncludeDirectories>..\..\..\modules\features2d\include;..\..\..\modules\highgui\include;..\..\..\modules\imgproc\include;..\..\..\modules\flann\include;..\..\..\modules\core\include;..\..\..\binWP8\modules\calib3d;..\..\..\modules\calib3d\src;..\..\..\modules\calib3d\include;..\..\..\binWP8;%(AdditionalIncludeDirectories);</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;NDEBUG;OPENCV_NOSTL;WINVER=0x0602;NTDDI_VERSION=NTDDI_WIN8;_WIN32_WINNT=0x0602;_VARIADIC_MAX=10;__OPENCV_BUILD=1;CMAKE_INTDIR="Release";CVAPI_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\..\modules\imgproc\include;..\..\..\modules\core\include;..\..\..\binWP8\modules\highgui;..\..\..\modules\highgui\src;..\..\..\modules\highgui\include;..\..\..\3rdparty\libjasper;..\..\..\binWP8\3rdparty\libtiff;..\..\..\3rdparty\libtiff;..\..\..\3rdparty\libpng;..\..\..\3rdparty\libjpeg;..\..\..\binWP8\3rdparty\zlib;..\..\..\3rdparty\zlib;..\..\..\binWP8;..\..\..\3rdparty\include;..\..\..\3rdparty\include\ffmpeg_;%(AdditionalIncludeDirectories);</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;NDEBUG;OPENCV_NOSTL;WINVER=0x0602;NTDDI_VERSION=NTDDI_WIN8;_WIN32_WINNT=0x0602;_VARIADIC_MAX=10;__OPENCV_BUILD=1;HIGHGUI_EXPORTS;CMAKE_INTDIR="Release";CVAPI_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>precomp.hpp</PrecompiledHeaderFile>
       <ForcedIncludeFiles>precomp.hpp</ForcedIncludeFiles>
       <DisableSpecificWarnings>4251</DisableSpecificWarnings>
@@ -106,8 +106,8 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <CompileAsWinRT>false</CompileAsWinRT>
       <AdditionalUsingDirectories>$(WindowsSDK_MetadataPath);$(AdditionalUsingDirectories)</AdditionalUsingDirectories>
-      <AdditionalIncludeDirectories>..\..\..\modules\features2d\include;..\..\..\modules\highgui\include;..\..\..\modules\imgproc\include;..\..\..\modules\flann\include;..\..\..\modules\core\include;..\..\..\binWP8\modules\calib3d;..\..\..\modules\calib3d\src;..\..\..\modules\calib3d\include;..\..\..\binWP8;%(AdditionalIncludeDirectories);</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;_DEBUG;OPENCV_NOSTL;WINVER=0x0602;NTDDI_VERSION=NTDDI_WIN8;_WIN32_WINNT=0x0602;_VARIADIC_MAX=10;__OPENCV_BUILD=1;CMAKE_INTDIR="Debug";CVAPI_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\..\modules\imgproc\include;..\..\..\modules\core\include;..\..\..\binWP8\modules\highgui;..\..\..\modules\highgui\src;..\..\..\modules\highgui\include;..\..\..\3rdparty\libjasper;..\..\..\binWP8\3rdparty\libtiff;..\..\..\3rdparty\libtiff;..\..\..\3rdparty\libpng;..\..\..\3rdparty\libjpeg;..\..\..\binWP8\3rdparty\zlib;..\..\..\3rdparty\zlib;..\..\..\binWP8;..\..\..\3rdparty\include;..\..\..\3rdparty\include\ffmpeg_;%(AdditionalIncludeDirectories);</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;_DEBUG;OPENCV_NOSTL;WINVER=0x0602;NTDDI_VERSION=NTDDI_WIN8;_WIN32_WINNT=0x0602;_VARIADIC_MAX=10;__OPENCV_BUILD=1;HIGHGUI_EXPORTS;CMAKE_INTDIR="Debug";CVAPI_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>precomp.hpp</PrecompiledHeaderFile>
       <ForcedIncludeFiles>precomp.hpp</ForcedIncludeFiles>
       <DisableSpecificWarnings>4251</DisableSpecificWarnings>
@@ -126,8 +126,8 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <CompileAsWinRT>false</CompileAsWinRT>
       <AdditionalUsingDirectories>$(WindowsSDK_MetadataPath);$(AdditionalUsingDirectories)</AdditionalUsingDirectories>
-      <AdditionalIncludeDirectories>..\..\..\modules\features2d\include;..\..\..\modules\highgui\include;..\..\..\modules\imgproc\include;..\..\..\modules\flann\include;..\..\..\modules\core\include;..\..\..\binWP8\modules\calib3d;..\..\..\modules\calib3d\src;..\..\..\modules\calib3d\include;..\..\..\binWP8;%(AdditionalIncludeDirectories);</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;NDEBUG;OPENCV_NOSTL;WINVER=0x0602;NTDDI_VERSION=NTDDI_WIN8;_WIN32_WINNT=0x0602;_VARIADIC_MAX=10;__OPENCV_BUILD=1;CMAKE_INTDIR="Release";CVAPI_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\..\modules\imgproc\include;..\..\..\modules\core\include;..\..\..\binWP8\modules\highgui;..\..\..\modules\highgui\src;..\..\..\modules\highgui\include;..\..\..\3rdparty\libjasper;..\..\..\binWP8\3rdparty\libtiff;..\..\..\3rdparty\libtiff;..\..\..\3rdparty\libpng;..\..\..\3rdparty\libjpeg;..\..\..\binWP8\3rdparty\zlib;..\..\..\3rdparty\zlib;..\..\..\binWP8;..\..\..\3rdparty\include;..\..\..\3rdparty\include\ffmpeg_;%(AdditionalIncludeDirectories);</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;NDEBUG;OPENCV_NOSTL;WINVER=0x0602;NTDDI_VERSION=NTDDI_WIN8;_WIN32_WINNT=0x0602;_VARIADIC_MAX=10;__OPENCV_BUILD=1;HIGHGUI_EXPORTS;CMAKE_INTDIR="Release";CVAPI_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>precomp.hpp</PrecompiledHeaderFile>
       <ForcedIncludeFiles>precomp.hpp</ForcedIncludeFiles>
       <DisableSpecificWarnings>4251</DisableSpecificWarnings>
@@ -153,39 +153,52 @@
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\modules\calib3d\include\opencv2\calib3d.hpp" />
-    <ClInclude Include="..\..\..\modules\calib3d\include\opencv2\calib3d\calib3d.hpp" />
-    <ClInclude Include="..\..\..\modules\calib3d\include\opencv2\calib3d\calib3d_c.h" />
-    <ClInclude Include="opencl_kernels.hpp" />
-    <ClInclude Include="..\..\..\modules\calib3d\src\circlesgrid.hpp" />
-    <ClInclude Include="..\..\..\modules\calib3d\src\precomp.hpp" />
-    <ClInclude Include="..\..\..\modules\calib3d\src\epnp.h" />
-    <ClInclude Include="..\..\..\modules\calib3d\src\p3p.h" />
-    <ClInclude Include="..\..\..\modules\calib3d\src\polynom_solver.h" />
+    <ClInclude Include="..\..\..\modules\highgui\include\opencv2\highgui.hpp" />
+    <ClInclude Include="..\..\..\modules\highgui\include\opencv2\highgui\highgui.hpp" />
+    <ClInclude Include="..\..\..\modules\highgui\include\opencv2\highgui\cap_ios.h" />
+    <ClInclude Include="..\..\..\modules\highgui\include\opencv2\highgui\highgui_c.h" />
+    <ClInclude Include="..\..\..\modules\highgui\include\opencv2\highgui\ios.h" />
+    <ClInclude Include="..\..\..\modules\highgui\src\precomp.hpp" />
+    <ClInclude Include="..\..\..\modules\highgui\src\utils.hpp" />
+    <ClInclude Include="..\..\..\modules\highgui\src\cap_ffmpeg_impl.hpp" />
+    <ClInclude Include="..\..\..\modules\highgui\src\grfmts.hpp" />
+    <ClInclude Include="..\..\..\modules\highgui\src\grfmt_base.hpp" />
+    <ClInclude Include="..\..\..\modules\highgui\src\grfmt_bmp.hpp" />
+    <ClInclude Include="..\..\..\modules\highgui\src\grfmt_exr.hpp" />
+    <ClInclude Include="..\..\..\modules\highgui\src\grfmt_hdr.hpp" />
+    <ClInclude Include="..\..\..\modules\highgui\src\grfmt_jpeg.hpp" />
+    <ClInclude Include="..\..\..\modules\highgui\src\grfmt_jpeg2000.hpp" />
+    <ClInclude Include="..\..\..\modules\highgui\src\grfmt_png.hpp" />
+    <ClInclude Include="..\..\..\modules\highgui\src\grfmt_pxm.hpp" />
+    <ClInclude Include="..\..\..\modules\highgui\src\grfmt_sunras.hpp" />
+    <ClInclude Include="..\..\..\modules\highgui\src\grfmt_tiff.hpp" />
+    <ClInclude Include="..\..\..\modules\highgui\src\grfmt_webp.hpp" />
+    <ClInclude Include="..\..\..\modules\highgui\src\bitstrm.hpp" />
+    <ClInclude Include="..\..\..\modules\highgui\src\rgbe.hpp" />
     <ClInclude Include="..\..\cvconfig.h" />
     <ClInclude Include="..\..\opencv2\opencv_modules.hpp" />
-    <ClCompile Include="..\..\..\modules\calib3d\src\calib3d_init.cpp" />
-    <ClCompile Include="..\..\..\modules\calib3d\src\calibinit.cpp" />
-    <ClCompile Include="..\..\..\modules\calib3d\src\calibration.cpp" />
-    <ClCompile Include="..\..\..\modules\calib3d\src\checkchessboard.cpp" />
-    <ClCompile Include="..\..\..\modules\calib3d\src\circlesgrid.cpp" />
-    <ClCompile Include="..\..\..\modules\calib3d\src\compat_ptsetreg.cpp" />
-    <ClCompile Include="..\..\..\modules\calib3d\src\compat_stereo.cpp" />
-    <ClCompile Include="..\..\..\modules\calib3d\src\epnp.cpp" />
-    <ClCompile Include="..\..\..\modules\calib3d\src\five-point.cpp" />
-    <ClCompile Include="..\..\..\modules\calib3d\src\fundam.cpp" />
-    <ClCompile Include="..\..\..\modules\calib3d\src\levmarq.cpp" />
-    <ClCompile Include="..\..\..\modules\calib3d\src\p3p.cpp" />
-    <ClCompile Include="..\..\..\modules\calib3d\src\polynom_solver.cpp" />
-    <ClCompile Include="..\..\..\modules\calib3d\src\posit.cpp" />
-    <ClCompile Include="..\..\..\modules\calib3d\src\ptsetreg.cpp" />
-    <ClCompile Include="..\..\..\modules\calib3d\src\quadsubpix.cpp" />
-    <ClCompile Include="..\..\..\modules\calib3d\src\solvepnp.cpp" />
-    <ClCompile Include="..\..\..\modules\calib3d\src\stereobm.cpp" />
-    <ClCompile Include="..\..\..\modules\calib3d\src\stereosgbm.cpp" />
-    <ClCompile Include="..\..\..\modules\calib3d\src\triangulate.cpp" />
-    <ClCompile Include="opencl_kernels.cpp" />
-    <ClCompile Include="opencv_calib3d_pch.cpp">
+    <ClCompile Include="..\..\..\modules\highgui\src\cap.cpp" />
+    <ClCompile Include="..\..\..\modules\highgui\src\cap_images.cpp" />
+    <ClCompile Include="..\..\..\modules\highgui\src\cap_ffmpeg.cpp" />
+    <ClCompile Include="..\..\..\modules\highgui\src\loadsave.cpp" />
+    <ClCompile Include="..\..\..\modules\highgui\src\utils.cpp" />
+    <ClCompile Include="..\..\..\modules\highgui\src\window.cpp" />
+    <ClCompile Include="..\..\..\modules\highgui\src\cap_cmu.cpp" />
+    <ClCompile Include="..\..\..\modules\highgui\src\cap_vfw.cpp" />
+    <ClCompile Include="..\..\..\modules\highgui\src\grfmt_base.cpp" />
+    <ClCompile Include="..\..\..\modules\highgui\src\grfmt_bmp.cpp" />
+    <ClCompile Include="..\..\..\modules\highgui\src\grfmt_exr.cpp" />
+    <ClCompile Include="..\..\..\modules\highgui\src\grfmt_hdr.cpp" />
+    <ClCompile Include="..\..\..\modules\highgui\src\grfmt_jpeg.cpp" />
+    <ClCompile Include="..\..\..\modules\highgui\src\grfmt_jpeg2000.cpp" />
+    <ClCompile Include="..\..\..\modules\highgui\src\grfmt_png.cpp" />
+    <ClCompile Include="..\..\..\modules\highgui\src\grfmt_pxm.cpp" />
+    <ClCompile Include="..\..\..\modules\highgui\src\grfmt_sunras.cpp" />
+    <ClCompile Include="..\..\..\modules\highgui\src\grfmt_tiff.cpp" />
+    <ClCompile Include="..\..\..\modules\highgui\src\grfmt_webp.cpp" />
+    <ClCompile Include="..\..\..\modules\highgui\src\bitstrm.cpp" />
+    <ClCompile Include="..\..\..\modules\highgui\src\rgbe.cpp" />
+    <ClCompile Include="opencv_highgui_pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">precomp.hpp</PrecompiledHeaderFile>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
@@ -199,7 +212,6 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">precomp.hpp</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">precomp.hpp</PrecompiledHeaderFile>
     </ClCompile>
-    <None Include="..\..\..\modules\calib3d\src\opencl\stereobm.cl" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\core\opencv_core.vcxproj">
@@ -212,13 +224,23 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\flann\opencv_flann.vcxproj">
-      <Project>{3C802AB3-F8A6-4546-B21E-4289409CFDBF}</Project>
+    <ProjectReference Include="..\..\3rdparty\libpng\libpng.vcxproj">
+      <Project>{05BA22DB-E4B9-40B0-A42C-D348C44C74FD}</Project>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\features2d\opencv_features2d.vcxproj">
-      <Project>{33931C17-25EE-4086-974F-4F2F2D1D17DA}</Project>
+    <ProjectReference Include="..\..\3rdparty\libtiff\libtiff.vcxproj">
+      <Project>{29DA08C9-D679-46FE-BDEB-8D8E11BCDAB9}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\3rdparty\libjpeg\libjpeg.vcxproj">
+      <Project>{BE1A5580-92F5-4668-9042-CDFC8FDF84A6}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\3rdparty\libjasper\libjasper.vcxproj">
+      <Project>{7B128696-61B7-43F2-9849-4E03C973EFD4}</Project>
     </ProjectReference>
   </ItemGroup>
 </Project>

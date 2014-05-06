@@ -120,7 +120,7 @@
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <CompileAsWinRT>false</CompileAsWinRT>
-      <AdditionalIncludeDirectories>..\..\..\modules\video\include;..\..\..\modules\objdetect\include;..\..\..\modules\ml\include;..\..\..\modules\calib3d\include;..\..\..\modules\features2d\include;..\..\..\modules\imgproc\include;..\..\..\modules\flann\include;..\..\..\modules\core\include;..\..\..\binWinRT\modules\contrib;..\..\..\modules\contrib\src;..\..\..\modules\contrib\include;..\..\..\binWinRT;%(AdditionalIncludeDirectories);</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\modules\video\include;..\..\..\modules\objdetect\include;..\..\..\modules\nonfree\include;..\..\..\modules\ml\include;..\..\..\modules\calib3d\include;..\..\..\modules\features2d\include;..\..\..\modules\highgui\include;..\..\..\modules\imgproc\include;..\..\..\modules\flann\include;..\..\..\modules\core\include;..\..\..\binWinRT\modules\contrib;..\..\..\modules\contrib\src;..\..\..\modules\contrib\include;..\..\..\binWinRT;%(AdditionalIncludeDirectories);</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;_DEBUG;OPENCV_NOSTL;WINVER=0x0602;NTDDI_VERSION=NTDDI_WIN8;_WIN32_WINNT=0x0602;_VARIADIC_MAX=10;__OPENCV_BUILD=1;CMAKE_INTDIR="Debug";CVAPI_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>precomp.hpp</PrecompiledHeaderFile>
       <ForcedIncludeFiles>precomp.hpp</ForcedIncludeFiles>
@@ -136,7 +136,7 @@
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <CompileAsWinRT>false</CompileAsWinRT>
-      <AdditionalIncludeDirectories>..\..\..\modules\video\include;..\..\..\modules\objdetect\include;..\..\..\modules\ml\include;..\..\..\modules\calib3d\include;..\..\..\modules\features2d\include;..\..\..\modules\imgproc\include;..\..\..\modules\flann\include;..\..\..\modules\core\include;..\..\..\binWinRT\modules\contrib;..\..\..\modules\contrib\src;..\..\..\modules\contrib\include;..\..\..\binWinRT;%(AdditionalIncludeDirectories);</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\modules\video\include;..\..\..\modules\objdetect\include;..\..\..\modules\nonfree\include;..\..\..\modules\ml\include;..\..\..\modules\calib3d\include;..\..\..\modules\features2d\include;..\..\..\modules\highgui\include;..\..\..\modules\imgproc\include;..\..\..\modules\flann\include;..\..\..\modules\core\include;..\..\..\binWinRT\modules\contrib;..\..\..\modules\contrib\src;..\..\..\modules\contrib\include;..\..\..\binWinRT;%(AdditionalIncludeDirectories);</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;NDEBUG;OPENCV_NOSTL;WINVER=0x0602;NTDDI_VERSION=NTDDI_WIN8;_WIN32_WINNT=0x0602;_VARIADIC_MAX=10;__OPENCV_BUILD=1;CMAKE_INTDIR="Release";CVAPI_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>precomp.hpp</PrecompiledHeaderFile>
       <ForcedIncludeFiles>precomp.hpp</ForcedIncludeFiles>
@@ -152,7 +152,7 @@
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <CompileAsWinRT>false</CompileAsWinRT>
-      <AdditionalIncludeDirectories>..\..\..\modules\video\include;..\..\..\modules\objdetect\include;..\..\..\modules\ml\include;..\..\..\modules\calib3d\include;..\..\..\modules\features2d\include;..\..\..\modules\imgproc\include;..\..\..\modules\flann\include;..\..\..\modules\core\include;..\..\..\binWinRT\modules\contrib;..\..\..\modules\contrib\src;..\..\..\modules\contrib\include;..\..\..\binWinRT;%(AdditionalIncludeDirectories);</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\modules\video\include;..\..\..\modules\objdetect\include;..\..\..\modules\nonfree\include;..\..\..\modules\ml\include;..\..\..\modules\calib3d\include;..\..\..\modules\features2d\include;..\..\..\modules\highgui\include;..\..\..\modules\imgproc\include;..\..\..\modules\flann\include;..\..\..\modules\core\include;..\..\..\binWinRT\modules\contrib;..\..\..\modules\contrib\src;..\..\..\modules\contrib\include;..\..\..\binWinRT;%(AdditionalIncludeDirectories);</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;_DEBUG;OPENCV_NOSTL;WINVER=0x0602;NTDDI_VERSION=NTDDI_WIN8;_WIN32_WINNT=0x0602;_VARIADIC_MAX=10;__OPENCV_BUILD=1;CMAKE_INTDIR="Debug";CVAPI_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>precomp.hpp</PrecompiledHeaderFile>
       <ForcedIncludeFiles>precomp.hpp</ForcedIncludeFiles>
@@ -168,7 +168,7 @@
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <CompileAsWinRT>false</CompileAsWinRT>
-      <AdditionalIncludeDirectories>..\..\..\modules\video\include;..\..\..\modules\objdetect\include;..\..\..\modules\ml\include;..\..\..\modules\calib3d\include;..\..\..\modules\features2d\include;..\..\..\modules\imgproc\include;..\..\..\modules\flann\include;..\..\..\modules\core\include;..\..\..\binWinRT\modules\contrib;..\..\..\modules\contrib\src;..\..\..\modules\contrib\include;..\..\..\binWinRT;%(AdditionalIncludeDirectories);</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\modules\video\include;..\..\..\modules\objdetect\include;..\..\..\modules\nonfree\include;..\..\..\modules\ml\include;..\..\..\modules\calib3d\include;..\..\..\modules\features2d\include;..\..\..\modules\highgui\include;..\..\..\modules\imgproc\include;..\..\..\modules\flann\include;..\..\..\modules\core\include;..\..\..\binWinRT\modules\contrib;..\..\..\modules\contrib\src;..\..\..\modules\contrib\include;..\..\..\binWinRT;%(AdditionalIncludeDirectories);</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;NDEBUG;OPENCV_NOSTL;WINVER=0x0602;NTDDI_VERSION=NTDDI_WIN8;_WIN32_WINNT=0x0602;_VARIADIC_MAX=10;__OPENCV_BUILD=1;CMAKE_INTDIR="Release";CVAPI_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>precomp.hpp</PrecompiledHeaderFile>
       <ForcedIncludeFiles>precomp.hpp</ForcedIncludeFiles>
@@ -184,7 +184,7 @@
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <CompileAsWinRT>false</CompileAsWinRT>
-      <AdditionalIncludeDirectories>..\..\..\modules\video\include;..\..\..\modules\objdetect\include;..\..\..\modules\ml\include;..\..\..\modules\calib3d\include;..\..\..\modules\features2d\include;..\..\..\modules\imgproc\include;..\..\..\modules\flann\include;..\..\..\modules\core\include;..\..\..\binWinRT\modules\contrib;..\..\..\modules\contrib\src;..\..\..\modules\contrib\include;..\..\..\binWinRT;%(AdditionalIncludeDirectories);</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\modules\video\include;..\..\..\modules\objdetect\include;..\..\..\modules\nonfree\include;..\..\..\modules\ml\include;..\..\..\modules\calib3d\include;..\..\..\modules\features2d\include;..\..\..\modules\highgui\include;..\..\..\modules\imgproc\include;..\..\..\modules\flann\include;..\..\..\modules\core\include;..\..\..\binWinRT\modules\contrib;..\..\..\modules\contrib\src;..\..\..\modules\contrib\include;..\..\..\binWinRT;%(AdditionalIncludeDirectories);</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;_DEBUG;OPENCV_NOSTL;WINVER=0x0602;NTDDI_VERSION=NTDDI_WIN8;_WIN32_WINNT=0x0602;_VARIADIC_MAX=10;__OPENCV_BUILD=1;CMAKE_INTDIR="Debug";CVAPI_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>precomp.hpp</PrecompiledHeaderFile>
       <ForcedIncludeFiles>precomp.hpp</ForcedIncludeFiles>
@@ -200,7 +200,7 @@
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <CompileAsWinRT>false</CompileAsWinRT>
-      <AdditionalIncludeDirectories>..\..\..\modules\video\include;..\..\..\modules\objdetect\include;..\..\..\modules\ml\include;..\..\..\modules\calib3d\include;..\..\..\modules\features2d\include;..\..\..\modules\imgproc\include;..\..\..\modules\flann\include;..\..\..\modules\core\include;..\..\..\binWinRT\modules\contrib;..\..\..\modules\contrib\src;..\..\..\modules\contrib\include;..\..\..\binWinRT;%(AdditionalIncludeDirectories);</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\modules\video\include;..\..\..\modules\objdetect\include;..\..\..\modules\nonfree\include;..\..\..\modules\ml\include;..\..\..\modules\calib3d\include;..\..\..\modules\features2d\include;..\..\..\modules\highgui\include;..\..\..\modules\imgproc\include;..\..\..\modules\flann\include;..\..\..\modules\core\include;..\..\..\binWinRT\modules\contrib;..\..\..\modules\contrib\src;..\..\..\modules\contrib\include;..\..\..\binWinRT;%(AdditionalIncludeDirectories);</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;NDEBUG;OPENCV_NOSTL;WINVER=0x0602;NTDDI_VERSION=NTDDI_WIN8;_WIN32_WINNT=0x0602;_VARIADIC_MAX=10;__OPENCV_BUILD=1;CMAKE_INTDIR="Release";CVAPI_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>precomp.hpp</PrecompiledHeaderFile>
       <ForcedIncludeFiles>precomp.hpp</ForcedIncludeFiles>
