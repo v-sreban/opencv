@@ -1,11 +1,14 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.21005.1
+VisualStudioVersion = 12.0.30324.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MediaCapture", "MediaCapture.vcxproj", "{C5B886A7-8300-46FF-B533-9613DE2AF637}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OcvTransform", "MediaExtensions\OcvTransform\OcvTransform.vcxproj", "{BA69218F-DA5C-4D14-A78D-21A9E4DEC669}"
+	ProjectSection(ProjectDependencies) = postProject
+		{656A658B-3EE2-4F94-8899-C65543317D01} = {656A658B-3EE2-4F94-8899-C65543317D01}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "opencv_core", "..\..\..\binWinRT\modules\core\opencv_core.vcxproj", "{015A92E7-9FB3-428F-99D0-9B2088C54426}"
 EndProject

@@ -4,9 +4,9 @@
 
 
  /* File created by MIDL compiler version 8.00.0603 */
-/* at Tue Mar 18 13:16:41 2014
+/* at Wed May 07 08:31:25 2014
  */
-/* Compiler settings for C:\Users\dalestam\AppData\Local\Temp\OcvImageManipulations.idl-2c0b2c74:
+/* Compiler settings for C:\Users\dalestam\AppData\Local\Temp\OcvImageManipulations.idl-20ed5b94:
     Oicf, W1, Zp8, env=Win32 (32b run), target_arch=X86 8.00.0603 
     protocol : dce , ms_ext, c_ext, robust
     error checks: allocation ref bounds_check enum stub_data 
