@@ -1,0 +1,59 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Assets">
+      <UniqueIdentifier>{13f803fd-ffc6-4da8-9959-989815a629c9}</UniqueIdentifier>
+      <Extensions>bmp;fbx;gif;jpg;jpeg;tga;tiff;tif;png</Extensions>
+    </Filter>
+    <Filter Include="CaptureFrameGrabber">
+      <UniqueIdentifier>{90cff012-5491-4d9b-908d-b9bf8480d219}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="MainPage.xaml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="MainPage.xaml.cpp" />
+    <ClCompile Include="CaptureFrameGrabber\CaptureFrameGrabber.cpp">
+      <Filter>CaptureFrameGrabber</Filter>
+    </ClCompile>
+    <ClCompile Include="CaptureFrameGrabber\MediaStreamSink.cpp">
+      <Filter>CaptureFrameGrabber</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="MainPage.xaml.h" />
+    <ClInclude Include="CaptureFrameGrabber\CaptureFrameGrabber.h">
+      <Filter>CaptureFrameGrabber</Filter>
+    </ClInclude>
+    <ClInclude Include="CaptureFrameGrabber\MediaSink.h">
+      <Filter>CaptureFrameGrabber</Filter>
+    </ClInclude>
+    <ClInclude Include="CaptureFrameGrabber\MediaStreamSink.h">
+      <Filter>CaptureFrameGrabber</Filter>
+    </ClInclude>
+    <ClInclude Include="CaptureFrameGrabber\MFIncludes.h">
+      <Filter>CaptureFrameGrabber</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <AppxManifest Include="Package.appxmanifest" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="video_xaml.Windows_TemporaryKey.pfx" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Assets\Logo.scale-100.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\SmallLogo.scale-100.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\StoreLogo.scale-100.png">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\SplashScreen.scale-100.png">
+      <Filter>Assets</Filter>
+    </Image>
+  </ItemGroup>
+</Project>
