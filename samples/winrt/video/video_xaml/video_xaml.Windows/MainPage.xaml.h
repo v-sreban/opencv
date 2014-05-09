@@ -7,6 +7,9 @@
 
 #include "MainPage.g.h"
 
+#include <mutex>
+#include <memory>
+
 namespace Media
 {
     ref class CaptureFrameGrabber;
@@ -32,5 +35,10 @@ namespace video_xaml
         unsigned int width;
         unsigned int height;
 
-	};
+        // double buffering
+        std::mutex                 m_mutex;
+        std::unique_ptr<Windows::UI::Xaml::Media::Imaging::WriteableBitmap^>   m_frontBuffer;
+        std::unique_ptr<Windows::UI::Xaml::Media::Imaging::WriteableBitmap^>   m_backBuffer;
+
+    };
 }

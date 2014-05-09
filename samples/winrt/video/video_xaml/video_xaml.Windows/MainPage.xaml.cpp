@@ -44,7 +44,6 @@ using namespace Windows::UI::Xaml::Media::Imaging;
 #include "opencv2/imgproc/imgproc_c.h"
 
 
-
 MainPage::MainPage()
     : width(0)
     , height(0)
@@ -67,6 +66,9 @@ void MainPage::OnNavigatedTo(NavigationEventArgs^ e)
 
         width = props->Width;
         height = props->Height;
+
+        m_frontBuffer = std::make_unique<WriteableBitmap^>(ref new WriteableBitmap(width, height));
+        m_backBuffer = std::make_unique<WriteableBitmap^>(ref new WriteableBitmap(width, height));
 
         return ::Media::CaptureFrameGrabber::CreateAsync(_capture.Get(), props);
 
@@ -92,85 +94,92 @@ void MainPage::_GrabFrameAsync(::Media::CaptureFrameGrabber^ frameGrabber)
         Preview->Source = bitmap;
 #endif
         const int bytesPerPixel = 3;
-        const bool copyOnly = false;
+        const bool copyOnly = true;
 
         // output
-        auto bitmap = ref new WriteableBitmap(width, height);
-        auto pbOut = GetData(bitmap->PixelBuffer);
+        //auto bitmap = ref new WriteableBitmap(width, height);
+        auto p = m_backBuffer.get();
+        auto pbOut = GetData((*p)->PixelBuffer);
 
         BYTE *pbScanline;
         LONG plPitch;
         unsigned int numBytes = width * bytesPerPixel;
         CHK(buffer->Lock2D(&pbScanline, &plPitch));
 
-        if (copyOnly) {
+        {
+            std::lock_guard<std::mutex> lock(m_mutex);
 
-            // nb. no R/B swizzle seems to be needed
-            cv::Mat InputFrame(height, width, CV_8UC3 | CV_MAT_CONT_FLAG, pbScanline);
-            cv::Mat OutputFrame(height, width, CV_8UC3 | CV_MAT_CONT_FLAG, pbOut);
+            if (copyOnly) {
 
-            // no effect - straight copy
-            InputFrame.copyTo(OutputFrame);
+                // nb. no R/B swizzle seems to be needed
+                cv::Mat InputFrame(height, width, CV_8UC3 | CV_MAT_CONT_FLAG, pbScanline);
+                cv::Mat OutputFrame(height, width, CV_8UC3 | CV_MAT_CONT_FLAG, pbOut);
 
-        } else {
+                // no effect - straight copy
+                InputFrame.copyTo(OutputFrame);
 
-            // effect
-            cv::Mat InputFrame(height, width, CV_8UC3 | CV_MAT_CONT_FLAG, pbScanline);
-            cv::Mat OutputFrame(height, width, CV_8UC3 | CV_MAT_CONT_FLAG, pbOut);
+            }
+            else {
 
-            // not working
-            cv::Mat InputGreyScale(InputFrame, cv::Range(0, height), cv::Range(0, width));
-            OutputFrame.setTo(cv::Scalar(128));
-            cv::Mat OutputGreyScale(OutputFrame, cv::Range(0, height), cv::Range(0, width));
-            InputGreyScale.copyTo(OutputGreyScale);
+                // effect
+                cv::Mat InputFrame(height, width, CV_8UC3 | CV_MAT_CONT_FLAG, pbScanline);
+                cv::Mat OutputFrame(height, width, CV_8UC3 | CV_MAT_CONT_FLAG, pbOut);
 
-            //OutputGreyScale.copyTo(OutputFrame);
+                // not working
+                cv::Mat InputGreyScale(InputFrame, cv::Range(0, height), cv::Range(0, width));
+                OutputFrame.setTo(cv::Scalar(128));
+                cv::Mat OutputGreyScale(OutputFrame, cv::Range(0, height), cv::Range(0, width));
+                InputGreyScale.copyTo(OutputGreyScale);
 
-            // does something, but incorrect
-            //cv::Mat gray(height, width, CV_8UC1);
-            //cv::cvtColor(InputFrame, gray, CV_BGR2GRAY);        // convert
-            //cv::cvtColor(gray, OutputFrame, CV_GRAY2RGB);       // unpack to BGR
+                //OutputGreyScale.copyTo(OutputFrame);
 
-            // has a stride problem?
+                // does something, but incorrect
+                //cv::Mat gray(height, width, CV_8UC1);
+                //cv::cvtColor(InputFrame, gray, CV_BGR2GRAY);        // convert
+                //cv::cvtColor(gray, OutputFrame, CV_GRAY2RGB);       // unpack to BGR
 
-            // notes
+                // has a stride problem?
+
+                // notes
 #if 0
-            // gray.copyTo(OutputFrame);
+                // gray.copyTo(OutputFrame);
 
-            //OutputFrame.setTo(cv::Vec3b(128,128,128));
+                //OutputFrame.setTo(cv::Vec3b(128,128,128));
 
-            /*
-            cv::Mat InputGreyScale(InputFrame, cv::Range(0, height), cv::Range(0, width));
+                /*
+                cv::Mat InputGreyScale(InputFrame, cv::Range(0, height), cv::Range(0, width));
 
-            OutputFrame.setTo(cv::Scalar(128));
-            cv::Mat OutputGreyScale(OutputFrame, cv::Range(0, height), cv::Range(0, width));
-            InputGreyScale.copyTo(OutputGreyScale);
+                OutputFrame.setTo(cv::Scalar(128));
+                cv::Mat OutputGreyScale(OutputFrame, cv::Range(0, height), cv::Range(0, width));
+                InputGreyScale.copyTo(OutputGreyScale);
 
-            OutputGreyScale.copyTo(OutputFrame);
-            */
-            /*
-            Mat frame, edges;
-            namedWindow("edges",1);
-            for(;;)
-            {
-            cap >> frame;
-            cvtColor(frame, edges, CV_BGR2GRAY);
-            GaussianBlur(edges, edges, Size(7,7), 1.5, 1.5);
-            Canny(edges, edges, 0, 30, 3);
-            */
-            //OutputFrame.setTo(cv::Scalar(128));
-            //cv::Mat OutputGreyScale(OutputFrame, cv::Range(0, height), cv::Range(0, width));
-            //InputGreyScale.copyTo(OutputGreyScale);
+                OutputGreyScale.copyTo(OutputFrame);
+                */
+                /*
+                Mat frame, edges;
+                namedWindow("edges",1);
+                for(;;)
+                {
+                cap >> frame;
+                cvtColor(frame, edges, CV_BGR2GRAY);
+                GaussianBlur(edges, edges, Size(7,7), 1.5, 1.5);
+                Canny(edges, edges, 0, 30, 3);
+                */
+                //OutputFrame.setTo(cv::Scalar(128));
+                //cv::Mat OutputGreyScale(OutputFrame, cv::Range(0, height), cv::Range(0, width));
+                //InputGreyScale.copyTo(OutputGreyScale);
 
-            //OutputFrame.setTo(cv::Scalar(128));
-            //cv::Mat OutputGreyScale(OutputFrame, cv::Range(0, height), cv::Range(0, width));
-            //cv::Canny(InputGreyScale, OutputGreyScale, 80, 90);
+                //OutputFrame.setTo(cv::Scalar(128));
+                //cv::Mat OutputGreyScale(OutputFrame, cv::Range(0, height), cv::Range(0, width));
+                //cv::Canny(InputGreyScale, OutputGreyScale, 80, 90);
 #endif
+            }
         }
 
         CHK(buffer->Unlock2D());
 
-        Preview->Source = bitmap;
+        // TODO: move to draw loop and add buffer swapping code
+        Preview->Source = *m_backBuffer.get();
 
         // loss of camera device & restart is not yet handled
 
