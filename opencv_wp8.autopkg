@@ -1,7 +1,7 @@
 nuget {
 	nuspec {
 		id = opencv_wp8;
-		version : 1.0.0.8;
+		version : 1.0.1.0;
 		title: OpenCV for Windows Phone 8;
 		authors: {Microsoft Corporation};
 		owners: {OpenCV, Dale Stammen, Neil McLaughlin};
