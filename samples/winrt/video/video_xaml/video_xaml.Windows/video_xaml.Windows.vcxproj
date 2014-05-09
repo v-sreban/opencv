@@ -112,6 +112,7 @@
       <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
       <DisableSpecificWarnings>4453;28204</DisableSpecificWarnings>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <AdditionalIncludeDirectories>../../../../../modules/core/include;../../../../../modules/flann/include;../../../../../modules/imgproc/include;../../../../../modules/features2d/include;%(AdditionalIncludeDirectories);$(MSBuildThisFileDirectory)</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -164,6 +165,17 @@
     <ClCompile Include="MainPage.xaml.cpp">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\..\binWinRT\3rdparty\zlib\zlib.vcxproj">
+      <Project>{656a658b-3ee2-4f94-8899-c65543317d01}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\..\binWinRT\modules\core\opencv_core.vcxproj">
+      <Project>{015a92e7-9fb3-428f-99d0-9b2088c54426}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\..\binWinRT\modules\imgproc\opencv_imgproc.vcxproj">
+      <Project>{1320606c-4689-48f6-b6dd-12ec932c9cef}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
