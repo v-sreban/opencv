@@ -29,8 +29,8 @@ namespace video_xaml
         void _GrabFrameAsync(::Media::CaptureFrameGrabber^ frameGrabber);
 
         Platform::Agile<::Windows::Media::Capture::MediaCapture> _capture;
-        unsigned int _width;
-        unsigned int _height;
+        unsigned int width;
+        unsigned int height;
 
 	};
 }
