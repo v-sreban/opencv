@@ -42,6 +42,7 @@ Function Convert($OutputDir, $platform)
     $photo = "modules\photo\opencv_photo.vcxproj"
     $calib3d = "modules\calib3d\opencv_calib3d.vcxproj"
     $ml = "modules\ml\opencv_ml.vcxproj"
+    $nonfree = "modules\nonfree\opencv_nonfree.vcxproj"
     $objdetect = "modules\objdetect\opencv_objdetect.vcxproj"
     $video = "modules\video\opencv_video.vcxproj"
     $videostab = "modules\videostab\opencv_videostab.vcxproj"
@@ -51,7 +52,7 @@ Function Convert($OutputDir, $platform)
     $shape = "modules\shape\opencv_shape.vcxproj"
     $contrib = "modules\contrib\opencv_contrib.vcxproj"
 
-    $projects = ($zlib, $jpeg, $tiff, $jasper, $png, $core, $imgproc, $flann, $photo, $calib3d, $ml, $objdetect, $video, $videostab, $features2d, $stitching, $legacy, $shape, $contrib)
+    $projects = ($zlib, $jpeg, $tiff, $jasper, $png, $core, $imgproc, $flann, $photo, $calib3d, $ml, $nonfree, $objdetect, $video, $videostab, $features2d, $stitching, $legacy, $shape, $contrib)
 
     foreach($project in $projects)
     {
@@ -127,6 +128,11 @@ Function Convert($OutputDir, $platform)
         Copy-Item (join-path $InputDir "modules\calib3d\opencv_calib3d_pch.cpp") (join-path $OutputDir "modules\calib3d\opencv_calib3d_pch.cpp") 
         Copy-Item (join-path $InputDir "modules\calib3d\opencl_kernels.cpp") (join-path $OutputDir "modules\calib3d\opencl_kernels.cpp") 
         Copy-Item (join-path $InputDir "modules\calib3d\opencl_kernels.hpp") (join-path $OutputDir "modules\calib3d\opencl_kernels.hpp")
+
+        $allProjects += $nonfreeProject = join-path $OutputDir -childpath $nonfree
+        Copy-Item (join-path $InputDir "modules\nonfree\opencv_nonfree_pch.cpp") (join-path $OutputDir "modules\nonfree\opencv_nonfree_pch.cpp")
+        Copy-Item (join-path $InputDir "modules\nonfree\opencl_kernels.cpp") (join-path $OutputDir "modules\nonfree\opencl_kernels.cpp") 
+        Copy-Item (join-path $InputDir "modules\nonfree\opencl_kernels.hpp") (join-path $OutputDir "modules\nonfree\opencl_kernels.hpp")
 
         $allProjects += $mlProject = join-path $OutputDir -childpath $ml
         Copy-Item (join-path $InputDir "modules\ml\opencv_ml_pch.cpp") (join-path $OutputDir "modules\ml\opencv_ml_pch.cpp")
@@ -225,6 +231,12 @@ Function Convert($OutputDir, $platform)
         AddProjectReference $mlProject $coreProject >> $null
         $output = join-path $mlDir "opencv_ml.sln"
         CreateSolutionFile $output $platform ($mlProject, $coreProject, $zlibProject)
+      
+	#create opencv_nonfree sln and project references
+        $nonfreeDir = Split-Path -parent $nonfreeProject
+        AddProjectReference $nonfreeProject $coreProject >> $null
+        $output = join-path $nonfreeDir "opencv_nonfree.sln"
+        CreateSolutionFile $output $platform ($nonfreeProject, $coreProject, $zlibProject)
 
         #create opencv_legacy sln and project references
         $legacyDir = Split-Path -parent $legacyProject
