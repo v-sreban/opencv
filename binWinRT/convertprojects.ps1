@@ -236,7 +236,7 @@ Function Convert($OutputDir, $platform)
         $nonfreeDir = Split-Path -parent $nonfreeProject
         AddProjectReference $nonfreeProject $coreProject >> $null
         $output = join-path $nonfreeDir "opencv_nonfree.sln"
-        CreateSolutionFile $output $platform ($nonfreeProject, $coreProject, $zlibProject)
+        CreateSolutionFile $output $platform ($nonfreeProject, $coreProject, $flannProject, $imgprocProject, $features2dProject, $calib3dProject, $zlibProject)
 
         #create opencv_legacy sln and project references
         $legacyDir = Split-Path -parent $legacyProject
