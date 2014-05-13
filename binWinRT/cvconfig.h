@@ -150,7 +150,8 @@
 /* #undef HAVE_UNICAP */
 
 /* Video for Windows support */
-#define HAVE_VFW
+// zv temp OFF
+// #define HAVE_VFW
 
 /* V4L2 capturing support in videoio.h */
 /* #undef HAVE_VIDEOIO */
@@ -170,3 +171,5 @@
 /* Define if your processor stores words with the most significant byte
    first (like Motorola and SPARC, unlike Intel and VAX). */
 /* #undef WORDS_BIGENDIAN */
+
+// zv #define NO_GETENV needed for JPEG build on WinRT
