@@ -160,7 +160,10 @@ CV_IMPL CvCapture * cvCreateCameraCapture (int index)
 #ifdef HAVE_INTELPERC
         CV_CAP_INTELPERC,
 #endif
-        -1
+#ifdef HAVE_WINRT
+        CV_CAP_WINRT,
+#endif
+        - 1
     };
 
     // interpret preferred interface (0 = autodetect)
@@ -196,8 +199,9 @@ CV_IMPL CvCapture * cvCreateCameraCapture (int index)
     defined(HAVE_XIMEA)        || \
     defined(HAVE_AVFOUNDATION) || \
     defined(HAVE_ANDROID_NATIVE_CAMERA) || \
-    defined(HAVE_GIGE_API) || \
+    defined(HAVE_GIGE_API)     || \
     defined(HAVE_INTELPERC)    || \
+    defined(HAVE_WINRT)        || \
     (0)
         // local variable to memorize the captured device
         CvCapture *capture;
@@ -344,12 +348,20 @@ CV_IMPL CvCapture * cvCreateCameraCapture (int index)
             capture = cvCreateCameraCapture_Giganetix (index);
             if (capture)
                 return capture;
-        break; // CV_CAP_GIGANETIX
+            break; // CV_CAP_GIGANETIX
+#endif
+
+#ifdef HAVE_WINRT
+        case CV_CAP_WINRT:
+            capture = cvCreateCameraCapture_WinRT(index);
+            if (capture)
+                return capture;
+            break; // CV_CAP_WINRT
 #endif
         }
     }
 
-    // failed open a camera
+    // failed to open a camera
     return 0;
 }
 
