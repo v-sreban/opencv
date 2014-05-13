@@ -276,7 +276,8 @@ enum { CAP_ANY          = 0,     // autodetect
        CAP_AVFOUNDATION = 1200,  // AVFoundation framework for iOS (OS X Lion will have the same API)
        CAP_GIGANETIX    = 1300,  // Smartek Giganetix GigEVisionSDK
        CAP_MSMF         = 1400,  // Microsoft Media Foundation (via videoInput)
-       CAP_INTELPERC    = 1500   // Intel Perceptual Computing SDK
+       CAP_INTELPERC    = 1500,  // Intel Perceptual Computing SDK
+       CAP_WINRT        = 1600   // Microsoft Surface and Phone using Media Foundation
      };
 
 // generic properties (based on DC1394 properties)
