@@ -22,9 +22,6 @@
     <ClCompile Include="..\..\..\modules\highgui\src\cap_cmu.cpp">
       <Filter>Src</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\modules\highgui\src\cap_vfw.cpp">
-      <Filter>Src</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\modules\highgui\src\grfmt_base.cpp">
       <Filter>Src\grfmts</Filter>
     </ClCompile>
@@ -66,6 +63,15 @@
     </ClCompile>
     <ClCompile Include="opencv_highgui_pch.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\modules\highgui\src\cap_winrt\CaptureFrameGrabber.cpp">
+      <Filter>cap_winrt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\modules\highgui\src\cap_winrt\MediaStreamSink.cpp">
+      <Filter>cap_winrt</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\modules\highgui\src\cap_winrt.cpp">
+      <Filter>Src</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -141,9 +147,18 @@
     <ClInclude Include="..\..\opencv2\opencv_modules.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <CustomBuild Include="..\..\..\modules\highgui\CMakeLists.txt" />
+    <ClInclude Include="..\..\..\modules\highgui\src\cap_winrt\CaptureFrameGrabber.h">
+      <Filter>cap_winrt</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\modules\highgui\src\cap_winrt\MediaSink.h">
+      <Filter>cap_winrt</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\modules\highgui\src\cap_winrt\MediaStreamSink.h">
+      <Filter>cap_winrt</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\modules\highgui\src\cap_winrt\MFIncludes.h">
+      <Filter>cap_winrt</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source Files">
@@ -160,6 +175,9 @@
     </Filter>
     <Filter Include="Src\grfmts">
       <UniqueIdentifier>{9D8DC4AD-3C87-421A-877D-3520CB5177E8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cap_winrt">
+      <UniqueIdentifier>{16a29d7d-227a-4ac7-9e99-57505e248c64}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

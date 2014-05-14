@@ -119,7 +119,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <CompileAsWinRT>false</CompileAsWinRT>
+      <CompileAsWinRT>true</CompileAsWinRT>
       <AdditionalIncludeDirectories>..\..\..\modules\imgproc\include;..\..\..\modules\core\include;..\..\..\binWinRT\modules\highgui;..\..\..\modules\highgui\src;..\..\..\modules\highgui\include;..\..\..\3rdparty\libjasper;..\..\..\binWinRT\3rdparty\libtiff;..\..\..\3rdparty\libtiff;..\..\..\3rdparty\libpng;..\..\..\3rdparty\libjpeg;..\..\..\binWinRT\3rdparty\zlib;..\..\..\3rdparty\zlib;..\..\..\binWinRT;..\..\..\3rdparty\include;..\..\..\3rdparty\include\ffmpeg_;%(AdditionalIncludeDirectories);</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;_DEBUG;OPENCV_NOSTL;WINVER=0x0602;NTDDI_VERSION=NTDDI_WIN8;_WIN32_WINNT=0x0602;_VARIADIC_MAX=10;__OPENCV_BUILD=1;HIGHGUI_EXPORTS;CMAKE_INTDIR="Debug";CVAPI_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>precomp.hpp</PrecompiledHeaderFile>
@@ -221,6 +221,10 @@
     <ClInclude Include="..\..\..\modules\highgui\include\opencv2\highgui\cap_ios.h" />
     <ClInclude Include="..\..\..\modules\highgui\include\opencv2\highgui\highgui_c.h" />
     <ClInclude Include="..\..\..\modules\highgui\include\opencv2\highgui\ios.h" />
+    <ClInclude Include="..\..\..\modules\highgui\src\cap_winrt\CaptureFrameGrabber.h" />
+    <ClInclude Include="..\..\..\modules\highgui\src\cap_winrt\MediaSink.h" />
+    <ClInclude Include="..\..\..\modules\highgui\src\cap_winrt\MediaStreamSink.h" />
+    <ClInclude Include="..\..\..\modules\highgui\src\cap_winrt\MFIncludes.h" />
     <ClInclude Include="..\..\..\modules\highgui\src\precomp.hpp" />
     <ClInclude Include="..\..\..\modules\highgui\src\utils.hpp" />
     <ClInclude Include="..\..\..\modules\highgui\src\cap_ffmpeg_impl.hpp" />
@@ -243,11 +247,13 @@
     <ClCompile Include="..\..\..\modules\highgui\src\cap.cpp" />
     <ClCompile Include="..\..\..\modules\highgui\src\cap_images.cpp" />
     <ClCompile Include="..\..\..\modules\highgui\src\cap_ffmpeg.cpp" />
+    <ClCompile Include="..\..\..\modules\highgui\src\cap_winrt.cpp" />
+    <ClCompile Include="..\..\..\modules\highgui\src\cap_winrt\CaptureFrameGrabber.cpp" />
+    <ClCompile Include="..\..\..\modules\highgui\src\cap_winrt\MediaStreamSink.cpp" />
     <ClCompile Include="..\..\..\modules\highgui\src\loadsave.cpp" />
     <ClCompile Include="..\..\..\modules\highgui\src\utils.cpp" />
     <ClCompile Include="..\..\..\modules\highgui\src\window.cpp" />
     <ClCompile Include="..\..\..\modules\highgui\src\cap_cmu.cpp" />
-    <ClCompile Include="..\..\..\modules\highgui\src\cap_vfw.cpp" />
     <ClCompile Include="..\..\..\modules\highgui\src\grfmt_base.cpp" />
     <ClCompile Include="..\..\..\modules\highgui\src\grfmt_bmp.cpp" />
     <ClCompile Include="..\..\..\modules\highgui\src\grfmt_exr.cpp" />
