@@ -14,28 +14,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MainPage.xaml.cpp" />
-    <ClCompile Include="CaptureFrameGrabber\CaptureFrameGrabber.cpp">
-      <Filter>CaptureFrameGrabber</Filter>
-    </ClCompile>
-    <ClCompile Include="CaptureFrameGrabber\MediaStreamSink.cpp">
-      <Filter>CaptureFrameGrabber</Filter>
-    </ClCompile>
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainPage.xaml.h" />
-    <ClInclude Include="CaptureFrameGrabber\CaptureFrameGrabber.h">
-      <Filter>CaptureFrameGrabber</Filter>
-    </ClInclude>
-    <ClInclude Include="CaptureFrameGrabber\MediaSink.h">
-      <Filter>CaptureFrameGrabber</Filter>
-    </ClInclude>
-    <ClInclude Include="CaptureFrameGrabber\MediaStreamSink.h">
-      <Filter>CaptureFrameGrabber</Filter>
-    </ClInclude>
-    <ClInclude Include="CaptureFrameGrabber\MFIncludes.h">
-      <Filter>CaptureFrameGrabber</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest" />
