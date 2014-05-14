@@ -28,17 +28,14 @@ namespace video_xaml
     protected:
         virtual void OnNavigatedTo(Windows::UI::Xaml::Navigation::NavigationEventArgs^ e) override;
 
-    private:
-        void _GrabFrameAsync(::Media::CaptureFrameGrabber^ frameGrabber);
+        virtual void OnRendering(Object^ sender, Object^ args)
+        {
+            int i = 0;
+        }
 
-        Platform::Agile<::Windows::Media::Capture::MediaCapture> _capture;
+    private:
+
         unsigned int width;
         unsigned int height;
-
-        // double buffering
-        std::mutex                 m_mutex;
-        std::unique_ptr<Windows::UI::Xaml::Media::Imaging::WriteableBitmap^>   m_frontBuffer;
-        std::unique_ptr<Windows::UI::Xaml::Media::Imaging::WriteableBitmap^>   m_backBuffer;
-
     };
 }
