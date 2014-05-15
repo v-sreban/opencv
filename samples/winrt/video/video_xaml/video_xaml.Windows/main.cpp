@@ -45,26 +45,25 @@
 
 #include <thread>
 #include <chrono>
+#include <atomic>
 
 using namespace cv;
 
 
 VideoCapture cam;
 
+__declspec(dllimport) std::atomic<bool> startProcessing;
 
-// incomplete - not called yet
+
 void process()
 {
     TCC("process thread init"); TCNL;
 
-    // we could use a mutex or atomic here instead
-    while (!cam.isOpened())
+    while (!startProcessing)
     {
         // wait 100 ms
         std::this_thread::sleep_for(std::chrono::duration<int, std::milli>(100));
     }
-    //if (!cap.isOpened())
-    //    return;
 
     TCC("process thread running"); TCNL;
 
@@ -85,12 +84,14 @@ void process()
 // called by XAML window OnNavigate event (please see MainPage.xaml.cpp)
 void init()
 {
-    cam.open(0);    // open the default camera
+    cam.open(0);    // open the default camera - but do not start until size is set
 
     // set desired frame size
     cam.set(CV_CAP_PROP_FRAME_WIDTH, 720);
     cam.set(CV_CAP_PROP_FRAME_HEIGHT, 480);
 
+    // start the device on main thread - WinRT requirement
+    cam.grab();
 }
 
 // nb. t1 must exist as long as the app exists
