@@ -12,18 +12,21 @@
 // - Redistributions in binary form must reproduce the above copyright notice, 
 //   this list of conditions and the following disclaimer in the documentation 
 //   and/or other materials provided with the distribution.
-// - Neither the name of Microsoft Open Technologies, Inc. nor the names of its contributors 
-//   may be used to endorse or promote products derived from this software 
-//   without specific prior written permission.
+// - Neither the name of Microsoft Open Technologies, Inc. nor the names 
+//   of its contributors may be used to endorse or promote products derived 
+//   from this software without specific prior written permission.
 //
-// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, 
-// INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS 
-// FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
-// INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
-// PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) 
-// HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, 
-// OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
-// EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
+// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, 
+// THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
+// PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR 
+// CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
+// EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
+// PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; 
+// OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+// WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR 
+// OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF 
+// ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "precomp.hpp"
 
@@ -52,72 +55,110 @@ using namespace Windows::UI::Xaml::Media::Imaging;
 #pragma comment(lib, "Shlwapi")
 
 
-// create a class?
+class CvCapture_WinRT : public CvCapture
+{
+public:
+    CvCapture_WinRT() : started(0) {}
 
-// decls
-static void GrabFrameAsync(::Media::CaptureFrameGrabber^ frameGrabber);
-static Platform::Agile<::Windows::Media::Capture::MediaCapture> capture;
+    virtual ~CvCapture_WinRT()
+    {
+        close();
+    }
 
-// double buffering
-static std::mutex                 m_mutex;
-static std::unique_ptr<Windows::UI::Xaml::Media::Imaging::WriteableBitmap^>   m_frontBuffer;
-static std::unique_ptr<Windows::UI::Xaml::Media::Imaging::WriteableBitmap^>   m_backBuffer;
+    virtual bool open( int index );
+    
+    // TBI
+    virtual void close() {}
 
-static int width, height;
+    // TBI
+    virtual double getProperty(int) { return 0.0; }
 
-// notes
-#if 0
-// for OpenCV:
-#include <opencv2\core\core.hpp>
-#include <opencv2\imgproc\imgproc.hpp>
-#include <opencv2\features2d\features2d.hpp>
+    virtual bool setProperty(int, double);
 
-// #include "opencv2/core/core_c.h"
-#include "opencv2/imgproc/imgproc_c.h"
+    virtual bool grabFrame();
 
-// decls
-void _GrabFrameAsync(::Media::CaptureFrameGrabber^ frameGrabber);
-Platform::Agile<::Windows::Media::Capture::MediaCapture> _capture;
+    // TBI
+    virtual IplImage* retrieveFrame(int) { return 0; }
 
+    virtual int getCaptureDomain() { return CV_CAP_WINRT; } // Return the type of the capture object
+    
+protected:
+    // void init();
 
-#endif
+    //BITMAPINFOHEADER  * bmih;
+    //CvSlice             film_range;
+    //double              fps;
+    //int                 pos;
+    //IplImage*           frame;
+
+    // double buffering
+    std::mutex  m_mutex;
+    std::unique_ptr<Windows::UI::Xaml::Media::Imaging::WriteableBitmap^>   m_frontBuffer;
+    std::unique_ptr<Windows::UI::Xaml::Media::Imaging::WriteableBitmap^>   m_backBuffer;
+
+    void    start();
+    void GrabFrameAsync(::Media::CaptureFrameGrabber^ frameGrabber);
+    Platform::Agile<::Windows::Media::Capture::MediaCapture> mc;
+
+    CvSize      size;
+    bool        started;
+};
 
 
 CvCapture *cvCreateCameraCapture_WinRT(int index)
 {
+    CvCapture_WinRT* capture = new CvCapture_WinRT;
+    if (capture->open( index ))
+        return capture;
+    delete capture;
+    return 0;
+}
+
+bool CvCapture_WinRT::open(int index)
+{
+    return true;
+}
+
+void CvCapture_WinRT::start()
+{
     auto settings = ref new MediaCaptureInitializationSettings();
     settings->StreamingCaptureMode = StreamingCaptureMode::Video; // Video-only capture
 
-    capture = ref new MediaCapture();
-    // create_task(capture->InitializeAsync(settings)).then([this](){
-    create_task(capture->InitializeAsync(settings)).then([](){
+    mc = ref new MediaCapture();
+    create_task(mc->InitializeAsync(settings)).then([this](){
 
-        auto props = safe_cast<VideoEncodingProperties^>(capture->VideoDeviceController->GetMediaStreamProperties(MediaStreamType::VideoPreview));
+        auto props = safe_cast<VideoEncodingProperties^>(mc->VideoDeviceController->GetMediaStreamProperties(MediaStreamType::VideoPreview));
         props->Subtype = MediaEncodingSubtypes::Bgra8; // Ask for color conversion to match WriteableBitmap
 
-        width = props->Width;
-        height = props->Height;
+        //width = props->Width;
+        //height = props->Height;
+        auto width = size.width;
+        auto height = size.width;
 
         m_frontBuffer = std::make_unique<WriteableBitmap^>(ref new WriteableBitmap(width, height));
         m_backBuffer = std::make_unique<WriteableBitmap^>(ref new WriteableBitmap(width, height));
 
-        return ::Media::CaptureFrameGrabber::CreateAsync(capture.Get(), props);
+        return ::Media::CaptureFrameGrabber::CreateAsync(mc.Get(), props);
 
-    // }).then([this](::Media::CaptureFrameGrabber^ frameGrabber)
-    }).then([](::Media::CaptureFrameGrabber^ frameGrabber)
+    }).then([this](::Media::CaptureFrameGrabber^ frameGrabber)
     {
+        started = true;
         GrabFrameAsync(frameGrabber);
     });
+}
 
-    return 0;
+bool CvCapture_WinRT::grabFrame()
+{
+    if (!started) start();
+    return true;
 }
 
 
-void GrabFrameAsync(::Media::CaptureFrameGrabber^ frameGrabber)
+void CvCapture_WinRT::GrabFrameAsync(::Media::CaptureFrameGrabber^ frameGrabber)
 {
-    create_task(frameGrabber->GetFrameAsync()).then([frameGrabber](const ComPtr<IMF2DBuffer2>& buffer)
+    create_task(frameGrabber->GetFrameAsync()).then([frameGrabber,this](const ComPtr<IMF2DBuffer2>& buffer)
     {
-        auto bitmap = ref new WriteableBitmap(width, height);
+        auto bitmap = ref new WriteableBitmap(size.width, size.height);
 
         CHK(buffer->ContiguousCopyTo(GetData(bitmap->PixelBuffer), bitmap->PixelBuffer->Capacity));
 
@@ -125,7 +166,7 @@ void GrabFrameAsync(::Media::CaptureFrameGrabber^ frameGrabber)
         CHK(buffer->GetContiguousLength(&length));
         bitmap->PixelBuffer->Length = length;
 
-        // Preview->Source = bitmap;
+        // write to the XAML image element (temp)
         if (gOutput) gOutput->Source = bitmap;
 
         GrabFrameAsync(frameGrabber);
@@ -133,7 +174,30 @@ void GrabFrameAsync(::Media::CaptureFrameGrabber^ frameGrabber)
 }
 
 
+bool CvCapture_WinRT::setProperty( int property_id, double value )
+{
+    switch( property_id )
+    {
+    case CV_CAP_PROP_FRAME_WIDTH:
+    case CV_CAP_PROP_FRAME_HEIGHT:
+        switch( property_id )
+        {
+        case CV_CAP_PROP_FRAME_WIDTH:
+            size.width = (int)value;
+            break;
+        case CV_CAP_PROP_FRAME_HEIGHT:
+            size.height = (int)value;
+            break;
+        }
+    default:
+        return false;
+    }
+    return true;
+}
+
+// notes
 #if 0
+
 void MainPage::_GrabFrameAsync(::Media::CaptureFrameGrabber^ frameGrabber)
 {
     create_task(frameGrabber->GetFrameAsync()).then([this, frameGrabber](const ComPtr<IMF2DBuffer2>& buffer)
