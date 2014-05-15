@@ -34,11 +34,13 @@
 #include <ppltasks.h>
 
 #include <mutex>
+#include <atomic>
 
 #include <cap_winrt/CaptureFrameGrabber.h>
 
-// temp
+
 __declspec(dllexport) ::Windows::UI::Xaml::Controls::Image^ gOutput = nullptr;
+__declspec(dllexport) std::atomic<bool> startProcessing = false;
 
 
 // for using MF:
@@ -58,7 +60,7 @@ using namespace Windows::UI::Xaml::Media::Imaging;
 class CvCapture_WinRT : public CvCapture
 {
 public:
-    CvCapture_WinRT() : started(0) {}
+    CvCapture_WinRT() : started(false) {}
 
     virtual ~CvCapture_WinRT()
     {
@@ -121,6 +123,8 @@ bool CvCapture_WinRT::open(int index)
 
 void CvCapture_WinRT::start()
 {
+    started = true;
+
     auto settings = ref new MediaCaptureInitializationSettings();
     settings->StreamingCaptureMode = StreamingCaptureMode::Video; // Video-only capture
 
@@ -130,10 +134,10 @@ void CvCapture_WinRT::start()
         auto props = safe_cast<VideoEncodingProperties^>(mc->VideoDeviceController->GetMediaStreamProperties(MediaStreamType::VideoPreview));
         props->Subtype = MediaEncodingSubtypes::Bgra8; // Ask for color conversion to match WriteableBitmap
 
-        //width = props->Width;
-        //height = props->Height;
         auto width = size.width;
-        auto height = size.width;
+        auto height = size.height;
+        props->Width = width;
+        props->Height = height;
 
         m_frontBuffer = std::make_unique<WriteableBitmap^>(ref new WriteableBitmap(width, height));
         m_backBuffer = std::make_unique<WriteableBitmap^>(ref new WriteableBitmap(width, height));
@@ -142,7 +146,7 @@ void CvCapture_WinRT::start()
 
     }).then([this](::Media::CaptureFrameGrabber^ frameGrabber)
     {
-        started = true;
+        startProcessing = true;
         GrabFrameAsync(frameGrabber);
     });
 }
@@ -156,20 +160,52 @@ bool CvCapture_WinRT::grabFrame()
 
 void CvCapture_WinRT::GrabFrameAsync(::Media::CaptureFrameGrabber^ frameGrabber)
 {
-    create_task(frameGrabber->GetFrameAsync()).then([frameGrabber,this](const ComPtr<IMF2DBuffer2>& buffer)
+    create_task(frameGrabber->GetFrameAsync()).then([this,frameGrabber](const ComPtr<IMF2DBuffer2>& buffer)
     {
-        auto bitmap = ref new WriteableBitmap(size.width, size.height);
+        auto width = size.width;
+        auto height = size.height;
 
-        CHK(buffer->ContiguousCopyTo(GetData(bitmap->PixelBuffer), bitmap->PixelBuffer->Capacity));
-
+#if 1
+        auto bitmap = ref new WriteableBitmap(width, height);
+        
+        CHK(buffer->ContiguousCopyTo(GetData(bitmap->PixelBuffer), 
+            bitmap->PixelBuffer->Capacity));
+        
         unsigned long length;
         CHK(buffer->GetContiguousLength(&length));
         bitmap->PixelBuffer->Length = length;
 
         // write to the XAML image element (temp)
         if (gOutput) gOutput->Source = bitmap;
+#else
 
+        const int bytesPerPixel = 3;
+
+        auto p = m_backBuffer.get();
+        auto pbOut = GetData((*p)->PixelBuffer);
+
+        BYTE *pbScanline;
+        LONG plPitch;
+        unsigned int numBytes = width * bytesPerPixel;
+        CHK(buffer->Lock2D(&pbScanline, &plPitch));
+        {
+            std::lock_guard<std::mutex> lock(m_mutex);
+
+            // nb. no R/B swizzle seems to be needed
+            cv::Mat InputFrame(height, width, CV_8UC3 | CV_MAT_CONT_FLAG, pbScanline);
+            cv::Mat OutputFrame(height, width, CV_8UC3 | CV_MAT_CONT_FLAG, pbOut);
+
+            // no effect - straight copy
+            InputFrame.copyTo(OutputFrame);
+        }
+
+        CHK(buffer->Unlock2D());
+
+        // TODO: move to draw loop and add buffer swapping code
+        if (gOutput) gOutput->Source = *m_backBuffer.get();
+#endif
         GrabFrameAsync(frameGrabber);
+        
     }, task_continuation_context::use_current());
 }
 
