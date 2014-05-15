@@ -4,7 +4,7 @@ nuget {
 		version : 1.0.1.0;
 		title: OpenCV for Windows Phone 8;
 		authors: {Microsoft Corporation};
-		owners: {OpenCV, Dale Stammen, Neil McLaughlin};
+		owners: {Microsoft Corporation};
 		licenseUrl: "http://www.microsoft.com";
 		projectUrl: "https://github.com/MSOpenTech/opencv/tree/wp8";
 		// TODO - set iconUrl
@@ -44,24 +44,8 @@ nuget {
 		// grab all the files in the include folder
 		// the folder that contains all the .h files will 
 		// automatically get added to the Includes path.
-		// TODO - include 3rd party headers?
-		 	include: { ".\NuGetPackage\**";
-	//			   ".\modules\calib3d\include\opencv2\*";
-	//			   ".\modules\contrib\include\opencv2\*";
-	//			   ".\modules\core\include\opencv2\*";
-	//			   ".\modules\features2d\include\opencv2\*";
-	//			   ".\modules\flann\include\opencv2\*";
-	//			   ".\modules\imgproc\include\opencv2\*";
-	//			   ".\modules\legacy\include\opencv2\*";
-	//			   ".\modules\ml\include\opencv2\*";
-	//			   ".\modules\objdetect\include\opencv2\*";
-	//			   ".\modules\photo\include\opencv2\*";
-	//			   ".\modules\shape\include\opencv2\*";
-	//			   ".\modules\stitching\include\opencv2\*";
-	//			   ".\modules\video\include\opencv2\*";
-	//			   ".\modules\videostab\include\opencv2\*";
-				
-		};					
+ 
+ 	 	include: { ".\NuGetPackage\**\*";	};					
 					
 					
 		[arm,v110,debug] 
