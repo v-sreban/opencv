@@ -11,18 +11,21 @@
 // - Redistributions in binary form must reproduce the above copyright notice, 
 //   this list of conditions and the following disclaimer in the documentation 
 //   and/or other materials provided with the distribution.
-// - Neither the name of Microsoft Open Technologies, Inc. nor the names of its contributors 
-//   may be used to endorse or promote products derived from this software 
-//   without specific prior written permission.
+// - Neither the name of Microsoft Open Technologies, Inc. nor the names 
+//   of its contributors may be used to endorse or promote products derived 
+//   from this software without specific prior written permission.
 //
-// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, 
-// INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS 
-// FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
-// INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
-// PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) 
-// HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, 
-// OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
-// EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
+// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, 
+// THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
+// PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR 
+// CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
+// EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
+// PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; 
+// OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+// WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR 
+// OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF 
+// ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 // for XAML
 #include "pch.h"
@@ -36,34 +39,40 @@
 
 // #include "opencv2/core/core_c.h"
 // #include "opencv2/imgproc/imgproc_c.h"
+#include <opencv2/highgui/highgui_c.h>
+
+#include <opencv2/highgui/cdebug.h>
 
 #include <thread>
 #include <chrono>
 
 using namespace cv;
-namespace SC = std::chrono;
 
-VideoCapture cap;
+
+VideoCapture cam;
 
 
 // incomplete - not called yet
 void process()
 {
-    SC::duration<int, std::milli> delay{ 100 };
+    TCC("process thread init"); TCNL;
 
     // we could use a mutex or atomic here instead
-    while (!cap.isOpened())
+    while (!cam.isOpened())
     {
-        std::this_thread::sleep_for<int, std::milli>(delay);
+        // wait 100 ms
+        std::this_thread::sleep_for(std::chrono::duration<int, std::milli>(100));
     }
     //if (!cap.isOpened())
     //    return;
 
-    Mat edges;
+    TCC("process thread running"); TCNL;
+
+    // Mat edges;
     // namedWindow("edges", 1);
 
     Mat frame;
-    //    cap >> frame; // get a new frame from camera
+    cam >> frame; // get a new frame from camera
 
     // cvtColor(frame, edges, CV_BGR2GRAY);
     //GaussianBlur(edges, edges, Size(7, 7), 1.5, 1.5);
@@ -76,13 +85,23 @@ void process()
 // called by XAML window OnNavigate event (please see MainPage.xaml.cpp)
 void init()
 {
-    cap.open(0);    // open the default camera
+    cam.open(0);    // open the default camera
+
+    // set desired frame size
+    cam.set(CV_CAP_PROP_FRAME_WIDTH, 720);
+    cam.set(CV_CAP_PROP_FRAME_HEIGHT, 480);
+
 }
 
 // nb. t1 must exist as long as the app exists
 // should do a join somewhere ...
 static std::thread t1{ process };
 
+// end
+
+
+// not used & notes
+#if 0
 // DISABLE_XAML_GENERATED_MAIN must be defined to allow main to be located here
 // nb. we don't do anything special here yet
 //
@@ -95,11 +114,6 @@ int __cdecl main(::Platform::Array<::Platform::String^>^ args)
     }));
     // control never gets here
 }
-
-
-// notes
-#if 0
-
 
 // mainPanel.Children.Add(myCanvas);
 
