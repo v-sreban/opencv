@@ -41,6 +41,7 @@
 
 #include "precomp.hpp"
 #include "cap_intelperc.hpp"
+#include "cap_winrt.hpp"
 
 #if defined _M_X64 && defined _MSC_VER && !defined CV_ICC
 #pragma optimize("",off)
@@ -160,9 +161,6 @@ CV_IMPL CvCapture * cvCreateCameraCapture (int index)
 #ifdef HAVE_INTELPERC
         CV_CAP_INTELPERC,
 #endif
-#ifdef HAVE_WINRT
-        CV_CAP_WINRT,
-#endif
         - 1
     };
 
@@ -201,8 +199,8 @@ CV_IMPL CvCapture * cvCreateCameraCapture (int index)
     defined(HAVE_ANDROID_NATIVE_CAMERA) || \
     defined(HAVE_GIGE_API)     || \
     defined(HAVE_INTELPERC)    || \
-    defined(HAVE_WINRT)        || \
     (0)
+
         // local variable to memorize the captured device
         CvCapture *capture;
 #endif
@@ -351,13 +349,6 @@ CV_IMPL CvCapture * cvCreateCameraCapture (int index)
             break; // CV_CAP_GIGANETIX
 #endif
 
-#ifdef HAVE_WINRT
-        case CV_CAP_WINRT:
-            capture = cvCreateCameraCapture_WinRT(index);
-            if (capture)
-                return capture;
-            break; // CV_CAP_WINRT
-#endif
         }
     }
 
@@ -604,7 +595,10 @@ Ptr<IVideoCapture> VideoCapture::createCameraCapture(int index)
 #ifdef HAVE_INTELPERC
         CV_CAP_INTELPERC,
 #endif
-        -1, -1
+#ifdef HAVE_WINRT
+        CAP_WINRT,
+#endif
+        - 1, -1
     };
 
     // interpret preferred interface (0 = autodetect)
@@ -620,7 +614,9 @@ Ptr<IVideoCapture> VideoCapture::createCameraCapture(int index)
     for (int i = 0; domains[i] >= 0; i++)
     {
 #if defined(HAVE_INTELPERC)    || \
-    (0)
+        defined(HAVE_WINRT)        || \
+            (0)
+
         Ptr<IVideoCapture> capture;
 
         switch (domains[i])
@@ -632,7 +628,14 @@ Ptr<IVideoCapture> VideoCapture::createCameraCapture(int index)
                 return capture;
         break; // CV_CAP_INTEL_PERC
 #endif
-        }
+#ifdef HAVE_WINRT
+        case CAP_WINRT:
+            capture = Ptr<IVideoCapture>(new cv::VideoCapture_WinRT(index));
+            if (capture)
+                return capture;
+            break; // CAP_WINRT
+#endif
+    }
 #endif
     }
 
