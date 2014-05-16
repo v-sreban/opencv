@@ -304,7 +304,6 @@ enum
 
     CV_CAP_DSHOW    =700,   // DirectShow (via videoInput)
     CV_CAP_MSMF     = 1400, // Microsoft Media Foundation (via videoInput)
-    CV_CAP_WINRT    = 1600, // Microsoft Surface and Phone using Media Foundation
 
     CV_CAP_PVAPI    =800,   // PvAPI, Prosilica GigE SDK
 
@@ -580,6 +579,7 @@ enum
     CV_CAP_INTELPERC_IR_MAP                 = 2, // Each pixel is a 16-bit integer. The value indicates the intensity of the reflected laser beam.
     CV_CAP_INTELPERC_IMAGE                  = 3
 };
+
 
 /* retrieve or set capture properties */
 CVAPI(double) cvGetCaptureProperty( CvCapture* capture, int property_id );
