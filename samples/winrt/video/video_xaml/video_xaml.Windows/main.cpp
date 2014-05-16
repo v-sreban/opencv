@@ -39,7 +39,7 @@
 
 // #include "opencv2/core/core_c.h"
 // #include "opencv2/imgproc/imgproc_c.h"
-#include <opencv2/highgui/highgui_c.h>
+// #include <opencv2/highgui/highgui_c.h>
 
 #include <opencv2/highgui/cdebug.h>
 
@@ -52,26 +52,47 @@ using namespace cv;
 
 VideoCapture cam;
 
-__declspec(dllimport) std::atomic<bool> startProcessing;
 
+// __declspec(dllimport) std::atomic<bool> startProcessing;
+
+void process();
+
+// nb. t1 must exist as long as the app exists
+// should do a join somewhere ...
+static std::thread t1{ process };
 
 void process()
 {
-    TCC("process thread init"); TCNL;
+    // TCC("process thread init"); TCNL;
 
-    while (!startProcessing)
-    {
-        // wait 100 ms
-        std::this_thread::sleep_for(std::chrono::duration<int, std::milli>(100));
-    }
+    //// use condition var instead with wait()
+    //while (!startProcessing)
+    //{
+    //    // wait 100 ms
+    //    std::this_thread::sleep_for(std::chrono::duration<int, std::milli>(100));
+    //}
 
-    TCC("process thread running"); TCNL;
+    // for testing only
+    TCC("process thread running");
+    TC(t1.get_id());
+    TC(t1.native_handle());
+    TCNL;
+
+    // for testing only
+    std::this_thread::sleep_for(std::chrono::duration<int, std::milli>(1000));
 
     // Mat edges;
     // namedWindow("edges", 1);
 
     Mat frame;
-    cam >> frame; // get a new frame from camera
+
+    // process frames
+    while (1)
+    {
+        // get a new frame from camera
+        // this will block until the device is initialized and a frame is available
+        cam >> frame;
+    }
 
     // cvtColor(frame, edges, CV_BGR2GRAY);
     //GaussianBlur(edges, edges, Size(7, 7), 1.5, 1.5);
@@ -84,19 +105,22 @@ void process()
 // called by XAML window OnNavigate event (please see MainPage.xaml.cpp)
 void init()
 {
+    // for testing only
+    TCC("main thread running");
+    TC(std::this_thread::get_id);
+    TCNL;
+
     cam.open(0);    // open the default camera - but do not start until size is set
 
-    // set desired frame size
-    cam.set(CV_CAP_PROP_FRAME_WIDTH, 720);
-    cam.set(CV_CAP_PROP_FRAME_HEIGHT, 480);
+    // set desired frame size before starting - WinRT requirement
+    cam.set(CAP_PROP_FRAME_WIDTH, 640);
+    cam.set(CAP_PROP_FRAME_HEIGHT, 480);
 
     // start the device on main thread - WinRT requirement
-    cam.grab();
-}
+    cam.set(CAP_PROP_WINRT_START_DEVICE, 1);
 
-// nb. t1 must exist as long as the app exists
-// should do a join somewhere ...
-static std::thread t1{ process };
+//    t1.join();
+}
 
 // end
 
