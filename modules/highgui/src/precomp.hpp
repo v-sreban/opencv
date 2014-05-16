@@ -136,7 +136,7 @@ CvCapture* cvCreateFileCapture_OpenNI( const char* filename );
 CvCapture* cvCreateCameraCapture_Android( int index );
 CvCapture* cvCreateCameraCapture_XIMEA( int index );
 CvCapture* cvCreateCameraCapture_AVFoundation(int index);
-CvCapture* cvCreateCameraCapture_WinRT(int index);
+// CvCapture* cvCreateCameraCapture_WinRT(int index);
 
 
 CVAPI(int) cvHaveImageReader(const char* filename);
