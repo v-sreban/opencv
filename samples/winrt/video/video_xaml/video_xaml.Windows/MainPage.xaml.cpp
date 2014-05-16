@@ -23,6 +23,7 @@ using namespace Windows::UI::Xaml::Navigation;
 
 // for opencv to write to XAML image 
 // decl in cap_winrt.cpp
+// nb. C++ extern will not work across DLLs - must use dllimport
 __declspec(dllimport) ::Windows::UI::Xaml::Controls::Image^ gOutput;
 
 MainPage::MainPage()
