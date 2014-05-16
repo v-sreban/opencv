@@ -531,6 +531,9 @@ enum { CAP_INTELPERC_DEPTH_MAP              = 0, // Each pixel is a 16-bit integ
        CAP_INTELPERC_IMAGE                  = 3
      };
 
+enum {
+    CAP_PROP_WINRT_START_DEVICE = 1601
+};
 
 class IVideoCapture;
 class CV_EXPORTS_W VideoCapture
