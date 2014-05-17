@@ -91,52 +91,24 @@ namespace cv {
         // Return the type of the capture object
         virtual int getCaptureDomain() { return CAP_WINRT; }
 
-        // from earlier cv impl ...
-#if 0
-        // TBI
-        virtual bool open(const String& filename) {}
-        virtual bool open(int device);
-        // TBI
-        virtual bool isOpened() const { return true; }
-        // TBI
-        virtual void release() {}
-        virtual bool grab();
-        virtual bool retrieve(OutputArray image, int flag = 0);
-
-        virtual bool set(int propId, double value);
-        virtual double get(int propId);
-        // TBI
-        virtual void close() {}
-        // TBI
-        virtual double getProperty(int) { return 0.0; }
-        virtual bool setProperty(int, double);
-        virtual bool grabFrame();
-        // TBI
-        virtual IplImage* retrieveFrame(int channel);
-        virtual int getCaptureDomain() { return CAP_WINRT; } // Return the type of the capture object
-#endif
+        // not part of IVideoCapture, but could be called directly
+        // static std::vector <std::string&> listDevices();
+        static void listDevices();
 
     protected:
 
         int deviceID;
-        // void init();
-
-        //BITMAPINFOHEADER  * bmih;
-        //CvSlice             film_range;
-        //double              fps;
-        //int                 pos;
-        //IplImage*           frame;
 
         // double buffering
         std::mutex              bufferMutex;
         std::unique_ptr<Windows::UI::Xaml::Media::Imaging::WriteableBitmap^>   m_frontBuffer;
         std::unique_ptr<Windows::UI::Xaml::Media::Imaging::WriteableBitmap^>   m_backBuffer;
-
+        
         void SwapBuffers();
 
         void    start();
         void GrabFrameAsync(::Media::CaptureFrameGrabber^ frameGrabber);
-        Platform::Agile<::Windows::Media::Capture::MediaCapture> mc;
+        Platform::Agile<::Windows::Media::Capture::MediaCapture> m_capture;
 
         CvSize                  size;
         std::atomic<bool>       started;
@@ -147,6 +119,5 @@ namespace cv {
 
         std::mutex              frameReadyMutex;
         std::condition_variable frameReadyEvent;
-
     };
 }
