@@ -27,15 +27,5 @@ namespace video_xaml
 
     protected:
         virtual void OnNavigatedTo(Windows::UI::Xaml::Navigation::NavigationEventArgs^ e) override;
-
-        virtual void OnRendering(Object^ sender, Object^ args)
-        {
-            int i = 0;
-        }
-
-    private:
-
-        unsigned int width;
-        unsigned int height;
     };
 }

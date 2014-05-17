@@ -27,8 +27,6 @@ using namespace Windows::UI::Xaml::Navigation;
 __declspec(dllimport) ::Windows::UI::Xaml::Controls::Image^ gOutput;
 
 MainPage::MainPage()
-    : width(0)
-    , height(0)
 {
 	InitializeComponent();
 }
