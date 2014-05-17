@@ -37,124 +37,14 @@
 #pragma comment(lib, "mfuuid")
 #pragma comment(lib, "Shlwapi")
 
-// moved to header file
-#if 0
-#include <collection.h>
-#include <ppltasks.h>
-
-#include <mutex>
-#include <condition_variable>
-#include <atomic>
-
-#include <cap_winrt/CaptureFrameGrabber.h>
-
-#include <opencv2/highgui/cdebug.h>
-
 // nb. must use dllexport to inform linker
 __declspec(dllexport) ::Windows::UI::Xaml::Controls::Image^ gOutput = nullptr;
 
-// __declspec(dllexport) std::atomic<bool> startProcessing = false;
+using namespace ::std;
 
-
-// for using MF:
-using namespace concurrency;
-using namespace Microsoft::WRL;
-using namespace Windows::Media::MediaProperties;
-using namespace Windows::Media::Capture;
-using namespace Windows::UI::Xaml::Media::Imaging;
-
-
-
-// implement the newer IVideoCapture so that we can work
-// directly with Mat, not the cv interface which has added overhead
+// __declspec(dllexport) atomic<bool> startProcessing = false;
 
 namespace cv {
-
-    class VideoCapture_WinRT : public IVideoCapture
-    {
-    public:
-        VideoCapture_WinRT() :
-            started(false),
-            bytesPerPixel(0),
-            frameCounter(0),
-            frameCurrent(0)
-        {}
-
-        virtual ~VideoCapture_WinRT()
-        {
-            close();
-        }
-
-        virtual bool open(int index);
-
-        // TBI
-        virtual void close() {}
-
-        // TBI
-        virtual double getProperty(int) { return 0.0; }
-
-        virtual bool setProperty(int, double);
-
-        virtual bool grabFrame();
-
-        // TBI
-        virtual IplImage* retrieveFrame(int channel);
-
-        virtual int getCaptureDomain() { return CAP_WINRT; } // Return the type of the capture object
-
-    protected:
-        // void init();
-
-        //BITMAPINFOHEADER  * bmih;
-        //CvSlice             film_range;
-        //double              fps;
-        //int                 pos;
-        //IplImage*           frame;
-
-        // double buffering
-        std::mutex              bufferMutex;
-        std::unique_ptr<Windows::UI::Xaml::Media::Imaging::WriteableBitmap^>   m_frontBuffer;
-        std::unique_ptr<Windows::UI::Xaml::Media::Imaging::WriteableBitmap^>   m_backBuffer;
-
-        void SwapBuffers();
-
-        void    start();
-        void GrabFrameAsync(::Media::CaptureFrameGrabber^ frameGrabber);
-        Platform::Agile<::Windows::Media::Capture::MediaCapture> mc;
-
-        CvSize                  size;
-        std::atomic<bool>       started;
-        int                     bytesPerPixel;
-        unsigned long           frameCounter;
-        unsigned long           frameCurrent;
-        // std::atomic<bool>       isFrameNew;
-
-        std::mutex              frameReadyMutex;
-        std::condition_variable frameReadyEvent;
-
-    };
-#endif
-
-// nb. must use dllexport to inform linker
-__declspec(dllexport) ::Windows::UI::Xaml::Controls::Image^ gOutput = nullptr;
-
-// __declspec(dllexport) std::atomic<bool> startProcessing = false;
-
-namespace cv {
-
-    //CvCapture *cvCreateCameraCapture_WinRT(int index)
-    //{
-    //    CvCapture_WinRT* capture = new CvCapture_WinRT;
-    //    if (capture->open(index))
-    //        return capture;
-    //    delete capture;
-    //    return 0;
-    //}
-
-    //bool VideoCapture_WinRT::open(int index)
-    //{
-    //    return true;
-    //}
 
     VideoCapture_WinRT::VideoCapture_WinRT(int device)
     {
@@ -167,6 +57,16 @@ namespace cv {
     // This is required for Media Foundation
     void VideoCapture_WinRT::start()
     {
+        // temp test
+        {
+            listDevices();
+            //vector<string> devs = listDevices();
+            //for (string s : devs) {
+            //    TC(s); TCNL;
+            //}
+        }
+
+
         auto settings = ref new MediaCaptureInitializationSettings();
         settings->StreamingCaptureMode = StreamingCaptureMode::Video; // Video-only capture
 
@@ -187,10 +87,10 @@ namespace cv {
         //    bFlipImageX = true;
         //}
 
-        mc = ref new MediaCapture();
-        create_task(mc->InitializeAsync(settings)).then([this](){
+        m_capture = ref new MediaCapture();
+        create_task(m_capture->InitializeAsync(settings)).then([this](){
 
-            auto props = safe_cast<VideoEncodingProperties^>(mc->VideoDeviceController->GetMediaStreamProperties(MediaStreamType::VideoPreview));
+            auto props = safe_cast<VideoEncodingProperties^>(m_capture->VideoDeviceController->GetMediaStreamProperties(MediaStreamType::VideoPreview));
             props->Subtype = MediaEncodingSubtypes::Bgra8; // Ask for color conversion to match WriteableBitmap
 
             auto width = size.width;
@@ -198,10 +98,10 @@ namespace cv {
             props->Width = width;
             props->Height = height;
 
-            m_frontBuffer = std::make_unique<WriteableBitmap^>(ref new WriteableBitmap(width, height));
-            m_backBuffer = std::make_unique<WriteableBitmap^>(ref new WriteableBitmap(width, height));
+            m_frontBuffer = make_unique<WriteableBitmap^>(ref new WriteableBitmap(width, height));
+            m_backBuffer = make_unique<WriteableBitmap^>(ref new WriteableBitmap(width, height));
 
-            return ::Media::CaptureFrameGrabber::CreateAsync(mc.Get(), props);
+            return ::Media::CaptureFrameGrabber::CreateAsync(m_capture.Get(), props);
 
         }).then([this](::Media::CaptureFrameGrabber^ frameGrabber)
         {
@@ -215,7 +115,7 @@ namespace cv {
     // should be called on the image processing thread
     bool VideoCapture_WinRT::grabFrame()
     {
-        std::unique_lock<std::mutex> lock(frameReadyMutex);
+        unique_lock<mutex> lock(frameReadyMutex);
         frameReadyEvent.wait(lock);
         SwapBuffers();
         return true;
@@ -234,11 +134,11 @@ namespace cv {
 
     void VideoCapture_WinRT::SwapBuffers()
     {
-        std::lock_guard<std::mutex> lock(bufferMutex);
+        lock_guard<mutex> lock(bufferMutex);
         if (frameCurrent != frameCounter)
         {
             frameCurrent = frameCounter;
-            std::swap(m_backBuffer, m_frontBuffer);
+            swap(m_backBuffer, m_frontBuffer);
         }
     }
 
@@ -273,7 +173,7 @@ namespace cv {
             unsigned int numBytes = width * bytesPerPixel;
             CHK(buffer->Lock2D(&pbScanline, &plPitch));
             {
-                std::lock_guard<std::mutex> lock(bufferMutex);
+                lock_guard<mutex> lock(bufferMutex);
 
                 // nb. no R/B swizzle seems to be needed
                 cv::Mat InputFrame(height, width, CV_8UC3 | CV_MAT_CONT_FLAG, pbScanline);
@@ -293,7 +193,7 @@ namespace cv {
 
             // notify frame is ready
             {
-                std::unique_lock<std::mutex> lck(frameReadyMutex);
+                unique_lock<mutex> lck(frameReadyMutex);
                 frameReadyEvent.notify_one();
             }
 
@@ -321,6 +221,52 @@ namespace cv {
         }
         return true;
     }
+
+
+//    vector <string&> 
+    void VideoCapture_WinRT::listDevices()
+    {
+        mutex              readyMutex;
+        condition_variable readyEvent;
+
+        auto settings = ref new MediaCaptureInitializationSettings();
+
+        vector <string*> devices;
+
+        create_task(DeviceInformation::FindAllAsync(DeviceClass::VideoCapture))
+            .then([&devices, &readyMutex, &readyEvent]
+            (task<DeviceInformationCollection^> findTask)
+        {
+            auto devInfo = findTask.get();
+
+            for (size_t i = 0; i < devInfo->Size; i++)
+            {
+                auto d = devInfo->GetAt(i);
+                wstring ws(d->Name->Data());
+                auto sn = new string ( ws.begin(), ws.end() );
+                devices.push_back(sn);
+            }
+
+            unique_lock<mutex> lock(readyMutex);
+            readyEvent.notify_one();
+        });
+
+        // wait for async task to complete
+        //unique_lock<mutex> lock(readyMutex);
+        //readyEvent.wait(lock);
+
+        // return devices;
+    }
+
+    // C interface (not implemented now)
+    //CvCapture *cvCreateCameraCapture_WinRT(int index)
+    //{
+    //    CvCapture_WinRT* capture = new CvCapture_WinRT;
+    //    if (capture->open(index))
+    //        return capture;
+    //    delete capture;
+    //    return 0;
+    //}
 
 
     // notes
@@ -355,7 +301,7 @@ namespace cv {
             CHK(buffer->Lock2D(&pbScanline, &plPitch));
 
             {
-                std::lock_guard<std::mutex> lock(m_mutex);
+                lock_guard<mutex> lock(m_mutex);
 
                 if (copyOnly) {
 
