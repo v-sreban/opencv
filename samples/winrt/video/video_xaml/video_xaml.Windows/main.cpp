@@ -45,25 +45,22 @@
 
 #include <thread>
 #include <chrono>
-#include <atomic>
 
 using namespace cv;
 
 
 VideoCapture cam;
 
+// fwd decl
+void image_processing_function();
 
-// __declspec(dllimport) std::atomic<bool> startProcessing;
-
-void process();
-
-// nb. t1 must exist as long as the app exists
+// nb. image_processing_thread must exist as long as the app exists
 // should do a join somewhere ...
-static std::thread t1{ process };
+static std::thread image_processing_thread{ image_processing_function };
 
-void process()
+void image_processing_function()
 {
-    // TCC("process thread init"); TCNL;
+    // TCC("image_processing_function init"); TCNL;
 
     //// use condition var instead with wait()
     //while (!startProcessing)
@@ -73,9 +70,9 @@ void process()
     //}
 
     // for testing only
-    TCC("process thread running");
-    TC(t1.get_id());
-    TC(t1.native_handle());
+    TCC("image_processing_function running");
+    TC(image_processing_thread.get_id());
+    TC(image_processing_thread.native_handle());
     TCNL;
 
     // for testing only
@@ -119,7 +116,7 @@ void init()
     // start the device on main thread - WinRT requirement
     cam.set(CAP_PROP_WINRT_START_DEVICE, 1);
 
-//    t1.join();
+//    image_processing_thread.join();
 }
 
 // end
