@@ -37,8 +37,16 @@
 #pragma comment(lib, "mfuuid")
 #pragma comment(lib, "Shlwapi")
 
+#include <opencv2/highgui/cdebug.h>
+
+
 // nb. must use dllexport to inform linker
-__declspec(dllexport) ::Windows::UI::Xaml::Controls::Image^ gOutput = nullptr;
+//__declspec(dllexport) ::Windows::UI::Xaml::Controls::Image^ gOutput = nullptr;
+
+// #include <thread>
+
+// temp
+// #include "../../samples/winrt/video/video_xaml/video_xaml.Windows/MainPage.xaml.h"
 
 using namespace ::std;
 
@@ -46,15 +54,11 @@ using namespace ::std;
 
 namespace cv {
 
-    VideoCapture_WinRT::VideoCapture_WinRT(int device)
+    VideoCapture_WinRT::VideoCapture_WinRT(int device) : started(false)
     {
         deviceID = device;
     }
 
-    // start() is called as a side effect of 
-    // setting the CV_CAP_PROP_WINRT_START_DEVICE property
-    // so that the frame size can be set first.
-    // This is required for Media Foundation
     void VideoCapture_WinRT::start()
     {
         // temp test
@@ -115,9 +119,14 @@ namespace cv {
     // should be called on the image processing thread
     bool VideoCapture_WinRT::grabFrame()
     {
+#if 0
+        if (!started) return false;
+
         unique_lock<mutex> lock(frameReadyMutex);
         frameReadyEvent.wait(lock);
         SwapBuffers();
+        return true;
+#endif
         return true;
     }
 
@@ -125,6 +134,7 @@ namespace cv {
     // see VideoCapture::read
     bool VideoCapture_WinRT::retrieveFrame(int, cv::OutputArray)
     {
+        if (!started) return false;
         // return m_frontBuffer converted to an IplImage?
         return 0;
     }
@@ -132,6 +142,7 @@ namespace cv {
 
     // internal methods:
 
+#if 0
     void VideoCapture_WinRT::SwapBuffers()
     {
         lock_guard<mutex> lock(bufferMutex);
@@ -201,20 +212,17 @@ namespace cv {
 
         }, task_continuation_context::use_current());
     }
-
+#endif
 
     bool VideoCapture_WinRT::setProperty(int property_id, double value)
     {
         switch (property_id)
         {
         case CAP_PROP_FRAME_WIDTH:
-            size.width = (int)value;
+            //size.width = (int)value;
             break;
         case CAP_PROP_FRAME_HEIGHT:
-            size.height = (int)value;
-            break;
-        case CAP_PROP_WINRT_START_DEVICE:
-            if (!started) start();
+            //size.height = (int)value;
             break;
         default:
             return false;
@@ -222,41 +230,84 @@ namespace cv {
         return true;
     }
 
+#if 0
+    std::string PlatformStringToString(Platform::String^ s) {
+        std::wstring t = std::wstring(s->Data());
+        return std::string(t.begin(), t.end());
+    }
 
-//    vector <string&> 
-    void VideoCapture_WinRT::listDevices()
+    // NOT WORKING / NOT USED
+    vector <std::string> VideoCapture_WinRT::listDevices()
     {
-        mutex              readyMutex;
-        condition_variable readyEvent;
+        TCC("listDevices"); TCNL;
+
+        //std::atomic<bool> ready(false);
+
+        //mutex              readyMutex;
+        //condition_variable readyEvent;
 
         auto settings = ref new MediaCaptureInitializationSettings();
 
-        vector <string*> devices;
+        vector < std::string > dl;
 
+        auto a = DeviceInformation::FindAllAsync(DeviceClass::VideoCapture);
+
+        int i = 0;
+
+        thread t{
+            [&,this]{
+                TCC("t fn"); TCNL;
+                create_task(DeviceInformation::FindAllAsync(DeviceClass::VideoCapture))
+                    .then([&,this](task<DeviceInformationCollection^> findTask)
+                {
+                    TCC("A1");
+                    m_devices = findTask.get();
+
+                    TC(m_devices->Size); TCNL;
+                    i = 1;
+                });
+            }
+        };
+
+        t.join();
+        TC(i); TCNL;
+
+        TCC("A0");
         create_task(DeviceInformation::FindAllAsync(DeviceClass::VideoCapture))
-            .then([&devices, &readyMutex, &readyEvent]
-            (task<DeviceInformationCollection^> findTask)
+            .then([this,&dl](task<DeviceInformationCollection^> findTask)
         {
-            auto devInfo = findTask.get();
+            TCC("A1");
+            m_devices = findTask.get();
 
-            for (size_t i = 0; i < devInfo->Size; i++)
+            TC(m_devices->Size); TCNL;
+
+            for (size_t i = 0; i < m_devices->Size; i++)
             {
-                auto d = devInfo->GetAt(i);
+                auto d = m_devices->GetAt(i);
+                TC(i);  TCSW(d->Name->Data()); TCNL;
                 wstring ws(d->Name->Data());
-                auto sn = new string ( ws.begin(), ws.end() );
-                devices.push_back(sn);
+                auto sn = string ( ws.begin(), ws.end() );
+                //dl.push_back(sn);                
             }
 
-            unique_lock<mutex> lock(readyMutex);
-            readyEvent.notify_one();
+            //ready = true;
+
+            //unique_lock<mutex> lock(readyMutex);
+            //readyEvent.notify_all();
         });
 
-        // wait for async task to complete
-        //unique_lock<mutex> lock(readyMutex);
-        //readyEvent.wait(lock);
+        //int c = 0;
+        //while (!ready) {
+        //    // wait for async task to complete
+        //    //unique_lock<mutex> lock(readyMutex);
+        //    //readyEvent.wait(lock);
+        //    c++;
+        //}
 
-        // return devices;
+        return dl;
+        //return devices;
     }
+#endif
 
     // C interface (not implemented now)
     //CvCapture *cvCreateCameraCapture_WinRT(int index)

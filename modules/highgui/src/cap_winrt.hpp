@@ -32,25 +32,11 @@
 
 #include "precomp.hpp"
 
-#include <collection.h>
-#include <ppltasks.h>
-
-#include <mutex>
-#include <condition_variable>
+//#include <collection.h>
+//#include <ppltasks.h>
+//#include <mutex>
+//#include <condition_variable>
 #include <atomic>
-
-#include <cap_winrt/CaptureFrameGrabber.h>
-
-#include <opencv2/highgui/cdebug.h>
-
-// for using MF:
-using namespace concurrency;
-using namespace Microsoft::WRL;
-using namespace Windows::Media::MediaProperties;
-using namespace Windows::Media::Capture;
-using namespace Windows::UI::Xaml::Media::Imaging;
-using namespace Windows::Devices::Enumeration;
-
 
 //// pull in MF libs (this has to be somewhere in the project)
 //#pragma comment(lib, "mfplat")
@@ -69,9 +55,9 @@ namespace cv {
     public:
         VideoCapture_WinRT() :
             started(false),
-            bytesPerPixel(0),
-            frameCounter(0),
-            frameCurrent(0),
+            //bytesPerPixel(0),
+            //frameCounter(0),
+            //frameCurrent(0),
             deviceID(0)
         {}
 
@@ -91,33 +77,34 @@ namespace cv {
         // Return the type of the capture object
         virtual int getCaptureDomain() { return CAP_WINRT; }
 
-        // not part of IVideoCapture, but could be called directly
-        // static std::vector <std::string&> listDevices();
-        static void listDevices();
+        // std::vector<std::string> listDevices();
+
+        void start();
 
     protected:
 
         int deviceID;
 
         // double buffering
-        std::mutex              bufferMutex;
-        std::unique_ptr<Windows::UI::Xaml::Media::Imaging::WriteableBitmap^>   m_frontBuffer;
-        std::unique_ptr<Windows::UI::Xaml::Media::Imaging::WriteableBitmap^>   m_backBuffer;
-        
-        void SwapBuffers();
+        //std::mutex              bufferMutex;
+        //std::unique_ptr<Windows::UI::Xaml::Media::Imaging::WriteableBitmap^>   m_frontBuffer;
+        //std::unique_ptr<Windows::UI::Xaml::Media::Imaging::WriteableBitmap^>   m_backBuffer;
 
-        void    start();
-        void GrabFrameAsync(::Media::CaptureFrameGrabber^ frameGrabber);
-        Platform::Agile<::Windows::Media::Capture::MediaCapture> m_capture;
+        // void GrabFrameAsync(::Media::CaptureFrameGrabber^ frameGrabber);
+        //void SwapBuffers();
 
-        CvSize                  size;
+        // Platform::Agile<::Windows::Media::Capture::MediaCapture> m_capture;
+        //Platform::Agile<Windows::Devices::Enumeration::DeviceInformationCollection> m_devices;
+
         std::atomic<bool>       started;
-        int                     bytesPerPixel;
-        unsigned long           frameCounter;
-        unsigned long           frameCurrent;
+
+        //CvSize                  size;
+        //int                     bytesPerPixel;
+        //unsigned long           frameCounter;
+        //unsigned long           frameCurrent;
         // std::atomic<bool>       isFrameNew;
 
-        std::mutex              frameReadyMutex;
-        std::condition_variable frameReadyEvent;
+        //std::mutex              frameReadyMutex;
+        //std::condition_variable frameReadyEvent;
     };
 }
