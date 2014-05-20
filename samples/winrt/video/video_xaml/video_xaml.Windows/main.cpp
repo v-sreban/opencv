@@ -27,56 +27,20 @@
 // OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF 
 // ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-// for XAML
-#include "pch.h"
-#include "App.xaml.h"
-
-// for OpenCV:
 #include <opencv2/core.hpp>
 #include <opencv2/imgproc.hpp>
 #include <opencv2/features2d.hpp>
 #include <opencv2/highgui.hpp>
 
-// #include "opencv2/core/core_c.h"
-// #include "opencv2/imgproc/imgproc_c.h"
-// #include <opencv2/highgui/highgui_c.h>
-
 #include <opencv2/highgui/cdebug.h>
-
-#include <thread>
-#include <chrono>
 
 using namespace cv;
 
-
-VideoCapture cam;
-
-// fwd decl
-void image_processing_function();
-
-// nb. image_processing_thread must exist as long as the app exists
-// should do a join somewhere ...
-static std::thread image_processing_thread{ image_processing_function };
-
-void image_processing_function()
+CV_EXPORTS void cvMain()
 {
-    // TCC("image_processing_function init"); TCNL;
+    VideoCapture cam;
 
-    //// use condition var instead with wait()
-    //while (!startProcessing)
-    //{
-    //    // wait 100 ms
-    //    std::this_thread::sleep_for(std::chrono::duration<int, std::milli>(100));
-    //}
-
-    // for testing only
-    TCC("image_processing_function running");
-    TC(image_processing_thread.get_id());
-    TC(image_processing_thread.native_handle());
-    TCNL;
-
-    // for testing only
-    std::this_thread::sleep_for(std::chrono::duration<int, std::milli>(1000));
+    cam.open(0);    // open the default camera  
 
     // Mat edges;
     // namedWindow("edges", 1);
@@ -87,17 +51,27 @@ void image_processing_function()
     while (1)
     {
         // get a new frame from camera
-        // this will block until the device is initialized and a frame is available
         cam >> frame;
+
+        // image processing calculations here
+
+        // imshow
     }
 
     // cvtColor(frame, edges, CV_BGR2GRAY);
     //GaussianBlur(edges, edges, Size(7, 7), 1.5, 1.5);
     //Canny(edges, edges, 0, 30, 3);
-    //imshow("edges", edges);
+    ////imshow("edges", edges);
 
-    // if (waitKey(30) >= 0) break;
 }
+
+
+// not used & notes
+#if 0
+
+// for XAML
+#include "pch.h"
+#include "App.xaml.h"
 
 // called by XAML window OnNavigate event (please see MainPage.xaml.cpp)
 void init()
@@ -107,7 +81,9 @@ void init()
     TC(std::this_thread::get_id);
     TCNL;
 
-    cam.open(0);    // open the default camera - but do not start until size is set
+    // move all this code to cvMain
+
+    cam.open(0);    // open the default camera - but do not start until size is set    
 
     // set desired frame size before starting - WinRT requirement
     cam.set(CAP_PROP_FRAME_WIDTH, 640);
@@ -122,8 +98,6 @@ void init()
 // end
 
 
-// not used & notes
-#if 0
 // DISABLE_XAML_GENERATED_MAIN must be defined to allow main to be located here
 // nb. we don't do anything special here yet
 //
