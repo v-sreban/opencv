@@ -6,7 +6,9 @@
 #include "pch.h"
 #include "MainPage.xaml.h"
 
-using namespace video_xaml;
+#include <thread>
+
+		using namespace video_xaml;
 
 using namespace Platform;
 using namespace Windows::Foundation;
@@ -24,7 +26,7 @@ using namespace Windows::UI::Xaml::Navigation;
 // for opencv to write to XAML image 
 // decl in cap_winrt.cpp
 // nb. C++ extern will not work across DLLs - must use dllimport
-__declspec(dllimport) ::Windows::UI::Xaml::Controls::Image^ gOutput;
+//__declspec(dllimport) ::Windows::UI::Xaml::Controls::Image^ gOutput;
 
 MainPage::MainPage()
 {
@@ -32,13 +34,30 @@ MainPage::MainPage()
 }
 
 // implemented in main.cpp
-void init();
+__declspec(dllimport) void cvMain();
+
+static std::thread cvMain_thread{ cvMain };
+
 
 void MainPage::OnNavigatedTo(NavigationEventArgs^ e)
 {
     (void)e;	// Unused parameter
 
-    init();
+    // gOutput = Preview;
 
-    gOutput = Preview;
+#if 0
+    // start a ppl task here to update the image element
+    // using a blocking cond_var
+    // use two writeablebitmaps fg & bg
+    
+    // like this?
+
+    task<void> task;
+    task = create_task([]{
+    });
+    return task.then([]()
+    {
+    });
+#endif
+
 }

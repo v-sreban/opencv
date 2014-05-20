@@ -7,9 +7,6 @@
 
 #include "MainPage.g.h"
 
-#include <mutex>
-#include <memory>
-
 namespace Media
 {
     ref class CaptureFrameGrabber;
