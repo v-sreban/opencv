@@ -1,4 +1,6 @@
 REM usage: run from github directory 
 
 CopyOcvIncHHPP .\NuGetPackage ..
-CopyOcvLib	
+CopyOcvLib . \NuGetPackage
+CopyOcvDll . \NuGetPackage
+
