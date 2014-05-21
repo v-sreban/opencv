@@ -1,6 +1,10 @@
 REM usage: run from github directory 
 
-REM CopyOcvIncHHPP .\NuGetPackage ..
-CopyOcvLib . \NuGetPackage
-CopyOcvDll . \NuGetPackage
+call CopyOcvIncHHPP .\NuGetPackageWP8 ..
+call CopyOcvLibWP8 . \NuGetPackageWP8
+call CopyOcvDllWP8 . \NuGetPackageWP8
+
+call CopyOcvIncHHPP .\NuGetPackageWinRT ..
+call CopyOcvLibWinRT . \NuGetPackageWinRT
+call CopyOcvDllWinRT . \NuGetPackageWinRT
 
