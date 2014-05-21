@@ -16,7 +16,7 @@ nuget {
 		description: @"OpenCV for WP8";
 		releaseNotes: "Release of OpenCV for WP8 (Visual Studio 2012 VC11, v110).";
 		copyright: Copyright 2014;
-		tags: { OpenCV, arm, DirectX };
+		tags: { OpenCV, arm, wp8, DirectX };
 	};
 
 	// the files that go into the content folders
