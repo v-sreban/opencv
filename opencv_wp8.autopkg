@@ -1,7 +1,7 @@
 nuget {
 	nuspec {
 		id = opencv_wp8;
-		version : 1.0.1.0;
+		version : 0.0.0.1;
 		title: OpenCV for Windows Phone 8;
 		authors: {Microsoft Corporation};
 		owners: {Microsoft Corporation};
@@ -22,109 +22,21 @@ nuget {
 	// the files that go into the content folders
 		files {
 	
+	// README - Run CopyNugetWp8.bat first. This grabs everything from that folder.
+
 		#defines { // NOTE - this uses a relative path and therefore must be run from the opencv (or your root) directory 
-					// Example : PS C:\Users\YourName\Documents\github\opencv>Write-NuGetPackage opencv_winrt.autopkg
-			OCVPATH 	 =  .\binWP8\;  
-			OCVCALIB3D   =  opencv_calib3d\opencv_calib3d;
-			OCVCONTRIB   =  opencv_contrib\opencv_contrib;
-			OCVCORE		 =	opencv_core\opencv_core;
-			OCVFEATURE2D =	opencv_features2d\opencv_features2d;
-			OCVFLANN	 =	opencv_flann\opencv_flann;
-			OCVIMGPROC   =	opencv_imgproc\opencv_imgproc;
-			OCVLEGACY   =	opencv_legacy\opencv_legacy;
-			OCVML		 =	opencv_ml\opencv_ml;
-			OCVOBJDETECT =	opencv_objdetect\opencv_objdetect;
-			OCVPHOTO     =	opencv_photo\opencv_photo;
-			OCVSHAPE	 =	opencv_shape\opencv_shape;
-			OCVSTITCHING =	opencv_stitching\opencv_stitching;
-			OCVVIDEO	 =	opencv_video\opencv_video;
-			OCVVIDEOSTAB =	opencv_videostab\opencv_videostab;	
+					// Example : PS C:\Users\YourName\Documents\github\opencv>Write-NuGetPackage opencv_wp8.autopkg
+			OCVPATH 	 =  .\binWP8\;  		
 		}
 	
 		// grab all the files in the include folder
 		// the folder that contains all the .h files will 
 		// automatically get added to the Includes path.
  
- 	 	include: { ".\NuGetPackage\**\*";	};					
-					
-					
-		[arm,v110,debug] 
-		{
-			lib: 
-			{
-				${OCVPATH}ARM\Debug\${OCVCALIB3D}.lib;
-				${OCVPATH}ARM\Debug\${OCVCONTRIB}.lib;
-				${OCVPATH}ARM\Debug\${OCVCORE}.lib;		
-				${OCVPATH}ARM\Debug\${OCVFEATURE2D}.lib;
-				${OCVPATH}ARM\Debug\${OCVFLANN}.lib;	
-				${OCVPATH}ARM\Debug\${OCVIMGPROC}.lib;  
-				${OCVPATH}ARM\Debug\${OCVLEGACY}.lib;  
-				${OCVPATH}ARM\Debug\${OCVML}.lib;		
-				${OCVPATH}ARM\Debug\${OCVOBJDETECT}.lib;
-				${OCVPATH}ARM\Debug\${OCVPHOTO}.lib;    
-				${OCVPATH}ARM\Debug\${OCVSHAPE}.lib;
-				${OCVPATH}ARM\Debug\${OCVSTITCHING}.lib;
-				${OCVPATH}ARM\Debug\${OCVVIDEO}.lib;	
-				${OCVPATH}ARM\Debug\${OCVVIDEOSTAB}.lib;
-			}
-
-			bin: 
-			{
-				${OCVPATH}ARM\Debug\${OCVCALIB3D}.dll;
-				${OCVPATH}ARM\Debug\${OCVCONTRIB}.dll;		
-				${OCVPATH}ARM\Debug\${OCVCORE}.dll;		
-				${OCVPATH}ARM\Debug\${OCVFEATURE2D}.dll;
-				${OCVPATH}ARM\Debug\${OCVFLANN}.dll;	
-				${OCVPATH}ARM\Debug\${OCVIMGPROC}.dll;  
-				${OCVPATH}ARM\Debug\${OCVLEGACY}.dll;  
-				${OCVPATH}ARM\Debug\${OCVML}.dll;		
-				${OCVPATH}ARM\Debug\${OCVOBJDETECT}.dll;
-				${OCVPATH}ARM\Debug\${OCVPHOTO}.dll;    
-				${OCVPATH}ARM\Debug\${OCVSHAPE}.dll;
-				${OCVPATH}ARM\Debug\${OCVSTITCHING}.dll;
-				${OCVPATH}ARM\Debug\${OCVVIDEO}.dll;	
-				${OCVPATH}ARM\Debug\${OCVVIDEOSTAB}.dll;
-			}
-		}	
+ 	 	include: { ".\NuGetPackageWP8\include\**\*";	};					
+ 	 	bin: { ".\NuGetPackageWP8\DLL\**\*";	};					
+ 	 	lib: { ".\NuGetPackageWP8\LIB\**\*";	};					
 		
-		[arm,v110,release] 
-		{
-			lib: 
-			{
-				${OCVPATH}ARM\Release\${OCVCALIB3D}.lib;
-				${OCVPATH}ARM\Release\${OCVCONTRIB}.lib;
-				${OCVPATH}ARM\Release\${OCVCORE}.lib;		
-				${OCVPATH}ARM\Release\${OCVFEATURE2D}.lib;
-				${OCVPATH}ARM\Release\${OCVFLANN}.lib;	
-				${OCVPATH}ARM\Release\${OCVIMGPROC}.lib;  
-				${OCVPATH}ARM\Release\${OCVLEGACY}.lib;  
-				${OCVPATH}ARM\Release\${OCVML}.lib;		
-				${OCVPATH}ARM\Release\${OCVOBJDETECT}.lib;
-				${OCVPATH}ARM\Release\${OCVPHOTO}.lib;    
-				${OCVPATH}ARM\Release\${OCVSHAPE}.lib;
-				${OCVPATH}ARM\Release\${OCVSTITCHING}.lib;
-				${OCVPATH}ARM\Release\${OCVVIDEO}.lib;	
-				${OCVPATH}ARM\Release\${OCVVIDEOSTAB}.lib;
-			}
-
-			bin: 
-			{
-				${OCVPATH}ARM\Release\${OCVCALIB3D}.dll;
-				${OCVPATH}ARM\Release\${OCVCONTRIB}.dll;
-				${OCVPATH}ARM\Release\${OCVCORE}.dll;		
-				${OCVPATH}ARM\Release\${OCVFEATURE2D}.dll;
-				${OCVPATH}ARM\Release\${OCVFLANN}.dll;	
-				${OCVPATH}ARM\Release\${OCVIMGPROC}.dll;  
-				${OCVPATH}ARM\Release\${OCVLEGACY}.dll;  
-				${OCVPATH}ARM\Release\${OCVML}.dll;		
-				${OCVPATH}ARM\Release\${OCVOBJDETECT}.dll;
-				${OCVPATH}ARM\Release\${OCVPHOTO}.dll;    
-				${OCVPATH}ARM\Release\${OCVSHAPE}.dll;
-				${OCVPATH}ARM\Release\${OCVSTITCHING}.dll;
-				${OCVPATH}ARM\Release\${OCVVIDEO}.dll;	
-				${OCVPATH}ARM\Release\${OCVVIDEOSTAB}.dll;
-			}
-		}
 	};
 
 	targets {
