@@ -34,9 +34,8 @@ nuget {
 		// automatically get added to the Includes path.
  
  	 	include: { ".\NuGetPackageWP8\include\**\*";	};					
- 	 	bin: { ".\NuGetPackageWP8\DLL\**\*";	};					
- 	 	lib: { ".\NuGetPackageWP8\LIB\**\*";	};					
-		
+ 	 	bin: { ".\NuGetPackageWP8\bin\**\*";	};					
+ 		
 	};
 
 	targets {

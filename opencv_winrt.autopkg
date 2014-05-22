@@ -34,9 +34,7 @@ nuget {
 		// automatically get added to the Includes path.
  
  	 	include: { ".\NuGetPackageWinRT\include\**\*";	};					
- 	 	bin: { ".\NuGetPackageWinRT\bin\DLL\**\*";	};					
- 	// 	lib: { ".\NuGetPackageWinRT\bin\LIB\**\*";	};					
-		
+ 	 	bin: { ".\NuGetPackageWinRT\bin\**\*";	};					
 	};
 
 	targets {
