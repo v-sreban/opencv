@@ -226,6 +226,7 @@
     <ClInclude Include="..\..\..\modules\highgui\src\cap_winrt\MediaSink.h" />
     <ClInclude Include="..\..\..\modules\highgui\src\cap_winrt\MediaStreamSink.h" />
     <ClInclude Include="..\..\..\modules\highgui\src\cap_winrt\MFIncludes.h" />
+    <ClInclude Include="..\..\..\modules\highgui\src\cap_winrt_highgui.hpp" />
     <ClInclude Include="..\..\..\modules\highgui\src\precomp.hpp" />
     <ClInclude Include="..\..\..\modules\highgui\src\utils.hpp" />
     <ClInclude Include="..\..\..\modules\highgui\src\cap_ffmpeg_impl.hpp" />
