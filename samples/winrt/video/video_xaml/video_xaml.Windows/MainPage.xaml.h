@@ -21,8 +21,7 @@ namespace video_xaml
 	{
 	public:
 		MainPage();
-
     protected:
-        virtual void OnNavigatedTo(Windows::UI::Xaml::Navigation::NavigationEventArgs^ e) override;
+        Windows::Foundation::IAsyncActionWithProgress<int>^ TaskWithProgressAsync();
     };
 }
