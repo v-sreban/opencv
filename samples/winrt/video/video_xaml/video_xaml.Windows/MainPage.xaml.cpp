@@ -6,9 +6,9 @@
 #include "pch.h"
 #include "MainPage.xaml.h"
 
-#include <thread>
+#include "../../../modules/highgui/src/cap_winrt_highgui.hpp"
 
-		using namespace video_xaml;
+using namespace video_xaml;
 
 using namespace Platform;
 using namespace Windows::Foundation;
@@ -23,41 +23,52 @@ using namespace Windows::UI::Xaml::Navigation;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
 
-// for opencv to write to XAML image 
-// decl in cap_winrt.cpp
-// nb. C++ extern will not work across DLLs - must use dllimport
-//__declspec(dllimport) ::Windows::UI::Xaml::Controls::Image^ gOutput;
+#include <ppl.h>
+#include <concrt.h>
+#include <atomic>
 
-MainPage::MainPage()
-{
-	InitializeComponent();
-}
+using namespace ::concurrency;
+using namespace ::Windows::Foundation;
 
 // implemented in main.cpp
 __declspec(dllimport) void cvMain();
 
-static std::thread cvMain_thread{ cvMain };
 
-
-void MainPage::OnNavigatedTo(NavigationEventArgs^ e)
+MainPage::MainPage()
 {
-    (void)e;	// Unused parameter
+    InitializeComponent();
 
-    // gOutput = Preview;
-
-#if 0
-    // start a ppl task here to update the image element
-    // using a blocking cond_var
-    // use two writeablebitmaps fg & bg
-    
-    // like this?
-
-    task<void> task;
-    task = create_task([]{
-    });
-    return task.then([]()
+    int count = 0;
+    auto asyncTask = TaskWithProgressAsync();
+    asyncTask->Progress = ref new AsyncActionProgressHandler<int>([this, &count](IAsyncActionWithProgress<int>^ act, int progress)
     {
+        // this is running on the UI thread
+        switch (progress)
+        {
+        case HighguiBridge_OPEN_CAMERA:
+            HighguiBridge::getInstance().initializeDevice();
+            break;
+        case HighguiBridge_CLOSE_CAMERA:
+            // HighguiBridge::getInstance().closeDevice();
+            break;
+        case HighguiBridge_UPDATE_IMAGE_ELEMENT:
+            // copy Mat into backbuffer;
+            // swap preview buffers
+            // Preview = frontbuffer;
+            break;
+        }
+        count++;
     });
-#endif
 
+}
+
+// set the reporter method for the HighguiAssist singleton
+// start the main OpenCV as an async thread in WinRT
+IAsyncActionWithProgress<int>^ MainPage::TaskWithProgressAsync()
+{
+    return create_async([this](progress_reporter<int> reporter)
+    {
+        HighguiBridge::getInstance().setReporter(reporter);
+        cvMain();
+    });
 }
