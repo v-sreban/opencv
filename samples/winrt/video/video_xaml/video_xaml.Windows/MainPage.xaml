@@ -8,7 +8,7 @@
     mc:Ignorable="d">
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-        <Image Name="Preview" HorizontalAlignment="Left" Height="480" Margin="20,100,0,0" VerticalAlignment="Top" Width="640"/>
+        <Image Name="cvImage" HorizontalAlignment="Left" Height="480" Margin="20,100,0,0" VerticalAlignment="Top" Width="640"/>
         <TextBlock HorizontalAlignment="Left" Margin="20,35,0,0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="24">
         	<Run Text="OpenCV: Video Capture using XAML and Universal App Framework"/>
         	<Run/>
