@@ -59,6 +59,7 @@ namespace cv {
         deviceID = device;
     }
 
+#if 0
     void VideoCapture_WinRT::start()
     {
         // temp test
@@ -113,6 +114,7 @@ namespace cv {
             GrabFrameAsync(frameGrabber);
         });
     }
+#endif
 
     // grab a frame:
     // this will block until a frame is grabbed
