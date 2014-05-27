@@ -68,7 +68,7 @@ IAsyncActionWithProgress<int>^ MainPage::TaskWithProgressAsync()
 {
     return create_async([this](progress_reporter<int> reporter)
     {
-        HighguiBridge::getInstance().setReporter(reporter);
+        // HighguiBridge::getInstance().setReporter(reporter);
         cvMain();
     });
 }
