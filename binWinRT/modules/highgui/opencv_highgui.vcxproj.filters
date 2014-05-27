@@ -73,6 +73,7 @@
     <ClCompile Include="..\..\..\modules\highgui\src\cap_winrt\MediaStreamSink.cpp">
       <Filter>cap_winrt</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\modules\highgui\src\cap_winrt_highgui.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\modules\highgui\include\opencv2\highgui.hpp">

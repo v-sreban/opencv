@@ -252,6 +252,7 @@
     <ClCompile Include="..\..\..\modules\highgui\src\cap_winrt.cpp" />
     <ClCompile Include="..\..\..\modules\highgui\src\cap_winrt\CaptureFrameGrabber.cpp" />
     <ClCompile Include="..\..\..\modules\highgui\src\cap_winrt\MediaStreamSink.cpp" />
+    <ClCompile Include="..\..\..\modules\highgui\src\cap_winrt_highgui.cpp" />
     <ClCompile Include="..\..\..\modules\highgui\src\loadsave.cpp" />
     <ClCompile Include="..\..\..\modules\highgui\src\utils.cpp" />
     <ClCompile Include="..\..\..\modules\highgui\src\window.cpp" />
