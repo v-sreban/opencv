@@ -30,37 +30,22 @@ using namespace Windows::UI::Xaml::Navigation;
 using namespace ::concurrency;
 using namespace ::Windows::Foundation;
 
-// implemented in main.cpp
-__declspec(dllimport) void cvMain();
-
 
 MainPage::MainPage()
 {
     InitializeComponent();
 
-    int count = 0;
     auto asyncTask = TaskWithProgressAsync();
-    asyncTask->Progress = ref new AsyncActionProgressHandler<int>([this, &count](IAsyncActionWithProgress<int>^ act, int progress)
+    asyncTask->Progress = ref new AsyncActionProgressHandler<int>([](IAsyncActionWithProgress<int>^ act, int progress)
     {
-        // this is running on the UI thread
-        switch (progress)
-        {
-        case HighguiBridge_OPEN_CAMERA:
-            HighguiBridge::getInstance().initializeDevice();
-            break;
-        case HighguiBridge_CLOSE_CAMERA:
-            // HighguiBridge::getInstance().closeDevice();
-            break;
-        case HighguiBridge_UPDATE_IMAGE_ELEMENT:
-            // copy Mat into backbuffer;
-            // swap preview buffers
-            // Preview = frontbuffer;
-            break;
-        }
-        count++;
+        int action = progress;
+        HighguiBridge::getInstance().processOnUIthread(action);
     });
 
 }
+
+// implemented in main.cpp
+void cvMain();
 
 // set the reporter method for the HighguiAssist singleton
 // start the main OpenCV as an async thread in WinRT
@@ -68,7 +53,7 @@ IAsyncActionWithProgress<int>^ MainPage::TaskWithProgressAsync()
 {
     return create_async([this](progress_reporter<int> reporter)
     {
-        // HighguiBridge::getInstance().setReporter(reporter);
+        HighguiBridge::getInstance().setReporter(reporter);
         cvMain();
     });
 }
