@@ -37,6 +37,8 @@
 #pragma comment(lib, "mfuuid")
 #pragma comment(lib, "Shlwapi")
 
+#include "cap_winrt_highgui.hpp"
+
 #include <opencv2/highgui/cdebug.h>
 
 
@@ -57,6 +59,28 @@ namespace cv {
     VideoCapture_WinRT::VideoCapture_WinRT(int device) : started(false)
     {
         deviceID = device;
+    }
+
+    // grab a frame:
+    // this will block until a frame is grabbed
+    // should be called on the image processing thread
+    bool VideoCapture_WinRT::grabFrame()
+    {
+        if (!started) {
+            // request device start on UI thread
+            HighguiBridge::getInstance().requestForUIthread(HighguiBridge_OPEN_CAMERA);
+
+            started = true;
+        }
+#if 0
+        if (!started) return false;
+
+        unique_lock<mutex> lock(frameReadyMutex);
+        frameReadyEvent.wait(lock);
+        SwapBuffers();
+        return true;
+#endif
+        return true;
     }
 
 #if 0
@@ -116,21 +140,7 @@ namespace cv {
     }
 #endif
 
-    // grab a frame:
-    // this will block until a frame is grabbed
-    // should be called on the image processing thread
-    bool VideoCapture_WinRT::grabFrame()
-    {
-#if 0
-        if (!started) return false;
 
-        unique_lock<mutex> lock(frameReadyMutex);
-        frameReadyEvent.wait(lock);
-        SwapBuffers();
-        return true;
-#endif
-        return true;
-    }
 
     // should be called on the image processing thread after grabFrame
     // see VideoCapture::read
