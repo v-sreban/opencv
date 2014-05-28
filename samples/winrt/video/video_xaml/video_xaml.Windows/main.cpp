@@ -36,7 +36,8 @@
 
 using namespace cv;
 
-CV_EXPORTS void cvMain()
+//__declspec(dllexport) 
+void cvMain()
 {
     VideoCapture cam;
 
