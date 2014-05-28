@@ -28,13 +28,15 @@
 // OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF 
 // ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+#pragma once
+
 #include <ppl.h>
+#include <ppltasks.h>
 #include <concrt.h>
 #include <atomic>
+#include <future>
 
-//using namespace Platform;
-//using namespace ::concurrency;
-//using namespace ::Windows::Foundation;
+#include <agile.h>
 
 #if 0
 // this is an OpenCV class
@@ -64,8 +66,15 @@ public:
         static HighguiBridge instance;
         return instance;
     }
-    // void perform(int action) { reporter.report(action); }
-    // void setReporter(Concurrency::progress_reporter<int> pr) { reporter = pr; }
+
+    void setReporter(Concurrency::progress_reporter<int> pr) { reporter = pr; }
+
+    // called from XAML task (UI thread)
+    void processOnUIthread( int action );
+
+    // to be called from cvMain via cap_winrt on bg thread
+    void requestForUIthread(int action) { reporter.report(action); }
+    void waitForUIthreadRequest();
 
     // highgui video interface
     bool initializeDevice();
@@ -95,18 +104,20 @@ public:
     // MediaCapture ^capture;
     int deviceIndex;
 
+    Platform::Agile<Windows::Media::Capture::MediaCapture> m_capture;
+    Platform::Agile<Windows::Devices::Enumeration::DeviceInformationCollection> m_devices;
+
 private:
     HighguiBridge() {
-        deviceReady = false;
+        done = false;
     };
 
+    bool initializeDeviceTask();
+
+    // singleton
     HighguiBridge(HighguiBridge const &);
     void operator=(const HighguiBridge &);
 
-    // Concurrency::progress_reporter<int> reporter;
-    std::atomic<bool> deviceReady;
-
-//    Platform::Agile<::Windows::Media::Capture::MediaCapture> m_capture;
-//    Platform::Agile<Windows::Devices::Enumeration::DeviceInformationCollection> m_devices;
-
+    Concurrency::progress_reporter<int> reporter;
+    std::atomic<bool> done;
 };

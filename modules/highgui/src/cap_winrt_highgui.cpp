@@ -34,22 +34,77 @@
 using namespace Windows::Foundation;
 using namespace Windows::Media::Capture;
 using namespace Windows::Media::MediaProperties;
+using namespace Windows::Devices::Enumeration;
+
+using namespace Platform;
+using namespace ::Concurrency;
+using namespace ::Windows::Foundation;
 
 
+void HighguiBridge::processOnUIthread(int action)
+{
+    // this is running on the UI thread
+    switch (action)
+    {
+    case HighguiBridge_OPEN_CAMERA:        
+        initializeDevice();
+        break;
+    case HighguiBridge_CLOSE_CAMERA:
+        // closeDevice();
+        break;
+    case HighguiBridge_UPDATE_IMAGE_ELEMENT:
+        // copy Mat into backbuffer;
+        // swap preview buffers
+        // Preview = frontbuffer;
+        break;
+    }
+}
+
+
+// block
 bool HighguiBridge::initializeDevice()
 {
+    done = false;
+    std::future<bool> result = std::async(std::launch::async, &HighguiBridge::initializeDeviceTask, this);
+    return result.get();
+}
+
+
+bool HighguiBridge::initializeDeviceTask()
+{
+    std::atomic<bool> ready(false);
+
     auto settings = ref new MediaCaptureInitializationSettings();
     settings->StreamingCaptureMode = StreamingCaptureMode::Video; // Video-only capture
 
-    //m_capture = ref new MediaCapture();
-    //create_task(m_capture->InitializeAsync(settings)).then([this](){
-    //});
+    // set m_capture and m_devices
+    m_capture = ref new MediaCapture();
+    create_task(m_capture->InitializeAsync(settings)).then([this, &ready]() {
 
-    // store capture = ref new MediaCapture...
-    // call init capture device async using deviceIndex
-    // .then( [] { ...
-    deviceReady = true;
+        create_task(DeviceInformation::FindAllAsync(DeviceClass::VideoCapture))
+            .then([this, &ready](task<DeviceInformationCollection^> findTask)
+        {
+            m_devices = findTask.get();
+            ready = true;
+        });
+    });
+
+    // wait for async tasks to complete
+    int count = 0;
+    while (!ready)
+    {
+        count++;
+    }
+    done = true;
+
     return true;
-    // });
 }
 
+void HighguiBridge::waitForUIthreadRequest()
+{
+    int count = 0;
+    while (!done)
+    {
+        count++;
+    }
+}
