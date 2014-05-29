@@ -30,6 +30,7 @@
 
 #include "precomp.hpp"
 #include "cap_winrt.hpp"
+#include "cap_winrt_highgui.hpp"
 
 // pull in MF libs (this has to be somewhere in the project)
 #pragma comment(lib, "mfplat")
@@ -37,10 +38,19 @@
 #pragma comment(lib, "mfuuid")
 #pragma comment(lib, "Shlwapi")
 
-#include "cap_winrt_highgui.hpp"
+#define CHK(statement)  {HRESULT _hr = (statement); if (FAILED(_hr)) { throw ref new Platform::COMException(_hr); };}
 
 #include <opencv2/highgui/cdebug.h>
 
+using namespace Windows::Foundation;
+using namespace Windows::Media::Capture;
+using namespace Windows::Media::MediaProperties;
+using namespace Windows::Devices::Enumeration;
+
+using namespace Windows::UI::Xaml::Media::Imaging;
+
+using namespace Platform;
+using namespace ::Concurrency;
 
 // nb. must use dllexport to inform linker
 //__declspec(dllexport) ::Windows::UI::Xaml::Controls::Image^ gOutput = nullptr;
@@ -67,9 +77,37 @@ namespace cv {
     bool VideoCapture_WinRT::grabFrame()
     {
         if (!started) {
-            // request device start on UI thread
+            // request device init on UI thread - this blocks until device init is done
             HighguiBridge::getInstance().requestForUIthread(HighguiBridge_OPEN_CAMERA);
 
+            m_capture = HighguiBridge::getInstance().m_capture;
+            m_devices = HighguiBridge::getInstance().m_devices;
+
+            if (!m_capture.Get() || !m_devices.Get()) return false;
+
+            // complete device start here on bg thread
+            auto settings = ref new MediaCaptureInitializationSettings();
+            settings->StreamingCaptureMode = StreamingCaptureMode::Video; // Video-only capture
+
+            auto props = safe_cast<VideoEncodingProperties^>(m_capture->VideoDeviceController->GetMediaStreamProperties(MediaStreamType::VideoPreview));
+
+            // Ask for color conversion to match WriteableBitmap
+            props->Subtype = MediaEncodingSubtypes::Bgra8;
+
+            if (deviceID < 0 || (unsigned)deviceID >= m_devices.Get()->Size)
+                return false;
+
+            auto devInfo = m_devices.Get()->GetAt(deviceID);
+            settings->VideoDeviceId = devInfo->Id;
+
+            ::Media::CaptureFrameGrabber::CreateAsync(m_capture.Get(), props);
+            /*
+        }).then([this](::Media::CaptureFrameGrabber^ frameGrabber)
+        {
+            started = true;
+            GrabFrameAsync(frameGrabber);
+        });
+*/
             started = true;
         }
 #if 0
@@ -80,6 +118,104 @@ namespace cv {
         SwapBuffers();
         return true;
 #endif
+        return true;
+    }
+
+    // should be called on the image processing thread after grabFrame
+    // see VideoCapture::read
+    bool VideoCapture_WinRT::retrieveFrame(int, cv::OutputArray)
+    {
+        if (!started) return false;
+        // return m_frontBuffer converted to an IplImage?
+        return 0;
+    }
+
+
+    // internal methods:
+
+    void VideoCapture_WinRT::SwapBuffers()
+    {
+        lock_guard<mutex> lock(bufferMutex);
+        if (frameCurrent != frameCounter)
+        {
+            frameCurrent = frameCounter;
+            swap(m_backBuffer, m_frontBuffer);
+        }
+    }
+
+    void VideoCapture_WinRT::GrabFrameAsync(::Media::CaptureFrameGrabber^ frameGrabber)
+    {
+        create_task(frameGrabber->GetFrameAsync()).then([this, frameGrabber](const ComPtr<IMF2DBuffer2>& buffer)
+        {
+            auto width = size.width;
+            auto height = size.height;
+
+#if 1
+            auto bitmap = ref new WriteableBitmap(width, height);
+
+            CHK(buffer->ContiguousCopyTo(GetData(bitmap->PixelBuffer),
+                bitmap->PixelBuffer->Capacity));
+
+            unsigned long length;
+            CHK(buffer->GetContiguousLength(&length));
+            bitmap->PixelBuffer->Length = length;
+
+            // write to the XAML image element (temp)
+            // if (gOutput) gOutput->Source = bitmap;
+#else
+
+            const int bytesPerPixel = 3;
+
+            auto p = m_backBuffer.get();
+            auto pbOut = GetData((*p)->PixelBuffer);
+
+            BYTE *pbScanline;
+            LONG plPitch;
+            unsigned int numBytes = width * bytesPerPixel;
+            CHK(buffer->Lock2D(&pbScanline, &plPitch));
+            {
+                lock_guard<mutex> lock(bufferMutex);
+
+                // nb. no R/B swizzle seems to be needed
+                cv::Mat InputFrame(height, width, CV_8UC3 | CV_MAT_CONT_FLAG, pbScanline);
+                cv::Mat OutputFrame(height, width, CV_8UC3 | CV_MAT_CONT_FLAG, pbOut);
+
+                // no effect - straight copy
+                InputFrame.copyTo(OutputFrame);
+            }
+
+            CHK(buffer->Unlock2D());
+
+            // TODO: move to draw loop and add buffer swapping code
+            if (gOutput) gOutput->Source = *m_backBuffer.get();
+#endif
+
+            frameCounter++;
+
+            // notify frame is ready
+            {
+                unique_lock<mutex> lck(frameReadyMutex);
+                frameReadyEvent.notify_one();
+            }
+
+            GrabFrameAsync(frameGrabber);
+
+        }, task_continuation_context::use_current());
+    }
+
+    bool VideoCapture_WinRT::setProperty(int property_id, double value)
+    {
+        switch (property_id)
+        {
+        case CAP_PROP_FRAME_WIDTH:
+            //size.width = (int)value;
+            break;
+        case CAP_PROP_FRAME_HEIGHT:
+            //size.height = (int)value;
+            break;
+        default:
+            return false;
+        }
         return true;
     }
 
@@ -138,111 +274,7 @@ namespace cv {
             GrabFrameAsync(frameGrabber);
         });
     }
-#endif
 
-
-
-    // should be called on the image processing thread after grabFrame
-    // see VideoCapture::read
-    bool VideoCapture_WinRT::retrieveFrame(int, cv::OutputArray)
-    {
-        if (!started) return false;
-        // return m_frontBuffer converted to an IplImage?
-        return 0;
-    }
-
-
-    // internal methods:
-
-#if 0
-    void VideoCapture_WinRT::SwapBuffers()
-    {
-        lock_guard<mutex> lock(bufferMutex);
-        if (frameCurrent != frameCounter)
-        {
-            frameCurrent = frameCounter;
-            swap(m_backBuffer, m_frontBuffer);
-        }
-    }
-
-    void VideoCapture_WinRT::GrabFrameAsync(::Media::CaptureFrameGrabber^ frameGrabber)
-    {
-        create_task(frameGrabber->GetFrameAsync()).then([this, frameGrabber](const ComPtr<IMF2DBuffer2>& buffer)
-        {
-            auto width = size.width;
-            auto height = size.height;
-
-#if 1
-            auto bitmap = ref new WriteableBitmap(width, height);
-
-            CHK(buffer->ContiguousCopyTo(GetData(bitmap->PixelBuffer),
-                bitmap->PixelBuffer->Capacity));
-
-            unsigned long length;
-            CHK(buffer->GetContiguousLength(&length));
-            bitmap->PixelBuffer->Length = length;
-
-            // write to the XAML image element (temp)
-            if (gOutput) gOutput->Source = bitmap;
-#else
-
-            const int bytesPerPixel = 3;
-
-            auto p = m_backBuffer.get();
-            auto pbOut = GetData((*p)->PixelBuffer);
-
-            BYTE *pbScanline;
-            LONG plPitch;
-            unsigned int numBytes = width * bytesPerPixel;
-            CHK(buffer->Lock2D(&pbScanline, &plPitch));
-            {
-                lock_guard<mutex> lock(bufferMutex);
-
-                // nb. no R/B swizzle seems to be needed
-                cv::Mat InputFrame(height, width, CV_8UC3 | CV_MAT_CONT_FLAG, pbScanline);
-                cv::Mat OutputFrame(height, width, CV_8UC3 | CV_MAT_CONT_FLAG, pbOut);
-
-                // no effect - straight copy
-                InputFrame.copyTo(OutputFrame);
-            }
-
-            CHK(buffer->Unlock2D());
-
-            // TODO: move to draw loop and add buffer swapping code
-            if (gOutput) gOutput->Source = *m_backBuffer.get();
-#endif
-
-            frameCounter++;
-
-            // notify frame is ready
-            {
-                unique_lock<mutex> lck(frameReadyMutex);
-                frameReadyEvent.notify_one();
-            }
-
-            GrabFrameAsync(frameGrabber);
-
-        }, task_continuation_context::use_current());
-    }
-#endif
-
-    bool VideoCapture_WinRT::setProperty(int property_id, double value)
-    {
-        switch (property_id)
-        {
-        case CAP_PROP_FRAME_WIDTH:
-            //size.width = (int)value;
-            break;
-        case CAP_PROP_FRAME_HEIGHT:
-            //size.height = (int)value;
-            break;
-        default:
-            return false;
-        }
-        return true;
-    }
-
-#if 0
     std::string PlatformStringToString(Platform::String^ s) {
         std::wstring t = std::wstring(s->Data());
         return std::string(t.begin(), t.end());
