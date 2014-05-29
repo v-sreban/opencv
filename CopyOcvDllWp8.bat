@@ -15,7 +15,6 @@ copy %1\binWP8\Release\opencv_flann\opencv_flann.dll					%2\DLL\WP8\Release /y
 copy %1\binWP8\Release\opencv_imgproc\opencv_imgproc.dll				%2\DLL\WP8\Release /y
 copy %1\binWP8\Release\opencv_legacy\opencv_legacy.dll					%2\DLL\WP8\Release /y
 copy %1\binWP8\Release\opencv_ml\opencv_ml.dll							%2\DLL\WP8\Release /y
-copy %1\binWP8\Release\opencv_nonfree\opencv_nonfree.dll				%2\DLL\WP8\Release /y
 copy %1\binWP8\Release\opencv_objdetect\opencv_objdetect.dll			%2\DLL\WP8\Release /y
 copy %1\binWP8\Release\opencv_photo\opencv_photo.dll					%2\DLL\WP8\Release /y
 copy %1\binWP8\Release\opencv_shape\opencv_shape.dll					%2\DLL\WP8\Release /y
@@ -36,7 +35,6 @@ copy %1\binWP8\ARM\Release\opencv_flann\opencv_flann.dll				%2\DLL\WP8\ARM\Relea
 copy %1\binWP8\ARM\Release\opencv_imgproc\opencv_imgproc.dll			%2\DLL\WP8\ARM\Release /y
 copy %1\binWP8\ARM\Release\opencv_legacy\opencv_legacy.dll				%2\DLL\WP8\ARM\Release /y
 copy %1\binWP8\ARM\Release\opencv_ml\opencv_ml.dll						%2\DLL\WP8\ARM\Release /y
-copy %1\binWP8\ARM\Release\opencv_nonfree\opencv_nonfree.dll			%2\DLL\WP8\ARM\Release /y
 copy %1\binWP8\ARM\Release\opencv_objdetect\opencv_objdetect.dll		%2\DLL\WP8\ARM\Release /y
 copy %1\binWP8\ARM\Release\opencv_photo\opencv_photo.dll				%2\DLL\WP8\ARM\Release /y
 copy %1\binWP8\ARM\Release\opencv_shape\opencv_shape.dll				%2\DLL\WP8\ARM\Release /y
