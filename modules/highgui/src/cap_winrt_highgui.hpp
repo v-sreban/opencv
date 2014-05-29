@@ -61,19 +61,18 @@ enum {
 class HighguiBridge
 {
 public:
-    static HighguiBridge& getInstance()
-    {
-        static HighguiBridge instance;
-        return instance;
-    }
+    // common methods for all DLLs
 
-    void setReporter(Concurrency::progress_reporter<int> pr) { reporter = pr; }
+    __declspec(dllexport) static HighguiBridge& getInstance();
 
     // called from XAML task (UI thread)
-    void processOnUIthread( int action );
+    __declspec(dllexport) void processOnUIthread(int action);
+
+    // call after initialization
+    void setReporter(Concurrency::progress_reporter<int> pr) { reporter = pr; }
 
     // to be called from cvMain via cap_winrt on bg thread
-    void requestForUIthread(int action) { reporter.report(action); }
+    void requestForUIthread(int action);
     void waitForUIthreadRequest();
 
     // highgui video interface

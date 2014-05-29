@@ -38,7 +38,6 @@ using namespace Windows::Devices::Enumeration;
 
 using namespace Platform;
 using namespace ::Concurrency;
-using namespace ::Windows::Foundation;
 
 
 void HighguiBridge::processOnUIthread(int action)
@@ -107,4 +106,15 @@ void HighguiBridge::waitForUIthreadRequest()
     {
         count++;
     }
+}
+
+void HighguiBridge::requestForUIthread(int action) 
+{ 
+    reporter.report(action); 
+}
+
+HighguiBridge& HighguiBridge::getInstance()
+{
+    static HighguiBridge instance;
+    return instance;
 }
