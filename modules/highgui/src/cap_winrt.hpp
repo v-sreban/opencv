@@ -34,9 +34,12 @@
 
 //#include <collection.h>
 //#include <ppltasks.h>
-//#include <mutex>
-//#include <condition_variable>
+#include <mutex>
+#include <memory>
+#include <condition_variable>
 #include <atomic>
+
+#include <agile.h>
 
 //// pull in MF libs (this has to be somewhere in the project)
 //#pragma comment(lib, "mfplat")
@@ -44,6 +47,7 @@
 //#pragma comment(lib, "mfuuid")
 //#pragma comment(lib, "Shlwapi")
 
+#include "cap_winrt/CaptureFrameGrabber.h"
 
 // implement the newer IVideoCapture so that we can work
 // directly with Mat, not the cv interface which has added overhead
@@ -86,25 +90,25 @@ namespace cv {
         int deviceID;
 
         // double buffering
-        //std::mutex              bufferMutex;
-        //std::unique_ptr<Windows::UI::Xaml::Media::Imaging::WriteableBitmap^>   m_frontBuffer;
-        //std::unique_ptr<Windows::UI::Xaml::Media::Imaging::WriteableBitmap^>   m_backBuffer;
+        std::mutex              bufferMutex;
+        std::unique_ptr<Windows::UI::Xaml::Media::Imaging::WriteableBitmap^>   m_frontBuffer;
+        std::unique_ptr<Windows::UI::Xaml::Media::Imaging::WriteableBitmap^>   m_backBuffer;
 
-        // void GrabFrameAsync(::Media::CaptureFrameGrabber^ frameGrabber);
-        //void SwapBuffers();
+        void GrabFrameAsync(::Media::CaptureFrameGrabber^ frameGrabber);
+        void SwapBuffers();
 
-        // Platform::Agile<::Windows::Media::Capture::MediaCapture> m_capture;
-        //Platform::Agile<Windows::Devices::Enumeration::DeviceInformationCollection> m_devices;
+        Platform::Agile<::Windows::Media::Capture::MediaCapture> m_capture;
+        Platform::Agile<Windows::Devices::Enumeration::DeviceInformationCollection> m_devices;
 
-        std::atomic<bool>       started;
+        bool    started;
 
-        //CvSize                  size;
-        //int                     bytesPerPixel;
-        //unsigned long           frameCounter;
-        //unsigned long           frameCurrent;
-        // std::atomic<bool>       isFrameNew;
+        CvSize                  size;
+        int                     bytesPerPixel;
+        unsigned long           frameCounter;
+        unsigned long           frameCurrent;
+        std::atomic<bool>       isFrameNew;
 
-        //std::mutex              frameReadyMutex;
-        //std::condition_variable frameReadyEvent;
+        std::mutex              frameReadyMutex;
+        std::condition_variable frameReadyEvent;
     };
 }
