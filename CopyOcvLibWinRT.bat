@@ -14,7 +14,6 @@ copy %1\binWinRT\Release\opencv_flann\opencv_flann.lib				%2\LIB\WinRT\Release /
 copy %1\binWinRT\Release\opencv_imgproc\opencv_imgproc.lib			%2\LIB\WinRT\Release /y
 copy %1\binWinRT\Release\opencv_legacy\opencv_legacy.lib			%2\LIB\WinRT\Release /y
 copy %1\binWinRT\Release\opencv_ml\opencv_ml.lib				%2\LIB\WinRT\Release /y
-copy %1\binWinRT\Release\opencv_nonfree\opencv_nonfree.lib			%2\LIB\WinRT\Release /y
 copy %1\binWinRT\Release\opencv_objdetect\opencv_objdetect.lib			%2\LIB\WinRT\Release /y
 copy %1\binWinRT\Release\opencv_photo\opencv_photo.lib				%2\LIB\WinRT\Release /y
 copy %1\binWinRT\Release\opencv_shape\opencv_shape.lib				%2\LIB\WinRT\Release /y
@@ -35,7 +34,6 @@ copy %1\binWinRT\ARM\Release\opencv_flann\opencv_flann.lib			%2\LIB\WinRT\ARM\Re
 copy %1\binWinRT\ARM\Release\opencv_imgproc\opencv_imgproc.lib			%2\LIB\WinRT\ARM\Release /y
 copy %1\binWinRT\ARM\Release\opencv_legacy\opencv_legacy.lib			%2\LIB\WinRT\ARM\Release /y
 copy %1\binWinRT\ARM\Release\opencv_ml\opencv_ml.lib				%2\LIB\WinRT\ARM\Release /y
-copy %1\binWinRT\ARM\Release\opencv_nonfree\opencv_nonfree.lib			%2\LIB\WinRT\ARM\Release /y
 copy %1\binWinRT\ARM\Release\opencv_objdetect\opencv_objdetect.lib		%2\LIB\WinRT\ARM\Release /y
 copy %1\binWinRT\ARM\Release\opencv_photo\opencv_photo.lib			%2\LIB\WinRT\ARM\Release /y
 copy %1\binWinRT\ARM\Release\opencv_shape\opencv_shape.lib			%2\LIB\WinRT\ARM\Release /y
@@ -56,7 +54,6 @@ copy %1\binWinRT\x64\Release\opencv_flann\opencv_flann.lib		%2\LIB\WinRT\x64\Rel
 copy %1\binWinRT\x64\Release\opencv_imgproc\opencv_imgproc.lib		%2\LIB\WinRT\x64\Release /y
 copy %1\binWinRT\x64\Release\opencv_legacy\opencv_legacy.lib		%2\LIB\WinRT\x64\Release /y
 copy %1\binWinRT\x64\Release\opencv_ml\opencv_ml.lib			%2\LIB\WinRT\x64\Release /y
-copy %1\binWinRT\x64\Release\opencv_nonfree\opencv_nonfree.lib		%2\LIB\WinRT\x64\Release /y
 copy %1\binWinRT\x64\Release\opencv_objdetect\opencv_objdetect.lib	%2\LIB\WinRT\x64\Release /y
 copy %1\binWinRT\x64\Release\opencv_photo\opencv_photo.lib		%2\LIB\WinRT\x64\Release /y
 copy %1\binWinRT\x64\Release\opencv_shape\opencv_shape.lib		%2\LIB\WinRT\x64\Release /y
