@@ -47,10 +47,11 @@ using namespace Windows::Media::Capture;
 using namespace Windows::Media::MediaProperties;
 using namespace Windows::Devices::Enumeration;
 
-using namespace Windows::UI::Xaml::Media::Imaging;
-
 using namespace Platform;
 using namespace ::Concurrency;
+
+using namespace Windows::UI::Xaml::Media::Imaging;
+using namespace Microsoft::WRL;
 
 // nb. must use dllexport to inform linker
 //__declspec(dllexport) ::Windows::UI::Xaml::Controls::Image^ gOutput = nullptr;
@@ -68,7 +69,7 @@ namespace cv {
 
     VideoCapture_WinRT::VideoCapture_WinRT(int device) : started(false)
     {
-        deviceID = device;
+        HighguiBridge::get().deviceIndex = device;
     }
 
     // grab a frame:
@@ -77,37 +78,11 @@ namespace cv {
     bool VideoCapture_WinRT::grabFrame()
     {
         if (!started) {
+            // TODO set size from the Mat
+
             // request device init on UI thread - this blocks until device init is done
-            HighguiBridge::getInstance().requestForUIthread(HighguiBridge_OPEN_CAMERA);
+            HighguiBridge::get().requestForUIthread(HighguiBridge_OPEN_CAMERA);
 
-            m_capture = HighguiBridge::getInstance().m_capture;
-            m_devices = HighguiBridge::getInstance().m_devices;
-
-            if (!m_capture.Get() || !m_devices.Get()) return false;
-
-            // complete device start here on bg thread
-            auto settings = ref new MediaCaptureInitializationSettings();
-            settings->StreamingCaptureMode = StreamingCaptureMode::Video; // Video-only capture
-
-            auto props = safe_cast<VideoEncodingProperties^>(m_capture->VideoDeviceController->GetMediaStreamProperties(MediaStreamType::VideoPreview));
-
-            // Ask for color conversion to match WriteableBitmap
-            props->Subtype = MediaEncodingSubtypes::Bgra8;
-
-            if (deviceID < 0 || (unsigned)deviceID >= m_devices.Get()->Size)
-                return false;
-
-            auto devInfo = m_devices.Get()->GetAt(deviceID);
-            settings->VideoDeviceId = devInfo->Id;
-
-            ::Media::CaptureFrameGrabber::CreateAsync(m_capture.Get(), props);
-            /*
-        }).then([this](::Media::CaptureFrameGrabber^ frameGrabber)
-        {
-            started = true;
-            GrabFrameAsync(frameGrabber);
-        });
-*/
             started = true;
         }
 #if 0
@@ -126,7 +101,7 @@ namespace cv {
     bool VideoCapture_WinRT::retrieveFrame(int, cv::OutputArray)
     {
         if (!started) return false;
-        // return m_frontBuffer converted to an IplImage?
+        // return m_frontBuffer
         return 0;
     }
 
@@ -135,14 +110,17 @@ namespace cv {
 
     void VideoCapture_WinRT::SwapBuffers()
     {
+#if 0
         lock_guard<mutex> lock(bufferMutex);
         if (frameCurrent != frameCounter)
         {
             frameCurrent = frameCounter;
             swap(m_backBuffer, m_frontBuffer);
         }
+#endif
     }
 
+#if 0
     void VideoCapture_WinRT::GrabFrameAsync(::Media::CaptureFrameGrabber^ frameGrabber)
     {
         create_task(frameGrabber->GetFrameAsync()).then([this, frameGrabber](const ComPtr<IMF2DBuffer2>& buffer)
@@ -202,6 +180,7 @@ namespace cv {
 
         }, task_continuation_context::use_current());
     }
+#endif
 
     bool VideoCapture_WinRT::setProperty(int property_id, double value)
     {

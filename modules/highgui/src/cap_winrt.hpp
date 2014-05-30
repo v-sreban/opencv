@@ -41,13 +41,7 @@
 
 #include <agile.h>
 
-//// pull in MF libs (this has to be somewhere in the project)
-//#pragma comment(lib, "mfplat")
-//#pragma comment(lib, "mf")
-//#pragma comment(lib, "mfuuid")
-//#pragma comment(lib, "Shlwapi")
-
-#include "cap_winrt/CaptureFrameGrabber.h"
+// #include "cap_winrt/CaptureFrameGrabber.h"
 
 // implement the newer IVideoCapture so that we can work
 // directly with Mat, not the cv interface which has added overhead
@@ -58,11 +52,10 @@ namespace cv {
     {
     public:
         VideoCapture_WinRT() :
-            started(false),
+            started(false)
             //bytesPerPixel(0),
             //frameCounter(0),
             //frameCurrent(0),
-            deviceID(0)
         {}
 
         VideoCapture_WinRT(int device);
@@ -87,28 +80,25 @@ namespace cv {
 
     protected:
 
-        int deviceID;
-
         // double buffering
         std::mutex              bufferMutex;
         std::unique_ptr<Windows::UI::Xaml::Media::Imaging::WriteableBitmap^>   m_frontBuffer;
         std::unique_ptr<Windows::UI::Xaml::Media::Imaging::WriteableBitmap^>   m_backBuffer;
 
-        void GrabFrameAsync(::Media::CaptureFrameGrabber^ frameGrabber);
         void SwapBuffers();
 
-        Platform::Agile<::Windows::Media::Capture::MediaCapture> m_capture;
-        Platform::Agile<Windows::Devices::Enumeration::DeviceInformationCollection> m_devices;
+        // cannot be in this class because we don't have an instance of Media::CaptureFrameGrabber^
+        //void GrabFrameAsync(::Media::CaptureFrameGrabber^ frameGrabber);
+
+        //Platform::Agile<::Windows::Media::Capture::MediaCapture> m_capture;
+        //Platform::Agile<Windows::Devices::Enumeration::DeviceInformationCollection> m_devices;
 
         bool    started;
 
         CvSize                  size;
         int                     bytesPerPixel;
-        unsigned long           frameCounter;
         unsigned long           frameCurrent;
         std::atomic<bool>       isFrameNew;
 
-        std::mutex              frameReadyMutex;
-        std::condition_variable frameReadyEvent;
     };
 }
