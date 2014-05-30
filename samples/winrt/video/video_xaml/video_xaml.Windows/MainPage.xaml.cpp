@@ -39,9 +39,8 @@ MainPage::MainPage()
     asyncTask->Progress = ref new AsyncActionProgressHandler<int>([](IAsyncActionWithProgress<int>^ act, int progress)
     {
         int action = progress;
-        HighguiBridge::getInstance().processOnUIthread(action);
+        HighguiBridge::get().processOnUIthread(action);
     });
-
 }
 
 // implemented in main.cpp
@@ -53,7 +52,7 @@ IAsyncActionWithProgress<int>^ MainPage::TaskWithProgressAsync()
 {
     return create_async([this](progress_reporter<int> reporter)
     {
-        HighguiBridge::getInstance().setReporter(reporter);
+        HighguiBridge::get().setReporter(reporter);
         cvMain();
     });
 }
