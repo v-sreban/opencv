@@ -33,10 +33,16 @@
 #include <ppl.h>
 #include <ppltasks.h>
 #include <concrt.h>
+
+#include <mutex>
+#include <memory>
+#include <condition_variable>
 #include <atomic>
 #include <future>
 
 #include <agile.h>
+
+#include "cap_winrt/CaptureFrameGrabber.h"
 
 #if 0
 // this is an OpenCV class
@@ -63,7 +69,7 @@ class HighguiBridge
 public:
     // common methods for all DLLs
 
-    __declspec(dllexport) static HighguiBridge& getInstance();
+    __declspec(dllexport) static HighguiBridge& get();
 
     // called from XAML task (UI thread)
     __declspec(dllexport) void processOnUIthread(int action);
@@ -102,21 +108,38 @@ public:
 
     // MediaCapture ^capture;
     int deviceIndex;
+    int width, height;
+
+    unsigned long           frameCounter;
+    std::mutex              frameReadyMutex;
+    std::condition_variable frameReadyEvent;
+
+private:
 
     Platform::Agile<Windows::Media::Capture::MediaCapture> m_capture;
     Platform::Agile<Windows::Devices::Enumeration::DeviceInformationCollection> m_devices;
 
-private:
+    // to solve linker error, CaptureFrameGrabber cannot be a member of this class
+    // ::Media::CaptureFrameGrabber^ m_frameGrabber;
+    //void GrabFrameAsync(Media::CaptureFrameGrabber^ frameGrabber);
+
     HighguiBridge() {
-        done = false;
+        deviceIndex = 0;
+        width = 640;
+        height = 480;
+        UIthreadTaskDone = false;
+        deviceReady = false;
     };
 
     bool initializeDeviceTask();
+
+    std::atomic<bool>       deviceReady;
 
     // singleton
     HighguiBridge(HighguiBridge const &);
     void operator=(const HighguiBridge &);
 
     Concurrency::progress_reporter<int> reporter;
-    std::atomic<bool> done;
+
+    std::atomic<bool> UIthreadTaskDone;
 };
