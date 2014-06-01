@@ -7,7 +7,7 @@
 
 #include "MainPage.g.h"
 
-namespace video_xaml
+namespace highgui_xaml
 {
 	/// <summary>
 	/// An empty page that can be used on its own or navigated to within a Frame.

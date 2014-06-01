@@ -3,9 +3,9 @@
   <PropertyGroup Label="Globals">
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
     <HasSharedItems>true</HasSharedItems>
-    <SharedGUID>8832aa37-0039-4727-ba67-06fde896535c</SharedGUID>
-    <ItemsProjectGuid>{e22b4270-4705-4a55-9584-c99d8d215570}</ItemsProjectGuid>
-    <ItemsRootNamespace>video_xaml</ItemsRootNamespace>
+    <SharedGUID>98633655-f156-43bb-b452-37cd6a71e3f0</SharedGUID>
+    <ItemsProjectGuid>{6a274b7f-3982-499e-b55a-1f12ef2e3ec0}</ItemsProjectGuid>
+    <ItemsRootNamespace>highgui_xaml</ItemsRootNamespace>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>

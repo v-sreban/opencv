@@ -27,8 +27,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{804087d9-2df9-46cb-bcbd-67bd26312341}</ProjectGuid>
-    <RootNamespace>video_xaml</RootNamespace>
+    <ProjectGuid>{32fdab94-f87e-4f0a-89a4-9ec10a3b1d3d}</ProjectGuid>
+    <RootNamespace>highgui_xaml</RootNamespace>
     <DefaultLanguage>en-US</DefaultLanguage>
     <MinimumVisualStudioVersion>12.0</MinimumVisualStudioVersion>
     <AppContainerApplication>true</AppContainerApplication>
@@ -70,7 +70,7 @@
     <PlatformToolset>v120</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
-  <Import Project="..\video_xaml.Shared\video_xaml.Shared.vcxitems" Label="Shared" />
+  <Import Project="..\highgui_xaml.Shared\highgui_xaml.Shared.vcxitems" Label="Shared" />
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -93,7 +93,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
-    <PackageCertificateKeyFile>video_xaml.Windows_TemporaryKey.pfx</PackageCertificateKeyFile>
+    <PackageCertificateKeyFile>highgui_xaml.Windows_TemporaryKey.pfx</PackageCertificateKeyFile>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
     <ClCompile>
@@ -111,9 +111,6 @@
     <ClCompile>
       <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
       <DisableSpecificWarnings>4453;28204</DisableSpecificWarnings>
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <AdditionalIncludeDirectories>../../../../../modules/core/include;../../../../../modules/highgui/include;../../../../../modules/flann/include;../../../../../modules/imgproc/include;../../../../../modules/features2d/include;%(AdditionalIncludeDirectories);$(MSBuildThisFileDirectory)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -148,7 +145,7 @@
     <AppxManifest Include="Package.appxmanifest">
       <SubType>Designer</SubType>
     </AppxManifest>
-    <None Include="video_xaml.Windows_TemporaryKey.pfx" />
+    <None Include="highgui_xaml.Windows_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Assets\Logo.scale-100.png" />
@@ -157,36 +154,9 @@
     <Image Include="Assets\SplashScreen.scale-100.png" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp" />
     <ClCompile Include="MainPage.xaml.cpp">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\..\..\binWinRT\3rdparty\libjasper\libjasper.vcxproj">
-      <Project>{e6703efc-70a8-4983-bfc1-c6c08f150be5}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\..\..\binWinRT\3rdparty\libjpeg\libjpeg.vcxproj">
-      <Project>{d8f9be2a-cafe-4ec8-9085-61af2a380402}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\..\..\binWinRT\3rdparty\libpng\libpng.vcxproj">
-      <Project>{557519f6-1163-4743-981f-c9b5ca8f5091}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\..\..\binWinRT\3rdparty\libtiff\libtiff.vcxproj">
-      <Project>{2306e394-8f5d-497b-bc3a-2b868e6360cf}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\..\..\binWinRT\3rdparty\zlib\zlib.vcxproj">
-      <Project>{656a658b-3ee2-4f94-8899-c65543317d01}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\..\..\binWinRT\modules\core\opencv_core.vcxproj">
-      <Project>{015a92e7-9fb3-428f-99d0-9b2088c54426}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\..\..\binWinRT\modules\highgui\opencv_highgui.vcxproj">
-      <Project>{f35c9a5d-f897-4c1e-9cb0-b73782e15031}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\..\..\binWinRT\modules\imgproc\opencv_imgproc.vcxproj">
-      <Project>{1320606c-4689-48f6-b6dd-12ec932c9cef}</Project>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -7,7 +7,7 @@
 
 #include "App.g.h"
 
-namespace video_xaml
+namespace highgui_xaml
 {
 	/// <summary>
 	/// Provides application-specific behavior to supplement the default Application class.

@@ -6,9 +6,9 @@
 #include "pch.h"
 #include "MainPage.xaml.h"
 
-#include "../../../modules/highgui/src/cap_winrt_highgui.hpp"
+// #include "../../../modules/highgui/src/cap_winrt_highgui.hpp"
 
-using namespace video_xaml;
+using namespace highgui_xaml;
 
 using namespace Platform;
 using namespace Windows::Foundation;
@@ -39,12 +39,12 @@ MainPage::MainPage()
     asyncTask->Progress = ref new AsyncActionProgressHandler<int>([](IAsyncActionWithProgress<int>^ act, int progress)
     {
         int action = progress;
-        HighguiBridge::get().processOnUIthread(action);
+        // HighguiBridge::get().processOnUIthread(action);
     });
 }
 
 // implemented in main.cpp
-void cvMain();
+// void cvMain();
 
 // set the reporter method for the HighguiAssist singleton
 // start the main OpenCV as an async thread in WinRT
@@ -52,7 +52,7 @@ IAsyncActionWithProgress<int>^ MainPage::TaskWithProgressAsync()
 {
     return create_async([this](progress_reporter<int> reporter)
     {
-        HighguiBridge::get().setReporter(reporter);
-        cvMain();
+        // HighguiBridge::get().setReporter(reporter);
+        // cvMain();
     });
 }

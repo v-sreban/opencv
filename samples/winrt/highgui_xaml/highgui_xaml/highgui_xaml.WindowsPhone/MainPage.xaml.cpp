@@ -6,7 +6,7 @@
 #include "pch.h"
 #include "MainPage.xaml.h"
 
-using namespace video_xaml;
+using namespace highgui_xaml;
 
 using namespace Platform;
 using namespace Windows::Foundation;
