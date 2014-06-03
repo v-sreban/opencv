@@ -67,12 +67,6 @@
     <ClCompile Include="..\..\..\modules\highgui\src\cap_winrt.cpp">
       <Filter>Src</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\modules\highgui\src\cap_winrt\CaptureFrameGrabber.cpp">
-      <Filter>cap_winrt</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\modules\highgui\src\cap_winrt\MediaStreamSink.cpp">
-      <Filter>cap_winrt</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\modules\highgui\src\cap_winrt_highgui.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -149,18 +143,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\modules\highgui\src\cap_winrt.hpp" />
-    <ClInclude Include="..\..\..\modules\highgui\src\cap_winrt\CaptureFrameGrabber.h">
-      <Filter>cap_winrt</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\modules\highgui\src\cap_winrt\MediaSink.h">
-      <Filter>cap_winrt</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\modules\highgui\src\cap_winrt\MediaStreamSink.h">
-      <Filter>cap_winrt</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\modules\highgui\src\cap_winrt\MFIncludes.h">
-      <Filter>cap_winrt</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\modules\highgui\src\cap_winrt_highgui.hpp" />
   </ItemGroup>
   <ItemGroup>
