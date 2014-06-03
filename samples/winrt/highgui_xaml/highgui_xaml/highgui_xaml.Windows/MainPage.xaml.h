@@ -32,13 +32,14 @@ namespace highgui_xaml
 
         Windows::Foundation::IAsyncActionWithProgress<int>^ TaskWithProgressAsync();
 
-        std::vector<int>	listDevices();
+        bool listDevices();
 
+        Platform::Agile<Windows::Media::Capture::MediaCapture> m_capture;
         Platform::Agile<Windows::Devices::Enumeration::DeviceInformationCollection> m_devices;
 
         ::Media::CaptureFrameGrabber^ m_frameGrabber;
 
-        std::vector <int> listDevicesTask();
+        bool listDevicesTask();
 
         bool					bChooseDevice;
         bool 					bVerbose;

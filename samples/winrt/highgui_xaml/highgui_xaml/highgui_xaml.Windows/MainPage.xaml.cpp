@@ -119,15 +119,15 @@ bool MainPage::initGrabber(int device, int w, int h)
         bFlipImageX = true;
     }
 
-    auto capture = ref new MediaCapture();
-    create_task(capture->InitializeAsync(settings)).then([this, capture](){
+    m_capture = ref new MediaCapture();
+    create_task(m_capture->InitializeAsync(settings)).then([this](){
 
-        auto props = safe_cast<VideoEncodingProperties^>(capture->VideoDeviceController->GetMediaStreamProperties(MediaStreamType::VideoPreview));
+        auto props = safe_cast<VideoEncodingProperties^>(m_capture->VideoDeviceController->GetMediaStreamProperties(MediaStreamType::VideoPreview));
         props->Subtype = MediaEncodingSubtypes::Rgb24;
         props->Width = width;
         props->Height = height;
 
-        return ::Media::CaptureFrameGrabber::CreateAsync(capture, props);
+        return ::Media::CaptureFrameGrabber::CreateAsync(m_capture.Get(), props);
 
     }).then([this](::Media::CaptureFrameGrabber^ frameGrabber)
     {
@@ -205,16 +205,16 @@ void ofWinrtVideoGrabber::_GrabFrameAsync(Media::CaptureFrameGrabber^ frameGrabb
 #endif
 
 
-vector <int> MainPage::listDevicesTask()
+bool MainPage::listDevicesTask()
 {
     std::atomic<bool> ready(false);
 
     auto settings = ref new MediaCaptureInitializationSettings();
 
-    vector <int> devices;
+    //vector <int> devices;
 
     create_task(DeviceInformation::FindAllAsync(DeviceClass::VideoCapture))
-        .then([this, &devices, &ready](task<DeviceInformationCollection^> findTask)
+        .then([this, &ready](task<DeviceInformationCollection^> findTask)
     {
         m_devices = findTask.get();
 
@@ -226,7 +226,6 @@ vector <int> MainPage::listDevicesTask()
             //deviceInfo.deviceName = PlatformStringToString(d->Name);
             //deviceInfo.hardwareName = deviceInfo.deviceName;
             // devices.push_back(deviceInfo);
-            devices.push_back(i);
         }
 
         ready = true;
@@ -239,15 +238,14 @@ vector <int> MainPage::listDevicesTask()
         count++;
     }
 
-    return devices;
+    return true;
 }
 
 
-vector<int> MainPage::listDevices()
+bool MainPage::listDevices()
 {
     // synchronous version of listing video devices on WinRT
-    // not a recommended practice but oF expects synchronous device enumeration
-    std::future<vector <int>> result = std::async(std::launch::async, &MainPage::listDevicesTask, this);
+    std::future<bool> result = std::async(std::launch::async, &MainPage::listDevicesTask, this);
     return result.get();
 }
 
