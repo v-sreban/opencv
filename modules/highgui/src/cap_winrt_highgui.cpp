@@ -51,7 +51,7 @@ void HighguiBridge::processOnUIthread(int action)
     switch (action)
     {
     case HighguiBridge_OPEN_CAMERA:        
-        initializeDevice();
+        // initializeDevice();
         break;
     case HighguiBridge_CLOSE_CAMERA:
         // closeDevice();
@@ -64,7 +64,7 @@ void HighguiBridge::processOnUIthread(int action)
     }
 }
 
-
+#if 0
 bool HighguiBridge::initializeDevice()
 {
     // blocking requires both a future and a spinlock on the atomic in the task completion
@@ -74,7 +74,7 @@ bool HighguiBridge::initializeDevice()
 }
 
 
-static void GrabFrameAsync(Media::CaptureFrameGrabber^ frameGrabber);
+// static void GrabFrameAsync(Media::CaptureFrameGrabber^ frameGrabber);
 
 
 bool HighguiBridge::initializeDeviceTask()
@@ -114,7 +114,7 @@ bool HighguiBridge::initializeDeviceTask()
         {
             // m_frameGrabber = frameGrabber;
             deviceReady = true;
-            GrabFrameAsync(frameGrabber);
+            // GrabFrameAsync(frameGrabber);
             //ofAddListener(ofEvents().appResume, this, &ofWinrtVideoGrabber::appResume, ofEventOrder::OF_EVENT_ORDER_AFTER_APP);
         });
         return true;
@@ -130,6 +130,7 @@ bool HighguiBridge::initializeDeviceTask()
 
     return true;
 }
+#endif
 
 void HighguiBridge::waitForUIthreadRequest()
 {
@@ -151,7 +152,7 @@ HighguiBridge& HighguiBridge::get()
     return instance;
 }
 
-
+#if 0
 void GrabFrameAsync(::Media::CaptureFrameGrabber^ frameGrabber)
 {
     create_task(frameGrabber->GetFrameAsync()).then([frameGrabber](const ComPtr<IMF2DBuffer2>& buffer)
@@ -210,3 +211,5 @@ void GrabFrameAsync(::Media::CaptureFrameGrabber^ frameGrabber)
 
     }, task_continuation_context::use_current());
 }
+
+#endif

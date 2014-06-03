@@ -42,7 +42,7 @@
 
 #include <agile.h>
 
-#include "cap_winrt/CaptureFrameGrabber.h"
+// #include "cap_winrt/CaptureFrameGrabber.h"
 
 #if 0
 // this is an OpenCV class
@@ -82,7 +82,7 @@ public:
     void waitForUIthreadRequest();
 
     // highgui video interface
-    bool initializeDevice();
+    // bool initializeDevice();
 
     // highgui UI interface
     void createTrackbar( /* callbackOnChange */) {} // unhides trackbar and registers OpenCV callback
@@ -116,8 +116,8 @@ public:
 
 private:
 
-    Platform::Agile<Windows::Media::Capture::MediaCapture> m_capture;
-    Platform::Agile<Windows::Devices::Enumeration::DeviceInformationCollection> m_devices;
+    //Platform::Agile<Windows::Media::Capture::MediaCapture> m_capture;
+    //Platform::Agile<Windows::Devices::Enumeration::DeviceInformationCollection> m_devices;
 
     // to solve linker error, CaptureFrameGrabber cannot be a member of this class
     // ::Media::CaptureFrameGrabber^ m_frameGrabber;
@@ -131,7 +131,7 @@ private:
         deviceReady = false;
     };
 
-    bool initializeDeviceTask();
+    // bool initializeDeviceTask();
 
     std::atomic<bool>       deviceReady;
 
