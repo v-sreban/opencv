@@ -5,6 +5,9 @@
       <UniqueIdentifier>{ef9b8c45-f2b7-4eec-a8b4-a9b340be770b}</UniqueIdentifier>
       <Extensions>bmp;fbx;gif;jpg;jpeg;tga;tiff;tif;png</Extensions>
     </Filter>
+    <Filter Include="CaptureFrameGrabber">
+      <UniqueIdentifier>{92b393bb-4ed3-4acb-8cfe-f1880628523c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Page Include="MainPage.xaml" />
@@ -12,9 +15,27 @@
   <ItemGroup>
     <ClCompile Include="MainPage.xaml.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="CaptureFrameGrabber\CaptureFrameGrabber.cpp">
+      <Filter>CaptureFrameGrabber</Filter>
+    </ClCompile>
+    <ClCompile Include="CaptureFrameGrabber\MediaStreamSink.cpp">
+      <Filter>CaptureFrameGrabber</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainPage.xaml.h" />
+    <ClInclude Include="CaptureFrameGrabber\CaptureFrameGrabber.h">
+      <Filter>CaptureFrameGrabber</Filter>
+    </ClInclude>
+    <ClInclude Include="CaptureFrameGrabber\MediaSink.h">
+      <Filter>CaptureFrameGrabber</Filter>
+    </ClInclude>
+    <ClInclude Include="CaptureFrameGrabber\MediaStreamSink.h">
+      <Filter>CaptureFrameGrabber</Filter>
+    </ClInclude>
+    <ClInclude Include="CaptureFrameGrabber\MFIncludes.h">
+      <Filter>CaptureFrameGrabber</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest" />
