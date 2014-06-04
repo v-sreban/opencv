@@ -33,10 +33,10 @@
 #include "cap_winrt_highgui.hpp"
 
 // pull in MF libs (this has to be somewhere in the project)
-#pragma comment(lib, "mfplat")
-#pragma comment(lib, "mf")
-#pragma comment(lib, "mfuuid")
-#pragma comment(lib, "Shlwapi")
+//#pragma comment(lib, "mfplat")
+//#pragma comment(lib, "mf")
+//#pragma comment(lib, "mfuuid")
+//#pragma comment(lib, "Shlwapi")
 
 #define CHK(statement)  {HRESULT _hr = (statement); if (FAILED(_hr)) { throw ref new Platform::COMException(_hr); };}
 
