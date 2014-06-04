@@ -45,6 +45,13 @@ using namespace Windows::Media::Capture;
 using namespace Windows::UI::Xaml::Media::Imaging;
 using namespace Windows::Devices::Enumeration;
 
+#include "CaptureFrameGrabber/CaptureFrameGrabber.h"
+
+// pull in MF libs (this has to be somewhere in the project)
+#pragma comment(lib, "mfplat")
+#pragma comment(lib, "mf")
+#pragma comment(lib, "mfuuid")
+#pragma comment(lib, "Shlwapi")
 
 MainPage::MainPage()
 {
@@ -56,6 +63,14 @@ MainPage::MainPage()
         int action = progress;
         // HighguiBridge::get().processOnUIthread(action);
     });
+}
+
+void MainPage::OnNavigatedTo(NavigationEventArgs^ e)
+{
+    (void)e;	// Unused parameter
+
+    initGrabber(0, 640, 480);
+
 }
 
 // implemented in main.cpp
@@ -75,6 +90,8 @@ IAsyncActionWithProgress<int>^ MainPage::TaskWithProgressAsync()
 
 bool MainPage::initGrabber(int device, int w, int h)
 {
+    std::atomic<bool> ready(false);
+
     width = w;
     height = h;
     bytesPerPixel = 3;
@@ -87,57 +104,97 @@ bool MainPage::initGrabber(int device, int w, int h)
     frameCounter = 0;
     currentFrame = 0;
 
-    if (bChooseDevice){
-        bChooseDevice = false;
-        // ofLogNotice("ofWinrtVideoGrabber") << "initGrabber(): choosing " << m_deviceID;
-    }
-    else {
-        m_deviceID = 0;
-    }
+    //if (bChooseDevice){
+    //    bChooseDevice = false;
+    //    // ofLogNotice("ofWinrtVideoGrabber") << "initGrabber(): choosing " << m_deviceID;
+    //}
+    //else {
+    //    m_deviceID = 0;
+    //}
 
-    auto settings = ref new MediaCaptureInitializationSettings();
-    settings->StreamingCaptureMode = StreamingCaptureMode::Video; // Video-only capture
+    //if (!m_devices.Get())
+    //{
+    //    listDevicesTask();      // blocking
+    //    if (!m_devices.Get())
+    //    {
+    //        // ofLogError("ofWinrtVideoGrabber") << "no video devices are available";
+    //        return false;
+    //    }
+    //}
 
-    // we need to have at least one video device
-    // call listdevices() to find the default (first) video device
-    if (!m_devices.Get())
+    m_deviceID = device;
+
+    create_task(DeviceInformation::FindAllAsync(DeviceClass::VideoCapture))
+        .then([this, &ready](task<DeviceInformationCollection^> findTask)
     {
-        listDevices();
-        if (!m_devices.Get())
+        m_devices = findTask.get();
+
+        // got any devices?
+        if (m_devices.Get()->Size == 0) return false;
+
+        auto devInfo = m_devices.Get()->GetAt(m_deviceID);
+
+        auto settings = ref new MediaCaptureInitializationSettings();
+        settings->StreamingCaptureMode = StreamingCaptureMode::Video; // Video-only capture
+        settings->VideoDeviceId = devInfo->Id;
+
+        auto location = devInfo->EnclosureLocation;
+        if (location != nullptr && location->Panel == Windows::Devices::Enumeration::Panel::Front)
         {
-            // ofLogError("ofWinrtVideoGrabber") << "no video devices are available";
-            return false;
+            bFlipImageX = true;
         }
-    }
 
-    auto devInfo = m_devices.Get()->GetAt(device);
-    settings->VideoDeviceId = devInfo->Id;
+        m_capture = ref new MediaCapture();
+        create_task(m_capture->InitializeAsync(settings)).then([this, &ready](){
 
-    auto location = devInfo->EnclosureLocation;
-    if (location != nullptr && location->Panel == Windows::Devices::Enumeration::Panel::Front)
-    {
-        bFlipImageX = true;
-    }
+            auto props = safe_cast<VideoEncodingProperties^>(m_capture->VideoDeviceController->GetMediaStreamProperties(MediaStreamType::VideoPreview));
+            props->Subtype = MediaEncodingSubtypes::Rgb24;
+            props->Width = width;
+            props->Height = height;
 
-    m_capture = ref new MediaCapture();
-    create_task(m_capture->InitializeAsync(settings)).then([this](){
+            return ::Media::CaptureFrameGrabber::CreateAsync(m_capture.Get(), props);
 
-        auto props = safe_cast<VideoEncodingProperties^>(m_capture->VideoDeviceController->GetMediaStreamProperties(MediaStreamType::VideoPreview));
-        props->Subtype = MediaEncodingSubtypes::Rgb24;
-        props->Width = width;
-        props->Height = height;
+        }).then([this, &ready](::Media::CaptureFrameGrabber^ frameGrabber)
+        {
+            m_frameGrabber = frameGrabber;
+            bGrabberInited = true;
+            ready = true;
+            _GrabFrameAsync(frameGrabber);
+            //ofAddListener(ofEvents().appResume, this, &ofWinrtVideoGrabber::appResume, ofEventOrder::OF_EVENT_ORDER_AFTER_APP);
+        });
 
-        return ::Media::CaptureFrameGrabber::CreateAsync(m_capture.Get(), props);
-
-    }).then([this](::Media::CaptureFrameGrabber^ frameGrabber)
-    {
-        m_frameGrabber = frameGrabber;
-        bGrabberInited = true;
-        // _GrabFrameAsync(frameGrabber);
-        //ofAddListener(ofEvents().appResume, this, &ofWinrtVideoGrabber::appResume, ofEventOrder::OF_EVENT_ORDER_AFTER_APP);
+        return true;
     });
 
+
+    // wait for async task to complete
+    int count = 0;
+    while (!ready)
+    {
+        count++;
+    }
+
     return true;
+}
+
+void MainPage::_GrabFrameAsync(::Media::CaptureFrameGrabber^ frameGrabber)
+{
+    create_task(frameGrabber->GetFrameAsync()).then([this, frameGrabber](const ComPtr<IMF2DBuffer2>& buffer)
+    {
+        auto bitmap = ref new WriteableBitmap(width, height);
+
+        CHK(buffer->ContiguousCopyTo(GetData(bitmap->PixelBuffer), bitmap->PixelBuffer->Capacity));
+
+        unsigned long length;
+        CHK(buffer->GetContiguousLength(&length));
+        bitmap->PixelBuffer->Length = length;
+
+        cvImage->Source = bitmap;
+
+        // loss of camera device & restart is not yet handled
+
+        _GrabFrameAsync(frameGrabber);
+    }, task_continuation_context::use_current());
 }
 
 #if 0
@@ -242,10 +299,11 @@ bool MainPage::listDevicesTask()
 }
 
 
+#if 0
 bool MainPage::listDevices()
 {
     // synchronous version of listing video devices on WinRT
     std::future<bool> result = std::async(std::launch::async, &MainPage::listDevicesTask, this);
     return result.get();
 }
-
+#endif

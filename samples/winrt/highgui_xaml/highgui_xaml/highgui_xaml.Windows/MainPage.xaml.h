@@ -27,12 +27,18 @@ namespace highgui_xaml
     public:
         MainPage();
 
-    private:
         bool initGrabber(int device, int w, int h);
+
+    protected:
+
+        virtual void OnNavigatedTo(Windows::UI::Xaml::Navigation::NavigationEventArgs^ e) override;
+
+    private:
+        void _GrabFrameAsync(::Media::CaptureFrameGrabber^ frameGrabber);
 
         Windows::Foundation::IAsyncActionWithProgress<int>^ TaskWithProgressAsync();
 
-        bool listDevices();
+        // bool listDevices();
 
         Platform::Agile<Windows::Media::Capture::MediaCapture> m_capture;
         Platform::Agile<Windows::Devices::Enumeration::DeviceInformationCollection> m_devices;
