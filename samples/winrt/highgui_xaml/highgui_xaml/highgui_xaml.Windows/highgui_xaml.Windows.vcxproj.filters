@@ -21,6 +21,7 @@
     <ClCompile Include="CaptureFrameGrabber\MediaStreamSink.cpp">
       <Filter>CaptureFrameGrabber</Filter>
     </ClCompile>
+    <ClCompile Include="video.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainPage.xaml.h" />
@@ -36,6 +37,7 @@
     <ClInclude Include="CaptureFrameGrabber\MFIncludes.h">
       <Filter>CaptureFrameGrabber</Filter>
     </ClInclude>
+    <ClInclude Include="video.h" />
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest" />

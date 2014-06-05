@@ -141,6 +141,7 @@
     <ClInclude Include="MainPage.xaml.h">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </ClInclude>
+    <ClInclude Include="video.h" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="MainPage.xaml">
@@ -166,10 +167,17 @@
     <ClCompile Include="MainPage.xaml.cpp">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </ClCompile>
+    <ClCompile Include="video.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\..\binWinRT\modules\core\opencv_core.vcxproj">
+      <Project>{015a92e7-9fb3-428f-99d0-9b2088c54426}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\..\..\binWinRT\modules\highgui\opencv_highgui.vcxproj">
       <Project>{f35c9a5d-f897-4c1e-9cb0-b73782e15031}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\..\binWinRT\modules\imgproc\opencv_imgproc.vcxproj">
+      <Project>{1320606c-4689-48f6-b6dd-12ec932c9cef}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
