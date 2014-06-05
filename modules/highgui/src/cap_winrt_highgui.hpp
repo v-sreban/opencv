@@ -1,4 +1,4 @@
-// Capture support for WinRT - bridge from OpenCV to XAML
+// Highgui for OpenCV to XAML
 // Microsoft Surface and Phone using Media Foundation
 
 // Copyright (c) 2013, Microsoft Open Technologies, Inc. 
@@ -36,9 +36,9 @@
 
 #include <mutex>
 #include <memory>
-#include <condition_variable>
 #include <atomic>
-#include <future>
+// #include <future>
+// #include <condition_variable>
 
 #include <agile.h>
 
@@ -63,6 +63,10 @@ enum {
 };
 
 
+// class HighguiBridge is needed because the interface for 
+// VideoCapture_WinRT in cap_winrt.hpp is fixed by OpenCV
+// (or can it be extended?)
+
 // singleton
 class HighguiBridge
 {
@@ -72,14 +76,15 @@ public:
     __declspec(dllexport) static HighguiBridge& get();
 
     // called from XAML task (UI thread)
-    __declspec(dllexport) void processOnUIthread(int action);
+    // __declspec(dllexport) void processOnUIthread(int action);
 
     // call after initialization
     void setReporter(Concurrency::progress_reporter<int> pr) { reporter = pr; }
 
-    // to be called from cvMain via cap_winrt on bg thread
-    void requestForUIthread(int action);
-    void waitForUIthreadRequest();
+    // to be called from cvMain via cap_winrt on bg thread - non-blocking (async)
+    void requestForUIthreadAsync(int action);
+    
+    //void waitForUIthreadRequest();
 
     // highgui video interface
     // bool initializeDevice();
@@ -111,8 +116,24 @@ public:
     int width, height;
 
     unsigned long           frameCounter;
-    std::mutex              frameReadyMutex;
-    std::condition_variable frameReadyEvent;
+
+    std::atomic<bool>       bIsFrameNew;
+
+    // for blocking
+    //std::mutex              frameReadyMutex;
+    //std::condition_variable frameReadyEvent;
+
+    // double buffering
+    std::mutex              inputBufferMutex;
+    std::mutex              outputBufferMutex;
+
+    std::unique_ptr<Windows::UI::Xaml::Media::Imaging::WriteableBitmap^>   m_frontInputBuffer;
+    std::unique_ptr<Windows::UI::Xaml::Media::Imaging::WriteableBitmap^>   m_backInputBuffer;
+    std::unique_ptr<Windows::UI::Xaml::Media::Imaging::WriteableBitmap^>   m_frontOutputBuffer;
+    std::unique_ptr<Windows::UI::Xaml::Media::Imaging::WriteableBitmap^>   m_backOutputBuffer;
+
+    void SwapInputBuffers() {}
+    void SwapOutputBuffers() {}
 
 private:
 
@@ -129,6 +150,7 @@ private:
         height = 480;
         UIthreadTaskDone = false;
         deviceReady = false;
+        bIsFrameNew = false;
     };
 
     // bool initializeDeviceTask();

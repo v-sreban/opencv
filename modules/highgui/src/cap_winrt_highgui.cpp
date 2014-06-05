@@ -1,4 +1,4 @@
-// Capture support for WinRT - bridge from OpenCV to XAML
+// Highgui for OpenCV to XAML
 // Microsoft Surface and Phone using Media Foundation
 
 // Copyright (c) 2013, Microsoft Open Technologies, Inc. 
@@ -44,13 +44,26 @@ using namespace ::Concurrency;
 
 using namespace ::std;
 
+// non-blocking
+void HighguiBridge::requestForUIthreadAsync(int action)
+{ 
+    reporter.report(action); 
+}
 
+HighguiBridge& HighguiBridge::get()
+{
+    static HighguiBridge instance;
+    return instance;
+}
+
+
+#if 0
 void HighguiBridge::processOnUIthread(int action)
 {
     // this is running on the UI thread
     switch (action)
     {
-    case HighguiBridge_OPEN_CAMERA:        
+    case HighguiBridge_OPEN_CAMERA:
         // initializeDevice();
         break;
     case HighguiBridge_CLOSE_CAMERA:
@@ -64,7 +77,6 @@ void HighguiBridge::processOnUIthread(int action)
     }
 }
 
-#if 0
 bool HighguiBridge::initializeDevice()
 {
     // blocking requires both a future and a spinlock on the atomic in the task completion
@@ -130,7 +142,6 @@ bool HighguiBridge::initializeDeviceTask()
 
     return true;
 }
-#endif
 
 void HighguiBridge::waitForUIthreadRequest()
 {
@@ -140,17 +151,7 @@ void HighguiBridge::waitForUIthreadRequest()
         count++;
     }
 }
-
-void HighguiBridge::requestForUIthread(int action) 
-{ 
-    reporter.report(action); 
-}
-
-HighguiBridge& HighguiBridge::get()
-{
-    static HighguiBridge instance;
-    return instance;
-}
+#endif
 
 #if 0
 void GrabFrameAsync(::Media::CaptureFrameGrabber^ frameGrabber)
