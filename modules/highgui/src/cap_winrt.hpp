@@ -69,7 +69,7 @@ namespace cv {
         virtual double getProperty(int) { return 0; }
         virtual bool setProperty(int, double);
         virtual bool grabFrame();
-        virtual bool retrieveFrame(int, cv::OutputArray);
+        virtual bool retrieveFrame(int channel, cv::OutputArray outArray);
 
         // Return the type of the capture object
         virtual int getCaptureDomain() { return CAP_WINRT; }
@@ -79,13 +79,6 @@ namespace cv {
         void start();
 
     protected:
-
-        // double buffering
-        std::mutex              bufferMutex;
-        std::unique_ptr<Windows::UI::Xaml::Media::Imaging::WriteableBitmap^>   m_frontBuffer;
-        std::unique_ptr<Windows::UI::Xaml::Media::Imaging::WriteableBitmap^>   m_backBuffer;
-
-        void SwapBuffers();
 
         // cannot be in this class because we don't have an instance of Media::CaptureFrameGrabber^
         //void GrabFrameAsync(::Media::CaptureFrameGrabber^ frameGrabber);

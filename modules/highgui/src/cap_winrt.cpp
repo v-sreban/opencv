@@ -48,7 +48,7 @@ using namespace Windows::Media::MediaProperties;
 using namespace Windows::Devices::Enumeration;
 
 using namespace Platform;
-using namespace ::Concurrency;
+// using namespace ::concurrency;
 
 using namespace Windows::UI::Xaml::Media::Imaging;
 using namespace Microsoft::WRL;
@@ -77,48 +77,62 @@ namespace cv {
     // should be called on the image processing thread
     bool VideoCapture_WinRT::grabFrame()
     {
-        if (!started) {
-            // TODO set size from the Mat
+        // if device is not started we must return true so retrieveFrame() is called to start device
+        if (!started) return true;
 
-            // request device init on UI thread - this blocks until device init is done
-            HighguiBridge::get().requestForUIthread(HighguiBridge_OPEN_CAMERA);
+        if (HighguiBridge::get().bIsFrameNew)
+        {
+            HighguiBridge::get().bIsFrameNew = false;
 
-            started = true;
+            // got a new frame
+            // SwapBuffers();
+            return true;
         }
-#if 0
-        if (!started) return false;
 
-        unique_lock<mutex> lock(frameReadyMutex);
-        frameReadyEvent.wait(lock);
-        SwapBuffers();
-        return true;
-#endif
-        return true;
+        //unique_lock<mutex> lock(HighguiBridge::get().frameReadyMutex);
+        //HighguiBridge::get().frameReadyEvent.wait(lock);
+        return false;
     }
 
     // should be called on the image processing thread after grabFrame
     // see VideoCapture::read
-    bool VideoCapture_WinRT::retrieveFrame(int, cv::OutputArray)
+    bool VideoCapture_WinRT::retrieveFrame(int channel, cv::OutputArray outArray)
     {
+        if (!started) {
+            // set size from the Mat
+            HighguiBridge::get().width = outArray.size().width;
+            HighguiBridge::get().height = outArray.size().height;
+
+            if (HighguiBridge::get().width == 0) HighguiBridge::get().width = 640;
+            if (HighguiBridge::get().height == 0) HighguiBridge::get().height = 480;
+
+            // request device init on UI thread - this does not block, and is async
+            HighguiBridge::get().requestForUIthreadAsync(HighguiBridge_OPEN_CAMERA);
+
+            started = true;
+            return false;       // no frame was available
+        }
+
         if (!started) return false;
+
         // return m_frontBuffer
-        return 0;
+        return true;
     }
 
 
     // internal methods:
 
+#if 0
     void VideoCapture_WinRT::SwapBuffers()
     {
-#if 0
         lock_guard<mutex> lock(bufferMutex);
         if (frameCurrent != frameCounter)
         {
             frameCurrent = frameCounter;
             swap(m_backBuffer, m_frontBuffer);
         }
-#endif
     }
+#endif
 
 #if 0
     void VideoCapture_WinRT::GrabFrameAsync(::Media::CaptureFrameGrabber^ frameGrabber)
