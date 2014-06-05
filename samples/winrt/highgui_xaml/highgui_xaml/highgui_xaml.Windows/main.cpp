@@ -42,7 +42,6 @@ void cvMain()
     VideoCapture cam;
 
     cam.open(0);    // open the default camera  
-#if 0
 
     // Mat edges;
     // namedWindow("edges", 1);
@@ -64,7 +63,6 @@ void cvMain()
     //GaussianBlur(edges, edges, Size(7, 7), 1.5, 1.5);
     //Canny(edges, edges, 0, 30, 3);
     ////imshow("edges", edges);
-#endif
 }
 
 
