@@ -56,7 +56,7 @@ void cvMain()
 
         // image processing calculations here
 
-        // imshow
+        imshow("xaml", frame);
     }
 
     // cvtColor(frame, edges, CV_BGR2GRAY);
