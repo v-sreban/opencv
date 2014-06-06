@@ -68,9 +68,7 @@ private:
     int						m_deviceID;
     int						attemptFramerate;
     std::atomic<bool>       bIsFrameNew;
-    int						width, height;
+    unsigned int			width, height;
     int                     bytesPerPixel;
-    unsigned long           frameCounter;
-    unsigned long           currentFrame;
 
 };
