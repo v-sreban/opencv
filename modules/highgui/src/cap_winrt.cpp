@@ -65,6 +65,9 @@ using namespace ::std;
 
 // __declspec(dllexport) atomic<bool> startProcessing = false;
 
+// from main app DLL
+// __declspec(dllimport) void SwapInputBuffers();
+
 namespace cv {
 
     VideoCapture_WinRT::VideoCapture_WinRT(int device) : started(false)
@@ -84,11 +87,10 @@ namespace cv {
         {
             HighguiBridge::get().bIsFrameNew = false;
 
-            // got a new frame
-            // SwapBuffers();
             return true;
         }
 
+        // for blocking:
         //unique_lock<mutex> lock(HighguiBridge::get().frameReadyMutex);
         //HighguiBridge::get().frameReadyEvent.wait(lock);
         return false;
@@ -99,15 +101,10 @@ namespace cv {
     bool VideoCapture_WinRT::retrieveFrame(int channel, cv::OutputArray outArray)
     {
         if (!started) {
-            // set size from the Mat
-            HighguiBridge::get().width = outArray.size().width;
-            HighguiBridge::get().height = outArray.size().height;
-
-            if (HighguiBridge::get().width == 0) HighguiBridge::get().width = 640;
-            if (HighguiBridge::get().height == 0) HighguiBridge::get().height = 480;
 
             // request device init on UI thread - this does not block, and is async
-            HighguiBridge::get().requestForUIthreadAsync(HighguiBridge_OPEN_CAMERA);
+            HighguiBridge::get().requestForUIthreadAsync(HighguiBridge_OPEN_CAMERA,
+                outArray.size().width, outArray.size().height);
 
             started = true;
             return false;       // no frame was available
@@ -115,13 +112,32 @@ namespace cv {
 
         if (!started) return false;
 
-        // return m_frontBuffer
+        // copy (or set) m_frontBuffer into Mat outArray
+
+        HighguiBridge::get().SwapInputBuffers();
+
         return true;
     }
 
 
-    // internal methods:
+    bool VideoCapture_WinRT::setProperty(int property_id, double value)
+    {
+        switch (property_id)
+        {
+        case CAP_PROP_FRAME_WIDTH:
+            //size.width = (int)value;
+            break;
+        case CAP_PROP_FRAME_HEIGHT:
+            //size.height = (int)value;
+            break;
+        default:
+            return false;
+        }
+        return true;
+    }
+}
 
+    // notes
 #if 0
     void VideoCapture_WinRT::SwapBuffers()
     {
@@ -132,9 +148,7 @@ namespace cv {
             swap(m_backBuffer, m_frontBuffer);
         }
     }
-#endif
 
-#if 0
     void VideoCapture_WinRT::GrabFrameAsync(::Media::CaptureFrameGrabber^ frameGrabber)
     {
         create_task(frameGrabber->GetFrameAsync()).then([this, frameGrabber](const ComPtr<IMF2DBuffer2>& buffer)
@@ -194,25 +208,6 @@ namespace cv {
 
         }, task_continuation_context::use_current());
     }
-#endif
-
-    bool VideoCapture_WinRT::setProperty(int property_id, double value)
-    {
-        switch (property_id)
-        {
-        case CAP_PROP_FRAME_WIDTH:
-            //size.width = (int)value;
-            break;
-        case CAP_PROP_FRAME_HEIGHT:
-            //size.height = (int)value;
-            break;
-        default:
-            return false;
-        }
-        return true;
-    }
-
-#if 0
     void VideoCapture_WinRT::start()
     {
         // temp test
@@ -344,7 +339,6 @@ namespace cv {
         return dl;
         //return devices;
     }
-#endif
 
     // C interface (not implemented now)
     //CvCapture *cvCreateCameraCapture_WinRT(int index)
@@ -356,9 +350,6 @@ namespace cv {
     //    return 0;
     //}
 
-
-    // notes
-#if 0
 
     void MainPage::_GrabFrameAsync(::Media::CaptureFrameGrabber^ frameGrabber)
     {
@@ -468,10 +459,10 @@ namespace cv {
             _GrabFrameAsync(frameGrabber);
         }, task_continuation_context::use_current());
     }
-
+#endif
 
     // reference
-
+#if 0
 #include "precomp.hpp"
 
 #include <vfw.h>
@@ -1157,4 +1148,4 @@ namespace cv {
 
 #endif
 
-}
+
