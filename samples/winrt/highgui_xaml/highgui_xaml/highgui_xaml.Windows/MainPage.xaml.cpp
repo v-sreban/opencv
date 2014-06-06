@@ -46,8 +46,8 @@ MainPage::MainPage()
     asyncTask->Progress = ref new AsyncActionProgressHandler<int>([](IAsyncActionWithProgress<int>^ act, int progress)
     {
         int action = progress;
-        // HighguiBridge::get().processOnUIthread(action);
 
+        // these actions will be processed on the UI thread asynchronously
         switch (action)
         {
         case HighguiBridge_OPEN_CAMERA:
@@ -62,9 +62,8 @@ MainPage::MainPage()
             // closeDevice();
             break;
         case HighguiBridge_UPDATE_IMAGE_ELEMENT:
-            // copy Mat into backbuffer;
-            // swap preview buffers
-            // cvImage = frontbuffer;
+            // INCOMPLETE
+            // Video::get().m_cvImage = HighguiBridge::get().m_frontOutputBuffer;
             break;
         }
     });
