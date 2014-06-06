@@ -43,17 +43,7 @@
 #include <agile.h>
 
 // #include "cap_winrt/CaptureFrameGrabber.h"
-
-#if 0
-// this is an OpenCV class
-// stub
-namespace cv
-{
-    class Mat
-    {
-    };
-}
-#endif
+ 
 
 enum {
     HighguiBridge_OPEN_CAMERA = 300,
@@ -82,7 +72,7 @@ public:
     void setReporter(Concurrency::progress_reporter<int> pr) { reporter = pr; }
 
     // to be called from cvMain via cap_winrt on bg thread - non-blocking (async)
-    void requestForUIthreadAsync(int action);
+    void requestForUIthreadAsync(int action, int width=0, int height=0);
     
     //void waitForUIthreadRequest();
 
@@ -93,7 +83,9 @@ public:
     void createTrackbar( /* callbackOnChange */) {} // unhides trackbar and registers OpenCV callback
     void setTrackbarPos(int pos) {}                 // unhides trackbar and sets its position
 
-    void imshow(/*cv::Mat matToShow*/) {}                   // shows Mat in the cvImage element
+    // void imshow(cv::InputArray matToShow);          // shows Mat in the cvImage element
+    // TODO: modify in window.cpp: void cv::imshow( const String& winname, InputArray _img )
+
     // namedWindow                                  // no op: only one XAML window used
     // destroyWindow                                // no op
     // destroyAllWindows                            // no op
@@ -115,8 +107,6 @@ public:
     int deviceIndex;
     int width, height;
 
-    unsigned long           frameCounter;
-
     std::atomic<bool>       bIsFrameNew;
 
     // for blocking
@@ -125,15 +115,17 @@ public:
 
     // double buffering
     std::mutex              inputBufferMutex;
+    Windows::UI::Xaml::Media::Imaging::WriteableBitmap^ m_frontInputBuffer;
+    Windows::UI::Xaml::Media::Imaging::WriteableBitmap^ m_backInputBuffer;
+    void SwapInputBuffers();
+
     std::mutex              outputBufferMutex;
+    Windows::UI::Xaml::Media::Imaging::WriteableBitmap^ m_frontOutputBuffer;
+    Windows::UI::Xaml::Media::Imaging::WriteableBitmap^ m_backOutputBuffer;
+    void SwapOutputBuffers();
 
-    std::unique_ptr<Windows::UI::Xaml::Media::Imaging::WriteableBitmap^>   m_frontInputBuffer;
-    std::unique_ptr<Windows::UI::Xaml::Media::Imaging::WriteableBitmap^>   m_backInputBuffer;
-    std::unique_ptr<Windows::UI::Xaml::Media::Imaging::WriteableBitmap^>   m_frontOutputBuffer;
-    std::unique_ptr<Windows::UI::Xaml::Media::Imaging::WriteableBitmap^>   m_backOutputBuffer;
-
-    void SwapInputBuffers() {}
-    void SwapOutputBuffers() {}
+    std::atomic<unsigned long>  frameCounter;
+    unsigned long               currentFrame;
 
 private:
 
@@ -151,6 +143,8 @@ private:
         UIthreadTaskDone = false;
         deviceReady = false;
         bIsFrameNew = false;
+        currentFrame = 0;
+        frameCounter = 0;
     };
 
     // bool initializeDeviceTask();
@@ -164,4 +158,13 @@ private:
     Concurrency::progress_reporter<int> reporter;
 
     std::atomic<bool> UIthreadTaskDone;
+
 };
+
+namespace cv
+{
+//    void imshow_winrt(InputArray img)
+//    {
+//        HighguiBridge::get().imshow(img);
+//    }
+}

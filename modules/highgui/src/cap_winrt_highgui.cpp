@@ -45,9 +45,17 @@ using namespace ::Concurrency;
 using namespace ::std;
 
 // non-blocking
-void HighguiBridge::requestForUIthreadAsync(int action)
-{ 
-    reporter.report(action); 
+void HighguiBridge::requestForUIthreadAsync(int action, int widthp, int heightp)
+{
+    if (action == HighguiBridge_OPEN_CAMERA) {
+        width = widthp == 0 ? 640 : widthp;
+        height = heightp == 0 ? 480 : heightp;
+
+        m_frontInputBuffer = ref new WriteableBitmap(width, height);
+        m_backInputBuffer = ref new WriteableBitmap(width, height);
+    }
+
+    reporter.report(action);
 }
 
 HighguiBridge& HighguiBridge::get()
@@ -57,6 +65,89 @@ HighguiBridge& HighguiBridge::get()
 }
 
 
+void HighguiBridge::SwapInputBuffers()
+{
+    lock_guard<mutex> lock(inputBufferMutex);
+    if (currentFrame != frameCounter)
+    {
+        currentFrame = frameCounter;
+        swap(m_backInputBuffer, m_frontInputBuffer);
+    }
+}
+
+void HighguiBridge::SwapOutputBuffers()
+{
+    lock_guard<mutex> lock(outputBufferMutex);
+    swap(m_backOutputBuffer, m_frontOutputBuffer);
+}
+
+// maybe not needed?
+#if 0
+
+// extracted from MFincludes.h:
+#include <robuffer.h>
+
+namespace WSS = ::Windows::Storage::Streams;
+namespace MW = ::Microsoft::WRL;
+
+#define CHK(statement)  {HRESULT _hr = (statement); if (FAILED(_hr)) { throw ref new Platform::COMException(_hr); };}
+
+// Cast a C++/CX smartpointer to an ABI smartpointer
+template<typename T, typename U>
+MW::ComPtr<T> As(U^ in)
+{
+    MW::ComPtr<T> out;
+    CHK(reinterpret_cast<IInspectable*>(in)->QueryInterface(IID_PPV_ARGS(&out)));
+    return out;
+}
+
+unsigned char* GetData(_In_ WSS::IBuffer^ buffer)
+{
+    unsigned char* bytes = nullptr;
+    CHK(As<WSS::IBufferByteAccess>(buffer)->Buffer(&bytes));
+    return bytes;
+}
+#endif
+
+#if 0
+void HighguiBridge::imshow(cv::InputArray matToShow)
+{
+    const int bytesPerPixel = 3;
+
+    // copy from matToShow into back buffer
+    // INCOMPLETE
+
+    BYTE *pbScanline;
+    LONG plPitch;
+    unsigned int numBytes = width * bytesPerPixel;
+    CHK(buffer->Lock2D(&pbScanline, &plPitch));
+
+    {
+        std::lock_guard<std::mutex> lock(HighguiBridge::get().outputBufferMutex);
+        auto buf = GetData(HighguiBridge::get().m_backOutputBuffer->PixelBuffer);
+
+        for (unsigned int row = 0; row < height; row++)
+        {
+            for (unsigned int i = 0; i < numBytes; i += bytesPerPixel)
+            {
+                buf[i] = pbScanline[i];
+                buf[i + 1] = pbScanline[i + 1];
+                buf[i + 2] = pbScanline[i + 2];
+            }
+            pbScanline += plPitch;
+            buf += numBytes;
+        }
+    }
+
+    CHK(buffer->Unlock2D());
+
+    SwapOutputBuffers();
+    requestForUIthreadAsync(HighguiBridge_UPDATE_IMAGE_ELEMENT);
+}
+#endif
+
+
+// notes
 #if 0
 void HighguiBridge::processOnUIthread(int action)
 {
@@ -151,9 +242,7 @@ void HighguiBridge::waitForUIthreadRequest()
         count++;
     }
 }
-#endif
 
-#if 0
 void GrabFrameAsync(::Media::CaptureFrameGrabber^ frameGrabber)
 {
     create_task(frameGrabber->GetFrameAsync()).then([frameGrabber](const ComPtr<IMF2DBuffer2>& buffer)
