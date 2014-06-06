@@ -263,12 +263,21 @@ void cv::imshow( const String& winname, InputArray _img )
 {
     const Size size = _img.size();
 #ifndef HAVE_OPENGL
+
+#ifdef HAVE_WINRT
+    // INCOMPLETE
+    //void imshow_winrt(InputArray);
+    //imshow_winrt(_img);
+#else
+
     CV_Assert(size.width>0 && size.height>0);
     {
         Mat img = _img.getMat();
         CvMat c_img = img;
         cvShowImage(winname.c_str(), &c_img);
     }
+#endif
+
 #else
     const double useGl = getWindowProperty(winname, WND_PROP_OPENGL);
     CV_Assert(size.width>0 && size.height>0);
