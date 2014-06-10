@@ -308,3 +308,35 @@ __declspec(dllexport) void SwapInputBuffers()
     Video::get().SwapInputBuffers();
 }
 #endif
+
+
+// CopyOutputBuffer must be in this file due to "GetData" macro
+__declspec(dllexport) void __cdecl CopyOutputBuffer()
+//unsigned char *p, int width, int height, int bytesPerPixel, int stride)
+{
+#if 0
+    // do the RGB swizzle while copying the pixels from the IMF2DBuffer2
+    BYTE *pbScanline = p;
+    LONG plPitch = stride;
+    unsigned int numBytes = width * bytesPerPixel;
+
+    {
+        std::lock_guard<std::mutex> lock(HighguiBridge::get().outputBufferMutex);
+        auto buf = GetData(HighguiBridge::get().m_backOutputBuffer->PixelBuffer);
+
+        for (unsigned int row = 0; row < height; row++)
+        {
+            for (unsigned int i = 0; i < numBytes; i += bytesPerPixel)
+            {
+                // swizzle the R and B values (BGR to RGB)
+                buf[i] = pbScanline[i + 2];
+                buf[i + 1] = pbScanline[i + 1];
+                buf[i + 2] = pbScanline[i];
+            }
+            pbScanline += plPitch;
+            buf += numBytes;
+        }
+    }
+#endif
+}
+
