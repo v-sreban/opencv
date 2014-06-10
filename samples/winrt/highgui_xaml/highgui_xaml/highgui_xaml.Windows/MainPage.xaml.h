@@ -7,10 +7,9 @@
 
 #include "MainPage.g.h"
 
-#include "CaptureFrameGrabber/CaptureFrameGrabber.h"
-
-#include <mutex>
-#include <memory>
+//#include "CaptureFrameGrabber/CaptureFrameGrabber.h"
+//#include <mutex>
+//#include <memory>
 
 namespace highgui_xaml
 {

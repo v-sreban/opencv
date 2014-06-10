@@ -6,7 +6,8 @@
 #include "pch.h"
 #include "MainPage.xaml.h"
 
-#include "video.h"
+// cannot include here because we can't export CaptureFrameGrabber WinRT class
+// #include "../../../modules/highgui/src/cap_winrt_video.hpp"
 
 #include "../../../modules/highgui/src/cap_winrt_highgui.hpp"
 
@@ -33,14 +34,15 @@ using namespace Windows::UI::Xaml::Navigation;
 using namespace ::concurrency;
 using namespace ::Windows::Foundation;
 
+// needed to correct linker error
+extern bool initGrabber(int device, int w, int h);
+
 
 MainPage::MainPage()
 {
     InitializeComponent();
 
-    Video::get().m_cvImage = cvImage;
-
-    // Video::get().initGrabber(0, 640, 480);
+    HighguiBridge::get().m_cvImage = cvImage;
 
     auto asyncTask = TaskWithProgressAsync();
     asyncTask->Progress = ref new AsyncActionProgressHandler<int>([](IAsyncActionWithProgress<int>^ act, int progress)
@@ -55,14 +57,16 @@ MainPage::MainPage()
                 int device = HighguiBridge::get().deviceIndex;
                 int width = HighguiBridge::get().width;
                 int height = HighguiBridge::get().height;
-                Video::get().initGrabber(device, width, height);
-            }
+
+                initGrabber(device, width, height);
+        }
             break;
         case HighguiBridge_CLOSE_CAMERA:
             // closeDevice();
             break;
         case HighguiBridge_UPDATE_IMAGE_ELEMENT:
-            Video::get().m_cvImage->Source = HighguiBridge::get().m_frontOutputBuffer;
+            HighguiBridge::get().m_cvImage->Source = HighguiBridge::get().m_frontInputBuffer;
+            // HighguiBridge::get().m_cvImage->Source = HighguiBridge::get().m_frontOutputBuffer;
             break;
         }
     });
@@ -83,9 +87,3 @@ IAsyncActionWithProgress<int>^ MainPage::TaskWithProgressAsync()
     });
 }
 
-#if 0
-void MainPage::OnNavigatedTo(NavigationEventArgs^ e)
-{
-    (void)e;	// Unused parameter
-}
-#endif

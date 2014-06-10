@@ -57,6 +57,8 @@ enum {
 // VideoCapture_WinRT in cap_winrt.hpp is fixed by OpenCV
 // (or can it be extended?)
 
+__declspec(dllexport) bool initGrabber(int device, int w, int h);
+
 // singleton
 class HighguiBridge
 {
@@ -126,6 +128,8 @@ public:
 
     std::atomic<unsigned long>  frameCounter;
     unsigned long               currentFrame;
+
+    Windows::UI::Xaml::Controls::Image ^m_cvImage;
 
 private:
 
