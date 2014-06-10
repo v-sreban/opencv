@@ -28,7 +28,7 @@
 // OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF 
 // ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include "video.h"
+#include "cap_winrt_video.hpp"
 
 #include <ppl.h>
 #include <ppltasks.h>
@@ -51,7 +51,7 @@ using namespace Windows::Media::Capture;
 using namespace Windows::UI::Xaml::Media::Imaging;
 using namespace Windows::Devices::Enumeration;
 
-#include "CaptureFrameGrabber/CaptureFrameGrabber.h"
+#include "cap_winrt/CaptureFrameGrabber.h"
 
 // pull in MF libs (this has to be somewhere in the project)
 #pragma comment(lib, "mfplat")
@@ -59,7 +59,7 @@ using namespace Windows::Devices::Enumeration;
 #pragma comment(lib, "mfuuid")
 #pragma comment(lib, "Shlwapi")
 
-#include "../../../modules/highgui/src/cap_winrt_highgui.hpp"
+#include "cap_winrt_highgui.hpp"
 
 
 Video::Video() {
@@ -129,8 +129,8 @@ bool Video::initGrabber(int device, int w, int h)
         create_task(m_capture->InitializeAsync(settings)).then([this](){
 
             auto props = safe_cast<VideoEncodingProperties^>(m_capture->VideoDeviceController->GetMediaStreamProperties(MediaStreamType::VideoPreview));
-            props->Subtype = MediaEncodingSubtypes::Rgb24;          // for 24 bpp
-            // props->Subtype = MediaEncodingSubtypes::Bgra8;       // for test
+            // props->Subtype = MediaEncodingSubtypes::Rgb24;          // for 24 bpp
+            props->Subtype = MediaEncodingSubtypes::Bgra8;       // for test
             props->Width = width;
             props->Height = height;
 
@@ -164,22 +164,31 @@ bool Video::initGrabber(int device, int w, int h)
 void Video::_GrabFrameAsync(::Media::CaptureFrameGrabber^ frameGrabber)
 {
 
-#if 0
+#if 1
     // simple test - copy to XAML buffer only - use Bgr8 layout
     create_task(frameGrabber->GetFrameAsync()).then([this, frameGrabber](const ComPtr<IMF2DBuffer2>& buffer)
     {
-        auto bitmap = ref new WriteableBitmap(width, height);
+        {
+            std::lock_guard<std::mutex> lock(HighguiBridge::get().inputBufferMutex);
 
-        CHK(buffer->ContiguousCopyTo(GetData(bitmap->PixelBuffer), bitmap->PixelBuffer->Capacity));
+            // auto bitmap = ref new WriteableBitmap(width, height);
+            auto bitmap = HighguiBridge::get().m_backInputBuffer;
 
-        unsigned long length;
-        CHK(buffer->GetContiguousLength(&length));
-        bitmap->PixelBuffer->Length = length;
+            CHK(buffer->ContiguousCopyTo(GetData(bitmap->PixelBuffer), bitmap->PixelBuffer->Capacity));
 
-        m_cvImage->Source = bitmap;
+            unsigned long length;
+            CHK(buffer->GetContiguousLength(&length));
+            bitmap->PixelBuffer->Length = length;
+        }
+
+        // this will handled through cvMain calling retreiveFrame()
+        // m_cvImage->Source = bitmap;
 
         // notify frame is ready
         HighguiBridge::get().bIsFrameNew = true;
+        HighguiBridge::get().frameCounter++;
+
+        // for blocking:
         //{
         //    unique_lock<mutex> lck(HighguiBridge::get().frameReadyMutex);
         //    HighguiBridge::get().frameReadyEvent.notify_one();

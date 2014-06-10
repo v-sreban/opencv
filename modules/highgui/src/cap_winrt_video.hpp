@@ -30,7 +30,7 @@
 
 #pragma once
 
-#include "CaptureFrameGrabber/CaptureFrameGrabber.h"
+#include "cap_winrt/CaptureFrameGrabber.h"
 
 #include <mutex>
 #include <memory>
