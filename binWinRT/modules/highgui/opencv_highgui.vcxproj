@@ -222,7 +222,12 @@
     <ClInclude Include="..\..\..\modules\highgui\include\opencv2\highgui\highgui_c.h" />
     <ClInclude Include="..\..\..\modules\highgui\include\opencv2\highgui\ios.h" />
     <ClInclude Include="..\..\..\modules\highgui\src\cap_winrt.hpp" />
+    <ClInclude Include="..\..\..\modules\highgui\src\cap_winrt\CaptureFrameGrabber.h" />
+    <ClInclude Include="..\..\..\modules\highgui\src\cap_winrt\MediaSink.h" />
+    <ClInclude Include="..\..\..\modules\highgui\src\cap_winrt\MediaStreamSink.h" />
+    <ClInclude Include="..\..\..\modules\highgui\src\cap_winrt\MFIncludes.h" />
     <ClInclude Include="..\..\..\modules\highgui\src\cap_winrt_highgui.hpp" />
+    <ClInclude Include="..\..\..\modules\highgui\src\cap_winrt_video.hpp" />
     <ClInclude Include="..\..\..\modules\highgui\src\precomp.hpp" />
     <ClInclude Include="..\..\..\modules\highgui\src\utils.hpp" />
     <ClInclude Include="..\..\..\modules\highgui\src\cap_ffmpeg_impl.hpp" />
@@ -246,7 +251,10 @@
     <ClCompile Include="..\..\..\modules\highgui\src\cap_images.cpp" />
     <ClCompile Include="..\..\..\modules\highgui\src\cap_ffmpeg.cpp" />
     <ClCompile Include="..\..\..\modules\highgui\src\cap_winrt.cpp" />
+    <ClCompile Include="..\..\..\modules\highgui\src\cap_winrt\CaptureFrameGrabber.cpp" />
+    <ClCompile Include="..\..\..\modules\highgui\src\cap_winrt\MediaStreamSink.cpp" />
     <ClCompile Include="..\..\..\modules\highgui\src\cap_winrt_highgui.cpp" />
+    <ClCompile Include="..\..\..\modules\highgui\src\cap_winrt_video.cpp" />
     <ClCompile Include="..\..\..\modules\highgui\src\loadsave.cpp" />
     <ClCompile Include="..\..\..\modules\highgui\src\utils.cpp" />
     <ClCompile Include="..\..\..\modules\highgui\src\window.cpp" />
