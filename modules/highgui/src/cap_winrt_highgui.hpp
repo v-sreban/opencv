@@ -159,12 +159,8 @@ private:
 
     std::atomic<bool> UIthreadTaskDone;
 
+    // void CopyOutputBuffer(unsigned char *p, int width, int height, int bytesPerPixel, int stride);
+
 };
 
-namespace cv
-{
-//    void imshow_winrt(InputArray img)
-//    {
-//        HighguiBridge::get().imshow(img);
-//    }
-}
+// void imshow_winrt(InputArray img);

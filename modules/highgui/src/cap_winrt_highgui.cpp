@@ -81,8 +81,59 @@ void HighguiBridge::SwapOutputBuffers()
     swap(m_backOutputBuffer, m_frontOutputBuffer);
 }
 
+
+// in video.cpp in XAML app
+__declspec(dllimport) void CopyOutputBuffer();
+// unsigned char *p, int width, int height, int bpp, int stride);
+
+void imshow_winrt(cv::InputArray img)
+{
+    // TODO:
+    // copy img to backbuffer
+
+    auto m = img.getMat();
+    auto p = m.ptr(0);
+    int w = img.size().width;
+    int h = img.size().height;
+
+    // LINKER ERROR HERE
+    CopyOutputBuffer();
+    // CopyOutputBuffer(p, w, h, 3, w);
+
+    // request UI thread XAML image element update
+    HighguiBridge::get().SwapOutputBuffers();
+    HighguiBridge::get().requestForUIthreadAsync(HighguiBridge_UPDATE_IMAGE_ELEMENT);
+}
+
+
 // maybe not needed?
 #if 0
+
+void HighguiBridge::CopyOutputBuffer(unsigned char *p, int width, int height, int bytesPerPixel, int stride)
+{
+    // do the RGB swizzle while copying the pixels from the IMF2DBuffer2
+    BYTE *pbScanline = p;
+    LONG plPitch = stride;
+    unsigned int numBytes = width * bytesPerPixel;
+
+    {
+        std::lock_guard<std::mutex> lock(HighguiBridge::get().outputBufferMutex);
+        auto buf = GetData(HighguiBridge::get().m_backOutputBuffer->PixelBuffer);
+
+        for (unsigned int row = 0; row < height; row++)
+        {
+            for (unsigned int i = 0; i < numBytes; i += bytesPerPixel)
+            {
+                // swizzle the R and B values (BGR to RGB)
+                buf[i] = pbScanline[i + 2];
+                buf[i + 1] = pbScanline[i + 1];
+                buf[i + 2] = pbScanline[i];
+            }
+            pbScanline += plPitch;
+            buf += numBytes;
+        }
+    }
+}
 
 // extracted from MFincludes.h:
 #include <robuffer.h>
@@ -107,9 +158,7 @@ unsigned char* GetData(_In_ WSS::IBuffer^ buffer)
     CHK(As<WSS::IBufferByteAccess>(buffer)->Buffer(&bytes));
     return bytes;
 }
-#endif
 
-#if 0
 void HighguiBridge::imshow(cv::InputArray matToShow)
 {
     const int bytesPerPixel = 3;

@@ -266,8 +266,8 @@ void cv::imshow( const String& winname, InputArray _img )
 
 #ifdef HAVE_WINRT
     // INCOMPLETE
-    //void imshow_winrt(InputArray);
-    //imshow_winrt(_img);
+    void imshow_winrt(InputArray);
+    imshow_winrt(_img);
 #else
 
     CV_Assert(size.width>0 && size.height>0);
