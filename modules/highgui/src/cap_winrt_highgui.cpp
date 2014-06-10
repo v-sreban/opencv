@@ -30,6 +30,7 @@
 
 #include "cap_winrt.hpp"
 #include "cap_winrt_highgui.hpp"
+#include "cap_winrt_video.hpp"
 
 using namespace Windows::Foundation;
 using namespace Windows::Media::Capture;
@@ -43,6 +44,12 @@ using namespace Platform;
 using namespace ::Concurrency;
 
 using namespace ::std;
+
+// non-blocking
+bool initGrabber(int device, int w, int h)
+{
+    return Video::get().initGrabber(device, w, h);
+}
 
 // non-blocking
 void HighguiBridge::requestForUIthreadAsync(int action, int widthp, int heightp)
@@ -83,7 +90,7 @@ void HighguiBridge::SwapOutputBuffers()
 
 
 // in video.cpp in XAML app
-__declspec(dllimport) void CopyOutputBuffer();
+//__declspec(dllimport) void CopyOutputBuffer();
 // unsigned char *p, int width, int height, int bpp, int stride);
 
 void imshow_winrt(cv::InputArray img)
@@ -96,12 +103,10 @@ void imshow_winrt(cv::InputArray img)
     int w = img.size().width;
     int h = img.size().height;
 
-    // LINKER ERROR HERE
-    CopyOutputBuffer();
     // CopyOutputBuffer(p, w, h, 3, w);
 
     // request UI thread XAML image element update
-    HighguiBridge::get().SwapOutputBuffers();
+    // HighguiBridge::get().SwapOutputBuffers();
     HighguiBridge::get().requestForUIthreadAsync(HighguiBridge_UPDATE_IMAGE_ELEMENT);
 }
 
