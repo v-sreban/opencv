@@ -62,8 +62,7 @@ MainPage::MainPage()
             // closeDevice();
             break;
         case HighguiBridge_UPDATE_IMAGE_ELEMENT:
-            // INCOMPLETE
-            // Video::get().m_cvImage = HighguiBridge::get().m_frontOutputBuffer;
+            Video::get().m_cvImage->Source = HighguiBridge::get().m_frontOutputBuffer;
             break;
         }
     });
