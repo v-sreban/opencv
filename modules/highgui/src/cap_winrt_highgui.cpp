@@ -48,6 +48,9 @@ using namespace ::std;
 // non-blocking
 bool initGrabber(int device, int w, int h)
 {
+    // nb. Video class is not exported outside of this DLL
+    // due to complexities in the CaptureFrameGrabber ref class 
+    // as written in the header not mixing well with pure C++ classes
     return Video::get().initGrabber(device, w, h);
 }
 
@@ -57,9 +60,6 @@ void HighguiBridge::requestForUIthreadAsync(int action, int widthp, int heightp)
     if (action == HighguiBridge_OPEN_CAMERA) {
         width = widthp == 0 ? 640 : widthp;
         height = heightp == 0 ? 480 : heightp;
-
-        m_frontInputBuffer = ref new WriteableBitmap(width, height);
-        m_backInputBuffer = ref new WriteableBitmap(width, height);
     }
 
     reporter.report(action);

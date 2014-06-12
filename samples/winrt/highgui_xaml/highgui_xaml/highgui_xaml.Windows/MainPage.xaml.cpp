@@ -34,7 +34,9 @@ using namespace Windows::UI::Xaml::Navigation;
 using namespace ::concurrency;
 using namespace ::Windows::Foundation;
 
-// needed to correct linker error
+using namespace Windows::UI::Xaml::Media::Imaging;
+
+// needed for linker
 extern bool initGrabber(int device, int w, int h);
 
 
@@ -58,6 +60,14 @@ MainPage::MainPage()
                 int width = HighguiBridge::get().width;
                 int height = HighguiBridge::get().height;
 
+                // buffers must alloc'd on UI thread
+                HighguiBridge::get().m_frontInputBuffer = ref new WriteableBitmap(width, height);
+                HighguiBridge::get().m_backInputBuffer = ref new WriteableBitmap(width, height);
+                HighguiBridge::get().m_frontOutputBuffer = ref new WriteableBitmap(width, height);
+                HighguiBridge::get().m_backOutputBuffer = ref new WriteableBitmap(width, height);
+
+                // video capture device init must be done on UI thread;
+                // code is located in the OpenCV Highgui DLL, class Video
                 initGrabber(device, width, height);
         }
             break;
@@ -65,7 +75,9 @@ MainPage::MainPage()
             // closeDevice();
             break;
         case HighguiBridge_UPDATE_IMAGE_ELEMENT:
+            // testing: for direct copy bypassing OpenCV:
             HighguiBridge::get().m_cvImage->Source = HighguiBridge::get().m_frontInputBuffer;
+            // for result after OpenCV image processing:
             // HighguiBridge::get().m_cvImage->Source = HighguiBridge::get().m_frontOutputBuffer;
             break;
         }

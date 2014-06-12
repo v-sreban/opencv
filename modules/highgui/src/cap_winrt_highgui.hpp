@@ -116,12 +116,12 @@ public:
     //std::condition_variable frameReadyEvent;
 
     // double buffering
-    std::mutex              inputBufferMutex;
+    std::mutex                  inputBufferMutex;
     Windows::UI::Xaml::Media::Imaging::WriteableBitmap^ m_frontInputBuffer;
     Windows::UI::Xaml::Media::Imaging::WriteableBitmap^ m_backInputBuffer;
     void SwapInputBuffers();
 
-    std::mutex              outputBufferMutex;
+    std::mutex                  outputBufferMutex;
     Windows::UI::Xaml::Media::Imaging::WriteableBitmap^ m_frontOutputBuffer;
     Windows::UI::Xaml::Media::Imaging::WriteableBitmap^ m_backOutputBuffer;
     void SwapOutputBuffers();
