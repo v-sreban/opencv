@@ -265,7 +265,6 @@ void cv::imshow( const String& winname, InputArray _img )
 #ifndef HAVE_OPENGL
 
 #ifdef HAVE_WINRT
-    // INCOMPLETE
     void imshow_winrt(InputArray);
     imshow_winrt(_img);
 #else
