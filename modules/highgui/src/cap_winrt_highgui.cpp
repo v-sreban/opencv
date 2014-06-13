@@ -122,11 +122,12 @@ void imshow_winrt(cv::InputArray img)
     }
 #endif
 
-    Video::get().CopyOutputBuffer(in, width, height, 3, width);
+    // zv
+    // Video::get().CopyOutputBuffer(in, width, height, 3, width);
 
     // request UI thread XAML image element update
-    HighguiBridge::get().SwapOutputBuffers();
-    HighguiBridge::get().requestForUIthreadAsync(HighguiBridge_UPDATE_IMAGE_ELEMENT);
+    // HighguiBridge::get().SwapOutputBuffers();
+    // HighguiBridge::get().requestForUIthreadAsync(HighguiBridge_UPDATE_IMAGE_ELEMENT);
 }
 
 

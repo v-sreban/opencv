@@ -129,8 +129,9 @@ bool Video::initGrabber(int device, int w, int h)
         create_task(m_capture->InitializeAsync(settings)).then([this](){
 
             auto props = safe_cast<VideoEncodingProperties^>(m_capture->VideoDeviceController->GetMediaStreamProperties(MediaStreamType::VideoPreview));
-            props->Subtype = MediaEncodingSubtypes::Rgb24;          // for 24 bpp
-            // props->Subtype = MediaEncodingSubtypes::Bgra8;       // for test
+            // zv
+            // props->Subtype = MediaEncodingSubtypes::Rgb24;          // for 24 bpp
+            props->Subtype = MediaEncodingSubtypes::Bgra8;       // for test
             props->Width = width;
             props->Height = height;
 
@@ -150,12 +151,12 @@ bool Video::initGrabber(int device, int w, int h)
 
 
     // cannot use - this will lock the UI thread:
-        // wait for async task to complete
-        //int count = 0;
-        //while (!ready)
-        //{
-        //    count++;
-        //}
+    // wait for async task to complete
+    //int count = 0;
+    //while (!ready)
+    //{
+    //    count++;
+    //}
 
     return true;
 }
@@ -163,8 +164,8 @@ bool Video::initGrabber(int device, int w, int h)
 
 void Video::_GrabFrameAsync(::Media::CaptureFrameGrabber^ frameGrabber)
 {
-
-#if 0
+    // zv
+#if 1
     // simple test - copy to XAML buffer only - use Bgr8 layout
     create_task(frameGrabber->GetFrameAsync()).then([this, frameGrabber](const ComPtr<IMF2DBuffer2>& buffer)
     {
@@ -172,17 +173,19 @@ void Video::_GrabFrameAsync(::Media::CaptureFrameGrabber^ frameGrabber)
             std::lock_guard<std::mutex> lock(HighguiBridge::get().inputBufferMutex);
 
             // auto bitmap = ref new WriteableBitmap(width, height);
-            auto bitmap = HighguiBridge::get().m_backInputBuffer;
+            auto bitmap = HighguiBridge::get().m_frontInputBuffer;
 
             CHK(buffer->ContiguousCopyTo(GetData(bitmap->PixelBuffer), bitmap->PixelBuffer->Capacity));
 
             unsigned long length;
             CHK(buffer->GetContiguousLength(&length));
             bitmap->PixelBuffer->Length = length;
+
         }
 
+        // zv
         // this will handled through cvMain calling retreiveFrame()
-        // m_cvImage->Source = bitmap;
+        HighguiBridge::get().m_cvImage->Source = HighguiBridge::get().m_frontInputBuffer;
 
         // notify frame is ready
         HighguiBridge::get().bIsFrameNew = true;
@@ -202,67 +205,67 @@ void Video::_GrabFrameAsync(::Media::CaptureFrameGrabber^ frameGrabber)
 #else
     // use rgb24 layout
     create_task(frameGrabber->GetFrameAsync()).then([this, frameGrabber](const ComPtr<IMF2DBuffer2>& buffer)
+    {
+        // do the RGB swizzle while copying the pixels from the IMF2DBuffer2
+        BYTE *pbScanline;
+        LONG plPitch;
+        unsigned int numBytes = width * bytesPerPixel;
+        CHK(buffer->Lock2D(&pbScanline, &plPitch));
+
+        if (bFlipImageX)
         {
-            // do the RGB swizzle while copying the pixels from the IMF2DBuffer2
-            BYTE *pbScanline;
-            LONG plPitch;
-            unsigned int numBytes = width * bytesPerPixel;
-            CHK(buffer->Lock2D(&pbScanline, &plPitch));
+            std::lock_guard<std::mutex> lock(HighguiBridge::get().inputBufferMutex);
+            auto buf = GetData(HighguiBridge::get().m_backInputBuffer->PixelBuffer);
+            // uint8_t* buf = reinterpret_cast<uint8_t*>(m_backInputBuffer->getPixels());
 
-            if (bFlipImageX)
+            for (unsigned int row = 0; row < height; row++)
             {
-                std::lock_guard<std::mutex> lock(HighguiBridge::get().inputBufferMutex);
-                auto buf = GetData(HighguiBridge::get().m_backInputBuffer->PixelBuffer);
-                // uint8_t* buf = reinterpret_cast<uint8_t*>(m_backInputBuffer->getPixels());
+                unsigned int i = 0;
+                unsigned int j = numBytes - 1;
 
-                for (unsigned int row = 0; row < height; row++)
+                while (i < numBytes)
                 {
-                    unsigned int i = 0;
-                    unsigned int j = numBytes - 1;
-
-                    while (i < numBytes)
-                    {
-                        // reverse the scan line
-                        // as a side effect this also swizzles R and B channels
-                        buf[j--] = pbScanline[i++];
-                        buf[j--] = pbScanline[i++];
-                        buf[j--] = pbScanline[i++];
-                    }
-                    pbScanline += plPitch;
-                    buf += numBytes;
+                    // reverse the scan line
+                    // as a side effect this also swizzles R and B channels
+                    buf[j--] = pbScanline[i++];
+                    buf[j--] = pbScanline[i++];
+                    buf[j--] = pbScanline[i++];
                 }
+                pbScanline += plPitch;
+                buf += numBytes;
             }
-            else
-            {
-                std::lock_guard<std::mutex> lock(HighguiBridge::get().inputBufferMutex);
-                auto buf = GetData(HighguiBridge::get().m_backInputBuffer->PixelBuffer);
-                // uint8_t* buf = reinterpret_cast<uint8_t*>(m_backInputBuffer->getPixels());
+        }
+        else
+        {
+            std::lock_guard<std::mutex> lock(HighguiBridge::get().inputBufferMutex);
+            auto buf = GetData(HighguiBridge::get().m_backInputBuffer->PixelBuffer);
+            // uint8_t* buf = reinterpret_cast<uint8_t*>(m_backInputBuffer->getPixels());
 
-                for (unsigned int row = 0; row < height; row++)
+            for (unsigned int row = 0; row < height; row++)
+            {
+                for (unsigned int i = 0; i < numBytes; i += bytesPerPixel)
                 {
-                    for (unsigned int i = 0; i < numBytes; i += bytesPerPixel)
-                    {
-                        // swizzle the R and B values (BGR to RGB)
-                        buf[i] = pbScanline[i + 2];
-                        buf[i + 1] = pbScanline[i + 1];
-                        buf[i + 2] = pbScanline[i];
-                    }
-                    pbScanline += plPitch;
-                    buf += numBytes;
+                    // swizzle the R and B values (BGR to RGB)
+                    buf[i] = pbScanline[i + 2];
+                    buf[i + 1] = pbScanline[i + 1];
+                    buf[i + 2] = pbScanline[i];
                 }
+                pbScanline += plPitch;
+                buf += numBytes;
             }
-            CHK(buffer->Unlock2D());
+        }
+        CHK(buffer->Unlock2D());
 
-            // notify frame is ready
-            HighguiBridge::get().bIsFrameNew = true;
-            HighguiBridge::get().frameCounter++;
+        // notify frame is ready
+        HighguiBridge::get().bIsFrameNew = true;
+        HighguiBridge::get().frameCounter++;
 
-            if (bGrabberInited)
-            {
-                _GrabFrameAsync(frameGrabber);
-            }
-        }, task_continuation_context::use_current());
- 
+        if (bGrabberInited)
+        {
+            _GrabFrameAsync(frameGrabber);
+        }
+    }, task_continuation_context::use_current());
+
 #endif
 }
 
@@ -341,12 +344,15 @@ void Video::CopyOutputBuffer(unsigned char *p, int width, int height, int bytesP
 
         for (unsigned int row = 0; row < (unsigned)height; row++)
         {
-            for (unsigned int i = 0; i < numBytes; i += bytesPerPixel)
+            // test
+            for (unsigned int i = 0; i < numBytes; i += 1)
+                buf[i] = 0xFF;
+            //for (unsigned int i = 0; i < numBytes; i += bytesPerPixel)
             {
                 // no swizzle 
-                buf[i] = pbScanline[i];
-                buf[i + 1] = pbScanline[i + 1];
-                buf[i + 2] = pbScanline[i + 2];
+                //buf[i] = pbScanline[i];
+                //buf[i + 1] = pbScanline[i + 1];
+                //buf[i + 2] = pbScanline[i + 2];
             }
             pbScanline += plPitch;
             buf += numBytes;

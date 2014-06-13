@@ -41,7 +41,7 @@ public:
 
     bool initGrabber(int device, int w, int h);
 
-    Windows::UI::Xaml::Controls::Image^ m_cvImage;
+    // Windows::UI::Xaml::Controls::Image^ m_cvImage;
 
     // singleton
     static Video &get();

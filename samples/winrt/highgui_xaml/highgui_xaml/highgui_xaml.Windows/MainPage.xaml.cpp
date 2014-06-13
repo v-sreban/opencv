@@ -75,11 +75,12 @@ MainPage::MainPage()
             // closeDevice();
             break;
         case HighguiBridge_UPDATE_IMAGE_ELEMENT:
+            // zv
             // testing: for direct copy bypassing OpenCV:
-            // HighguiBridge::get().m_cvImage->Source = HighguiBridge::get().m_frontInputBuffer;
+            HighguiBridge::get().m_cvImage->Source = HighguiBridge::get().m_frontInputBuffer;
 
             // for result after OpenCV image processing:
-            HighguiBridge::get().m_cvImage->Source = HighguiBridge::get().m_backOutputBuffer;
+            // HighguiBridge::get().m_cvImage->Source = HighguiBridge::get().m_backOutputBuffer;
             break;
         }
     });
