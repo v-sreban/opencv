@@ -112,7 +112,17 @@ namespace cv {
 
         if (!started) return false;
 
-        // copy (or set) m_frontBuffer into Mat outArray
+        // set m_frontBuffer into Mat outArray
+        auto p = HighguiBridge::get().GetInputDataPtr();
+        auto m = outArray.getMat();
+
+        // shallow copy
+        m.data = p;
+        m.flags = CV_MAT_TYPE_MASK;
+        m.dims = 2;
+
+        //int w = img.size().width;
+        //int h = img.size().height;
 
         HighguiBridge::get().SwapInputBuffers();
 
