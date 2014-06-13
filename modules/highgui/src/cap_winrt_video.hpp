@@ -46,6 +46,11 @@ public:
     // singleton
     static Video &get();
 
+    unsigned char* GetInputDataPtr();
+    unsigned char* GetOutputDataPtr();
+
+    void CopyOutputBuffer(unsigned char *p, int width, int height, int bytesPerPixel, int stride);
+
 private:
     // singleton
     Video();

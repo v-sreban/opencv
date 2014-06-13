@@ -129,8 +129,8 @@ bool Video::initGrabber(int device, int w, int h)
         create_task(m_capture->InitializeAsync(settings)).then([this](){
 
             auto props = safe_cast<VideoEncodingProperties^>(m_capture->VideoDeviceController->GetMediaStreamProperties(MediaStreamType::VideoPreview));
-            // props->Subtype = MediaEncodingSubtypes::Rgb24;          // for 24 bpp
-            props->Subtype = MediaEncodingSubtypes::Bgra8;       // for test
+            props->Subtype = MediaEncodingSubtypes::Rgb24;          // for 24 bpp
+            // props->Subtype = MediaEncodingSubtypes::Bgra8;       // for test
             props->Width = width;
             props->Height = height;
 
@@ -164,7 +164,7 @@ bool Video::initGrabber(int device, int w, int h)
 void Video::_GrabFrameAsync(::Media::CaptureFrameGrabber^ frameGrabber)
 {
 
-#if 1
+#if 0
     // simple test - copy to XAML buffer only - use Bgr8 layout
     create_task(frameGrabber->GetFrameAsync()).then([this, frameGrabber](const ComPtr<IMF2DBuffer2>& buffer)
     {
@@ -266,6 +266,19 @@ void Video::_GrabFrameAsync(::Media::CaptureFrameGrabber^ frameGrabber)
 #endif
 }
 
+// must be in this file for GetData macro
+unsigned char* Video::GetInputDataPtr()
+{
+    auto bp = GetData(HighguiBridge::get().m_frontInputBuffer->PixelBuffer);
+    return bp;
+}
+
+unsigned char* Video::GetOutputDataPtr()
+{
+    auto bp = GetData(HighguiBridge::get().m_backOutputBuffer->PixelBuffer);
+    return bp;
+}
+
 bool Video::listDevicesTask()
 {
     std::atomic<bool> ready(false);
@@ -310,42 +323,34 @@ bool Video::listDevices()
     return result.get();
 }
 
-#if 0
-// Video singleton is not available to Highgui due to MF include difficulties
-__declspec(dllexport) void SwapInputBuffers()
-{
-    Video::get().SwapInputBuffers();
-}
-#endif
 
-
-// CopyOutputBuffer must be in this file due to "GetData" macro
-__declspec(dllexport) void __cdecl CopyOutputBuffer()
-//unsigned char *p, int width, int height, int bytesPerPixel, int stride)
+// CopyOutputBuffer must be in this file due to "GetData" macro and buffer lock
+void Video::CopyOutputBuffer(unsigned char *p, int width, int height, int bytesPerPixel, int stride)
 {
-#if 0
-    // do the RGB swizzle while copying the pixels from the IMF2DBuffer2
     BYTE *pbScanline = p;
     LONG plPitch = stride;
     unsigned int numBytes = width * bytesPerPixel;
 
     {
-        std::lock_guard<std::mutex> lock(HighguiBridge::get().outputBufferMutex);
-        auto buf = GetData(HighguiBridge::get().m_backOutputBuffer->PixelBuffer);
+        // test:
+        //std::lock_guard<std::mutex> lock(HighguiBridge::get().inputBufferMutex);
+        //auto buf = GetData(HighguiBridge::get().m_frontInputBuffer->PixelBuffer);
 
-        for (unsigned int row = 0; row < height; row++)
+        std::lock_guard<std::mutex> lock(HighguiBridge::get().outputBufferMutex);
+        auto buf = GetData(HighguiBridge::get().m_frontOutputBuffer->PixelBuffer);
+
+        for (unsigned int row = 0; row < (unsigned)height; row++)
         {
             for (unsigned int i = 0; i < numBytes; i += bytesPerPixel)
             {
-                // swizzle the R and B values (BGR to RGB)
-                buf[i] = pbScanline[i + 2];
+                // no swizzle 
+                buf[i] = pbScanline[i];
                 buf[i + 1] = pbScanline[i + 1];
-                buf[i + 2] = pbScanline[i];
+                buf[i + 2] = pbScanline[i + 2];
             }
             pbScanline += plPitch;
             buf += numBytes;
         }
     }
-#endif
 }
 
