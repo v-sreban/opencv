@@ -115,21 +115,26 @@ public:
     //std::mutex              frameReadyMutex;
     //std::condition_variable frameReadyEvent;
 
+    // TODO: input buffers probably have to be cv::OutputArrays or cv::Mats, not WriteableBitmap
+    // to avoid extra copying in OpenCV
+
     // double buffering
     std::mutex                  inputBufferMutex;
-    Windows::UI::Xaml::Media::Imaging::WriteableBitmap^ m_frontInputBuffer;
-    Windows::UI::Xaml::Media::Imaging::WriteableBitmap^ m_backInputBuffer;
+    Windows::UI::Xaml::Media::Imaging::WriteableBitmap^ m_frontInputBuffer;     // OpenCV reads this
+    Windows::UI::Xaml::Media::Imaging::WriteableBitmap^ m_backInputBuffer;      // video writes this
     void SwapInputBuffers();
 
     std::mutex                  outputBufferMutex;
-    Windows::UI::Xaml::Media::Imaging::WriteableBitmap^ m_frontOutputBuffer;
-    Windows::UI::Xaml::Media::Imaging::WriteableBitmap^ m_backOutputBuffer;
+    Windows::UI::Xaml::Media::Imaging::WriteableBitmap^ m_frontOutputBuffer;    // OpenCV writes this
+    Windows::UI::Xaml::Media::Imaging::WriteableBitmap^ m_backOutputBuffer;     // XAML reads this
     void SwapOutputBuffers();
 
     std::atomic<unsigned long>  frameCounter;
     unsigned long               currentFrame;
 
     Windows::UI::Xaml::Controls::Image ^m_cvImage;
+
+    unsigned char *             GetInputDataPtr();
 
 private:
 

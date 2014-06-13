@@ -88,25 +88,44 @@ void HighguiBridge::SwapOutputBuffers()
     swap(m_backOutputBuffer, m_frontOutputBuffer);
 }
 
-
-// in video.cpp in XAML app
-//__declspec(dllimport) void CopyOutputBuffer();
-// unsigned char *p, int width, int height, int bpp, int stride);
+unsigned char * HighguiBridge::GetInputDataPtr(){
+    return Video::get().GetInputDataPtr();
+}
 
 void imshow_winrt(cv::InputArray img)
 {
-    // TODO:
-    // copy img to backbuffer
-
     auto m = img.getMat();
-    auto p = m.ptr(0);
-    int w = img.size().width;
-    int h = img.size().height;
+    auto in = m.ptr(0);
+    int width = img.size().width;
+    int height = img.size().height;
 
-    // CopyOutputBuffer(p, w, h, 3, w);
+    // GetOutputDataPtr() throws exception - moved to Video class
+#if 0
+    auto out = Video::get().GetOutputDataPtr();
+
+    // copy InputArray to Writeable bitmap
+    const int bytesPerPixel = 3;
+    BYTE *pbScanline = in;
+    LONG plPitch = width;
+    unsigned int numBytes = width * bytesPerPixel;
+    auto buf = out;
+    for (unsigned int row = 0; row < (unsigned)height; row++)
+    {
+        for (unsigned int i = 0; i < numBytes; i += bytesPerPixel)
+        {
+            buf[i] = pbScanline[i];
+            buf[i + 1] = pbScanline[i + 1];
+            buf[i + 2] = pbScanline[i + 2];
+        }
+        pbScanline += plPitch;
+        buf += numBytes;
+    }
+#endif
+
+    Video::get().CopyOutputBuffer(in, width, height, 3, width);
 
     // request UI thread XAML image element update
-    // HighguiBridge::get().SwapOutputBuffers();
+    HighguiBridge::get().SwapOutputBuffers();
     HighguiBridge::get().requestForUIthreadAsync(HighguiBridge_UPDATE_IMAGE_ELEMENT);
 }
 
