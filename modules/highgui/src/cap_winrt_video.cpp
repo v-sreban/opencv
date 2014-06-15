@@ -61,6 +61,7 @@ using namespace Windows::Devices::Enumeration;
 
 #include "cap_winrt_highgui.hpp"
 
+#include "cdebug.h"
 
 Video::Video() {
 }
@@ -130,8 +131,8 @@ bool Video::initGrabber(int device, int w, int h)
 
             auto props = safe_cast<VideoEncodingProperties^>(m_capture->VideoDeviceController->GetMediaStreamProperties(MediaStreamType::VideoPreview));
             // zv
-            // props->Subtype = MediaEncodingSubtypes::Rgb24;          // for 24 bpp
-            props->Subtype = MediaEncodingSubtypes::Bgra8;       // for test
+            props->Subtype = MediaEncodingSubtypes::Rgb24;          // for 24 bpp
+            // props->Subtype = MediaEncodingSubtypes::Bgra8;       // for test
             props->Width = width;
             props->Height = height;
 
@@ -165,7 +166,7 @@ bool Video::initGrabber(int device, int w, int h)
 void Video::_GrabFrameAsync(::Media::CaptureFrameGrabber^ frameGrabber)
 {
     // zv
-#if 1
+#if 0
     // simple test - copy to XAML buffer only - use Bgr8 layout
     create_task(frameGrabber->GetFrameAsync()).then([this, frameGrabber](const ComPtr<IMF2DBuffer2>& buffer)
     {
@@ -259,6 +260,12 @@ void Video::_GrabFrameAsync(::Media::CaptureFrameGrabber^ frameGrabber)
         // notify frame is ready
         HighguiBridge::get().bIsFrameNew = true;
         HighguiBridge::get().frameCounter++;
+
+        // zv immed test
+        HighguiBridge::get().m_cvImage->Source = HighguiBridge::get().m_backInputBuffer;
+
+        TC(HighguiBridge::get().frameCounter);
+        TCNL;
 
         if (bGrabberInited)
         {
