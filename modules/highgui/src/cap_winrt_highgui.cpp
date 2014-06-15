@@ -78,7 +78,8 @@ void HighguiBridge::SwapInputBuffers()
     if (currentFrame != frameCounter)
     {
         currentFrame = frameCounter;
-        swap(m_backInputBuffer, m_frontInputBuffer);
+        // zv
+//        swap(m_backInputBuffer, m_frontInputBuffer);
     }
 }
 
