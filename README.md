@@ -39,13 +39,16 @@ Since CMake cannot create WinRT project files directly, the following procedure 
 * BUILD_WITH_STATIC_CRT
 * BUILD_ZLIB
 * BUILD_opencv_calib3d
+* BUILD_opencv_contrib
 * BUILD_opencv_core
 * BUILD_opencv_features2d
 * BUILD_opencv_flann
 * BUILD_opencv_imgproc
+* BUILD_opencv_legacy
 * BUILD_opencv_ml
 * BUILD_opencv_objdetect
 * BUILD_opencv_photo
+* BUILD_opencv_shape
 * BUILD_opencv_stitching
 * BUILD_opencv_video
 * BUILD_opencv_videostab
