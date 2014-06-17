@@ -52,6 +52,7 @@ Since CMake cannot create WinRT project files directly, the following procedure 
 * BUILD_opencv_stitching
 * BUILD_opencv_video
 * BUILD_opencv_videostab
+* ENABLE_PRECOMPILED_HEADERS
 * ENABLE_SOLUTION_FOLDERS
 * ENABLE_SSE
 * ENABLE_SSE2
