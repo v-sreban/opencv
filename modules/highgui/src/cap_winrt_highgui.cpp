@@ -57,11 +57,6 @@ bool initGrabber(int device, int w, int h)
 // non-blocking
 void HighguiBridge::requestForUIthreadAsync(int action, int widthp, int heightp)
 {
-    if (action == HighguiBridge_OPEN_CAMERA) {
-        width = widthp == 0 ? 640 : widthp;
-        height = heightp == 0 ? 480 : heightp;
-    }
-
     reporter.report(action);
 }
 
@@ -86,7 +81,7 @@ void HighguiBridge::SwapInputBuffers()
 void HighguiBridge::SwapOutputBuffers()
 {
     lock_guard<mutex> lock(outputBufferMutex);
-    swap(m_backOutputBuffer, m_frontOutputBuffer);
+    swap(backOutputBuffer, frontOutputBuffer);
 }
 
 unsigned char * HighguiBridge::GetInputDataPtr(){
@@ -95,8 +90,10 @@ unsigned char * HighguiBridge::GetInputDataPtr(){
 
 void imshow_winrt(cv::InputArray img)
 {
-    auto m = img.getMat();
-    auto in = m.ptr(0);
+    //auto m = img.getMat();
+    //auto in = HighguiBridge::get().frontInputPtr;
+    //// auto in = m.ptr(0);
+
     int width = img.size().width;
     int height = img.size().height;
 
@@ -123,12 +120,28 @@ void imshow_winrt(cv::InputArray img)
     }
 #endif
 
-    // zv
-    // Video::get().CopyOutputBuffer(in, width, height, 3, width);
+    //Video::get().CopyOutputBuffer(in, width, height, 4, width);
+
+    // copy from input Mat to output WBM
+    // cannot do it on this thread
+    //{
+    //    unsigned length = width * height * 4;
+    //    auto inAr = HighguiBridge::get().frontInputPtr;
+    //    auto outAr = GetData(HighguiBridge::get().frontOutputBuffer->PixelBuffer);
+    //    for (unsigned int i = 0; i < length; i++)
+    //        outAr[i] = inAr[i];
+    //    HighguiBridge::get().frontOutputBuffer->PixelBuffer->Length = length;
+    //}
+
 
     // request UI thread XAML image element update
     // HighguiBridge::get().SwapOutputBuffers();
-    // HighguiBridge::get().requestForUIthreadAsync(HighguiBridge_UPDATE_IMAGE_ELEMENT);
+    HighguiBridge::get().requestForUIthreadAsync(HighguiBridge_UPDATE_IMAGE_ELEMENT);
+}
+
+void copyOutput()
+{
+    Video::get().CopyOutput();
 }
 
 
