@@ -78,6 +78,9 @@ namespace cv {
 
         void start();
 
+        Mat frontInputMat;
+        Mat backInputMat;
+
     protected:
 
         // cannot be in this class because we don't have an instance of Media::CaptureFrameGrabber^
@@ -92,6 +95,5 @@ namespace cv {
         int                     bytesPerPixel;
         unsigned long           frameCurrent;
         std::atomic<bool>       isFrameNew;
-
     };
 }
