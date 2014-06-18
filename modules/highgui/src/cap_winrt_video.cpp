@@ -182,7 +182,7 @@ void Video::_GrabFrameAsync(::Media::CaptureFrameGrabber^ frameGrabber)
             // auto bitmap = HighguiBridge::get().frontOutputBuffer;
 
             // ptr to input Mat data array
-            auto inAr = HighguiBridge::get().frontInputPtr;
+            auto inAr = HighguiBridge::get().backInputPtr;
 
             // CHK(buffer->ContiguousCopyTo(GetData(bitmap->PixelBuffer), bitmap->PixelBuffer->Capacity));
             // CHK(buffer->ContiguousCopyTo(GetData(in->PixelBuffer), in->PixelBuffer->Capacity));
@@ -195,7 +195,7 @@ void Video::_GrabFrameAsync(::Media::CaptureFrameGrabber^ frameGrabber)
             // TC(length); TCNL;
         }
 
-        // zv
+        // zv test
         // HighguiBridge::get().m_cvImage->Source = HighguiBridge::get().frontOutputBuffer;
 
         // notify frame is ready
@@ -359,7 +359,7 @@ void Video::CopyOutputBuffer(unsigned char *p, int width, int height, int bytesP
         //auto buf = GetData(HighguiBridge::get().m_frontInputBuffer->PixelBuffer);
 
         std::lock_guard<std::mutex> lock(HighguiBridge::get().outputBufferMutex);
-        auto buf = GetData(HighguiBridge::get().frontOutputBuffer->PixelBuffer);
+        auto buf = GetData(HighguiBridge::get().backOutputBuffer->PixelBuffer);
 
         for (unsigned int row = 0; row < (unsigned)height; row++)
         {
@@ -375,6 +375,8 @@ void Video::CopyOutputBuffer(unsigned char *p, int width, int height, int bytesP
             buf += colBytes;
         }
     }
+
+    HighguiBridge::get().SwapOutputBuffers();
 }
 
 
