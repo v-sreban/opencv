@@ -32,6 +32,8 @@
 #include <opencv2/features2d.hpp>
 #include <opencv2/highgui.hpp>
 
+// test
+#include "../../../modules/highgui/src/cap_winrt_highgui.hpp"
 #include <opencv2/highgui/cdebug.h>
 
 using namespace cv;
@@ -55,6 +57,16 @@ void cvMain()
         cam >> frame;
 
         // image processing calculations here
+
+        // TODO: something like:
+        // frame.setData( HighguiBridge::get().frontInputPtr )
+        // inside of VideoCapture_WinRT::retrieveFrame()
+        // until then ...
+
+        // test img manip
+        auto ar = HighguiBridge::get().frontInputPtr;
+        // insert a green area
+        for (int i = 1; i < 100000; i+=4 ) ar[i] = 0xff;
 
         imshow("xaml", frame);
     }
