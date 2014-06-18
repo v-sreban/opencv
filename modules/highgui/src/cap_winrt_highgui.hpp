@@ -58,6 +58,8 @@ enum {
 // (or can it be extended?)
 
 __declspec(dllexport) bool initGrabber(int device, int w, int h);
+__declspec(dllexport) void copyOutput();
+
 
 // singleton
 class HighguiBridge
@@ -120,13 +122,15 @@ public:
 
     // double buffering
     std::mutex                  inputBufferMutex;
-    Windows::UI::Xaml::Media::Imaging::WriteableBitmap^ m_frontInputBuffer;     // OpenCV reads this
-    Windows::UI::Xaml::Media::Imaging::WriteableBitmap^ m_backInputBuffer;      // video writes this
+    //Windows::UI::Xaml::Media::Imaging::WriteableBitmap^ frontInputBuffer;     // OpenCV reads this
+    //Windows::UI::Xaml::Media::Imaging::WriteableBitmap^ backInputBuffer;      // video writes this
+    unsigned char *frontInputPtr;     // OpenCV reads this
+    unsigned char *backInputPtr;      // video writes this
     void SwapInputBuffers();
 
     std::mutex                  outputBufferMutex;
-    Windows::UI::Xaml::Media::Imaging::WriteableBitmap^ m_frontOutputBuffer;    // OpenCV writes this
-    Windows::UI::Xaml::Media::Imaging::WriteableBitmap^ m_backOutputBuffer;     // XAML reads this
+    Windows::UI::Xaml::Media::Imaging::WriteableBitmap^ frontOutputBuffer;    // OpenCV writes this
+    Windows::UI::Xaml::Media::Imaging::WriteableBitmap^ backOutputBuffer;     // XAML reads this
     void SwapOutputBuffers();
 
     std::atomic<unsigned long>  frameCounter;
