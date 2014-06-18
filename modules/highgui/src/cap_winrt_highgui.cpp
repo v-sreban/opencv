@@ -73,8 +73,7 @@ void HighguiBridge::SwapInputBuffers()
     if (currentFrame != frameCounter)
     {
         currentFrame = frameCounter;
-        // zv
-//        swap(m_backInputBuffer, m_frontInputBuffer);
+        swap(backInputPtr, frontInputPtr);
     }
 }
 
@@ -94,8 +93,8 @@ void imshow_winrt(cv::InputArray img)
     //auto in = HighguiBridge::get().frontInputPtr;
     //// auto in = m.ptr(0);
 
-    int width = img.size().width;
-    int height = img.size().height;
+    //int width = img.size().width;
+    //int height = img.size().height;
 
     // GetOutputDataPtr() throws exception - moved to Video class
 #if 0
@@ -133,9 +132,7 @@ void imshow_winrt(cv::InputArray img)
     //    HighguiBridge::get().frontOutputBuffer->PixelBuffer->Length = length;
     //}
 
-
-    // request UI thread XAML image element update
-    // HighguiBridge::get().SwapOutputBuffers();
+    //HighguiBridge::get().SwapOutputBuffers();
     HighguiBridge::get().requestForUIthreadAsync(HighguiBridge_UPDATE_IMAGE_ELEMENT);
 }
 

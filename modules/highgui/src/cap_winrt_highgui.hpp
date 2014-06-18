@@ -129,8 +129,8 @@ public:
     void SwapInputBuffers();
 
     std::mutex                  outputBufferMutex;
-    Windows::UI::Xaml::Media::Imaging::WriteableBitmap^ frontOutputBuffer;    // OpenCV writes this
-    Windows::UI::Xaml::Media::Imaging::WriteableBitmap^ backOutputBuffer;     // XAML reads this
+    Windows::UI::Xaml::Media::Imaging::WriteableBitmap^ frontOutputBuffer;      // XAML reads this
+    Windows::UI::Xaml::Media::Imaging::WriteableBitmap^ backOutputBuffer;       // OpenCV writes this
     void SwapOutputBuffers();
 
     std::atomic<unsigned long>  frameCounter;
