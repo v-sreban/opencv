@@ -111,14 +111,23 @@ namespace cv {
                 if (width == 0) width = 640;
                 if (height == 0) height = 480;
 
+                HighguiBridge::get().width = width;
+                HighguiBridge::get().height = height;
+
+                //frontAr.create(height, width, CV_8UC4);
+                //auto p = frontAr.getMat().ptr(0);
+                //HighguiBridge::get().frontInputPtr = p;
+
                 // allocate input Mats (bgra8 for test)
                 frontInputMat.create(height, width, CV_8UC4);
                 backInputMat.create(height, width, CV_8UC4);
                 HighguiBridge::get().frontInputPtr = frontInputMat.ptr(0);
                 HighguiBridge::get().backInputPtr = backInputMat.ptr(0);
-            }
 
-            TCC("\nVideoCapture_WinRT::retrieveFrame");  TC((void *)HighguiBridge::get().frontInputPtr); TCC("\n\n");
+                // test
+                //outArray.getMat() = frontInputMat;
+                //outArray.getObj();
+            }
 
             // request device init on UI thread - this does not block, and is async
             HighguiBridge::get().requestForUIthreadAsync(HighguiBridge_OPEN_CAMERA,
@@ -130,7 +139,14 @@ namespace cv {
 
         if (!started) return false;
 
-        // HighguiBridge::get().SwapInputBuffers();
+        // ERROR this is not really working properly - moved to cap.cpp
+        //OutputArray out(frontInputMat);
+        //outArray = out;
+        // outArray.getMat() = frontInputMat;
+
+        //TCC("    retrieveFrame");
+        //TC((void*)outArray.getMat().ptr(0)); TCNL;
+        //TC((void*)HighguiBridge::get().frontInputPtr); TCNL;
 
         return true;
     }
