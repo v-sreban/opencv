@@ -43,6 +43,14 @@
 #include "cap_intelperc.hpp"
 #include "cap_winrt.hpp"
 
+#ifdef HAVE_WINRT
+#include "cap_winrt_highgui.hpp"
+#endif
+
+// zv test
+#include "cdebug.h"
+
+
 #if defined _M_X64 && defined _MSC_VER && !defined CV_ICC
 #pragma optimize("",off)
 #pragma warning(disable: 4748)
@@ -559,12 +567,36 @@ bool VideoCapture::read(OutputArray image)
         retrieve(image);
     else
         image.release();
+
+    //TCC("    read");
+    //TC((void*)image.getMat().ptr(0)); TCNL;
+    //TC((void*)HighguiBridge::get().frontInputPtr); TCNL;
+
     return !image.empty();
 }
 
 VideoCapture& VideoCapture::operator >> (Mat& image)
 {
+#ifdef     HAVE_WINRT
+    if (grab()) 
+    {
+        retrieve(image);
+
+        // needed here because setting Mat 'image' is not allowed by OutputArray in read()
+        auto p = HighguiBridge::get().frontInputPtr;      
+        Mat m(HighguiBridge::get().height, HighguiBridge::get().width, CV_8UC4, p);
+        image = m;
+
+        //TCC("    operator>>");
+        //TC((void*)p); TCNL;
+        //TC((void*)image.data); TCNL;
+
+        HighguiBridge::get().SwapInputBuffers();
+    }
+#else
     read(image);
+#endif
+
     return *this;
 }
 
