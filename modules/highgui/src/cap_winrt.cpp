@@ -102,6 +102,24 @@ namespace cv {
     {
         if (!started) {
 
+            {
+                std::lock_guard<std::mutex> lock(HighguiBridge::get().inputBufferMutex);
+
+                int width, height;
+                width = outArray.size().width;
+                height = outArray.size().height;
+                if (width == 0) width = 640;
+                if (height == 0) height = 480;
+
+                // allocate input Mats (bgra8 for test)
+                frontInputMat.create(height, width, CV_8UC4);
+                backInputMat.create(height, width, CV_8UC4);
+                HighguiBridge::get().frontInputPtr = frontInputMat.ptr(0);
+                HighguiBridge::get().backInputPtr = backInputMat.ptr(0);
+            }
+
+            TCC("\nVideoCapture_WinRT::retrieveFrame");  TC((void *)HighguiBridge::get().frontInputPtr); TCC("\n\n");
+
             // request device init on UI thread - this does not block, and is async
             HighguiBridge::get().requestForUIthreadAsync(HighguiBridge_OPEN_CAMERA,
                 outArray.size().width, outArray.size().height);
@@ -111,18 +129,6 @@ namespace cv {
         }
 
         if (!started) return false;
-
-        // set m_frontBuffer into Mat outArray
-        //auto p = HighguiBridge::get().GetInputDataPtr();
-        //auto m = outArray.getMat();
-
-        // shallow copy
-        //m.data = p;
-        //m.flags = CV_MAT_TYPE_MASK;
-        //m.dims = 2;
-
-        //int w = img.size().width;
-        //int h = img.size().height;
 
         // HighguiBridge::get().SwapInputBuffers();
 
