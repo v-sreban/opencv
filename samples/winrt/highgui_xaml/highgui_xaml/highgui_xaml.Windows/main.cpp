@@ -58,15 +58,20 @@ void cvMain()
 
         // image processing calculations here
 
-        // TODO: something like:
-        // frame.setData( HighguiBridge::get().frontInputPtr )
-        // inside of VideoCapture_WinRT::retrieveFrame()
-        // until then ...
+        //TCC("    main");
+        //TC((void*)frame.data); TCNL;
+        //TC((void*)frame.ptr(0)); TCNL;
 
         // test img manip
-        auto ar = HighguiBridge::get().frontInputPtr;
+        auto ar = frame.ptr(0);
         // insert a green area
         for (int i = 1; i < 100000; i+=4 ) ar[i] = 0xff;
+
+        //TC((void*)HighguiBridge::get().frontInputPtr); TCNL;
+        //TC((void*)HighguiBridge::get().backInputPtr); TCNL;
+
+        //for (int i = 0; i < 1000; i++)
+        //    frame.at<unsigned char>(i, i) = 0xFF;
 
         imshow("xaml", frame);
     }
