@@ -38,16 +38,15 @@ using namespace Windows::UI::Xaml::Media::Imaging;
 
 // needed for linker
 extern bool initGrabber(int device, int w, int h);
+extern void copyOutput();
 
 
 MainPage::MainPage()
 {
     InitializeComponent();
 
-    HighguiBridge::get().m_cvImage = cvImage;
-
     auto asyncTask = TaskWithProgressAsync();
-    asyncTask->Progress = ref new AsyncActionProgressHandler<int>([](IAsyncActionWithProgress<int>^ act, int progress)
+    asyncTask->Progress = ref new AsyncActionProgressHandler<int>([this](IAsyncActionWithProgress<int>^ act, int progress)
     {
         int action = progress;
 
@@ -60,11 +59,14 @@ MainPage::MainPage()
                 int width = HighguiBridge::get().width;
                 int height = HighguiBridge::get().height;
 
+                // set XAML image element
+                HighguiBridge::get().m_cvImage = cvImage;
+
                 // buffers must alloc'd on UI thread
-                HighguiBridge::get().m_frontInputBuffer = ref new WriteableBitmap(width, height);
-                HighguiBridge::get().m_backInputBuffer = ref new WriteableBitmap(width, height);
-                HighguiBridge::get().m_frontOutputBuffer = ref new WriteableBitmap(width, height);
-                HighguiBridge::get().m_backOutputBuffer = ref new WriteableBitmap(width, height);
+                //HighguiBridge::get().m_frontInputBuffer = ref new WriteableBitmap(width, height);
+                //HighguiBridge::get().m_backInputBuffer = ref new WriteableBitmap(width, height);
+                HighguiBridge::get().frontOutputBuffer = ref new WriteableBitmap(width, height);
+                HighguiBridge::get().backOutputBuffer = ref new WriteableBitmap(width, height);
 
                 // video capture device init must be done on UI thread;
                 // code is located in the OpenCV Highgui DLL, class Video
@@ -77,10 +79,13 @@ MainPage::MainPage()
         case HighguiBridge_UPDATE_IMAGE_ELEMENT:
             // zv
             // testing: for direct copy bypassing OpenCV:
-            HighguiBridge::get().m_cvImage->Source = HighguiBridge::get().m_backInputBuffer;
+            // HighguiBridge::get().m_cvImage->Source = HighguiBridge::get().m_backInputBuffer;
 
-            // for result after OpenCV image processing:
-            // HighguiBridge::get().m_cvImage->Source = HighguiBridge::get().m_backOutputBuffer;
+            // copy output Mat to WBM
+            copyOutput();
+
+            // set XAML image element with image WBM
+            HighguiBridge::get().m_cvImage->Source = HighguiBridge::get().frontOutputBuffer;
             break;
         }
     });
