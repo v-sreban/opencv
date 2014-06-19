@@ -27,6 +27,13 @@ namespace highgui_xaml
 
         // virtual void OnNavigatedTo(Windows::UI::Xaml::Navigation::NavigationEventArgs^ e) override;
 
+    // how to add callback for slider value change?
+    // http://msdn.microsoft.com/en-us/library/windows/apps/windows.ui.xaml.controls.primitives.rangebase.onvaluechanged.aspx
+        //void OnValueChanged(
+        //    double oldValue,
+        //    double newValue
+        //    ) {}
+
     private:
 
     };
