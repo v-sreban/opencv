@@ -207,6 +207,8 @@ void Video::_GrabFrameAsync(::Media::CaptureFrameGrabber^ frameGrabber)
         }
         // TC(HighguiBridge::get().frameCounter); TCNL;
 
+        HighguiBridge::get().SwapInputBuffers();
+
         // test: copy from input WBM to input Mat
         //{
         //    auto inAr = GetData(in->PixelBuffer);
@@ -337,6 +339,9 @@ void Video::_GrabFrameAsync(::Media::CaptureFrameGrabber^ frameGrabber)
 // must be on UI thread
 void Video::CopyOutput()
 {
+    //std::lock_guard<std::mutex> lock1(HighguiBridge::get().inputBufferMutex);
+    //std::lock_guard<std::mutex> lock2(HighguiBridge::get().outputBufferMutex);
+
     unsigned length = width * height * 4;
     auto inAr = HighguiBridge::get().frontInputPtr;
     auto outAr = GetData(HighguiBridge::get().frontOutputBuffer->PixelBuffer);
@@ -346,6 +351,7 @@ void Video::CopyOutput()
 }
 
 
+#if 0
 // CopyOutputBuffer must be in this file due to "GetData" macro
 void Video::CopyOutputBuffer(unsigned char *p, int width, int height, int bytesPerPixel, int stride)
 {
@@ -379,7 +385,6 @@ void Video::CopyOutputBuffer(unsigned char *p, int width, int height, int bytesP
     HighguiBridge::get().SwapOutputBuffers();
 }
 
-
 // must be in this file for GetData macro
 unsigned char* Video::GetInputDataPtr()
 {
@@ -392,6 +397,7 @@ unsigned char* Video::GetOutputDataPtr()
     auto bp = GetData(HighguiBridge::get().backOutputBuffer->PixelBuffer);
     return bp;
 }
+#endif
 
 bool Video::listDevicesTask()
 {

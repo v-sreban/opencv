@@ -591,7 +591,7 @@ VideoCapture& VideoCapture::operator >> (Mat& image)
         //TC((void*)p); TCNL;
         //TC((void*)image.data); TCNL;
 
-        HighguiBridge::get().SwapInputBuffers();
+        //HighguiBridge::get().SwapInputBuffers();
     }
 #else
     read(image);
