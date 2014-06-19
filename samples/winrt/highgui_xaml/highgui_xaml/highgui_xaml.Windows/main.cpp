@@ -48,32 +48,38 @@ void cvMain()
     // Mat edges;
     // namedWindow("edges", 1);
 
+    // test - nb value is not updated now
+    int value;
+    createTrackbar( "", "", &value, 100);
+
     Mat frame;
 
     // process frames
     while (1)
     {
-        // get a new frame from camera
+        // get a new frame from camera - this is non-blocking per spec
         cam >> frame;
+
+        // don't reprocess the same frame again
+        if (!cam.grab()) continue;
+
+        // debug
+        TCC("    main:");
+        TC(HighguiBridge::get().frameCounter);
+        TC((void*)frame.data); TCNL;
+        //TC((void*)frame.ptr(0)); TCNL;
 
         // image processing calculations here
 
-        //TCC("    main");
-        //TC((void*)frame.data); TCNL;
-        //TC((void*)frame.ptr(0)); TCNL;
-
-        // test img manip
-        auto ar = frame.ptr(0);
+        // test img manip - write color starting at row 100 for 100 rows
+        auto ar = frame.ptr(100);
         // insert a green area
-        for (int i = 1; i < 100000; i+=4 ) ar[i] = 0xff;
-
-        //TC((void*)HighguiBridge::get().frontInputPtr); TCNL;
-        //TC((void*)HighguiBridge::get().backInputPtr); TCNL;
+        for (int i = 0; i < 640 * 100 * 4; i+=4 ) ar[i] = 0xff;
 
         //for (int i = 0; i < 1000; i++)
         //    frame.at<unsigned char>(i, i) = 0xFF;
 
-        imshow("xaml", frame);
+        imshow("", frame);
     }
 
     // cvtColor(frame, edges, CV_BGR2GRAY);
