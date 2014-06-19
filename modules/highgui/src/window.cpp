@@ -43,6 +43,10 @@
 #include <map>
 #include "opencv2/core/opengl.hpp"
 
+#ifdef HAVE_WINRT
+#include "cap_winrt_highgui.hpp"
+#endif
+
 // in later times, use this file as a dispatcher to implementations like cvcap.cpp
 
 CV_IMPL void cvSetWindowProperty(const char* name, int prop_id, double prop_value)
@@ -553,8 +557,13 @@ cvCreateTrackbar2( const char* /*trackbar_name*/, const char* /*window_name*/,
                    int* /*val*/, int /*count*/, CvTrackbarCallback2 /*on_notify2*/,
                    void* /*userdata*/ )
 {
+#ifdef HAVE_WINRT
+    HighguiBridge::get().createTrackbar();
+    return 0;
+#else
     CV_NO_GUI_ERROR( "cvCreateTrackbar2" );
     return -1;
+#endif
 }
 
 CV_IMPL void
