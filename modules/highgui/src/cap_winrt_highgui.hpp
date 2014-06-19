@@ -84,7 +84,7 @@ public:
     // bool initializeDevice();
 
     // highgui UI interface
-    void createTrackbar( /* callbackOnChange */) {} // unhides trackbar and registers OpenCV callback
+    void createTrackbar( /* callbackOnChange */);   // unhides trackbar and registers OpenCV callback
     void setTrackbarPos(int pos) {}                 // unhides trackbar and sets its position
 
     // void imshow(cv::InputArray matToShow);          // shows Mat in the cvImage element
@@ -134,7 +134,8 @@ public:
     std::atomic<unsigned long>  frameCounter;
     unsigned long               currentFrame;
 
-    Windows::UI::Xaml::Controls::Image ^m_cvImage;
+    Windows::UI::Xaml::Controls::Image ^cvImage;
+    Windows::UI::Xaml::Controls::Slider ^cvSlider;
 
     //unsigned char *             GetInputDataPtr();
 
@@ -174,4 +175,6 @@ private:
 
 };
 
-// void imshow_winrt(InputArray img);
+
+// cannot decl here since OpenCV is not included
+// void imshow_winrt(cv::InputArray img);

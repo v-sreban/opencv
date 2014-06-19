@@ -87,6 +87,11 @@ void HighguiBridge::SwapOutputBuffers()
 //    return Video::get().GetInputDataPtr();
 //}
 
+void HighguiBridge::createTrackbar()
+{
+    HighguiBridge::get().requestForUIthreadAsync(HighGuiAssist_SHOW_TRACKBAR);
+}
+
 void imshow_winrt(cv::InputArray img)
 {
     //auto m = img.getMat();
