@@ -122,10 +122,8 @@ public:
 
     // double buffering
     std::mutex                  inputBufferMutex;
-    //Windows::UI::Xaml::Media::Imaging::WriteableBitmap^ frontInputBuffer;     // OpenCV reads this
-    //Windows::UI::Xaml::Media::Imaging::WriteableBitmap^ backInputBuffer;      // video writes this
-    unsigned char *frontInputPtr;     // OpenCV reads this
-    unsigned char *backInputPtr;      // video writes this
+    unsigned char *frontInputPtr;                                               // OpenCV reads this
+    unsigned char *backInputPtr;                                                // video writes this
     void SwapInputBuffers();
 
     std::mutex                  outputBufferMutex;
@@ -138,7 +136,7 @@ public:
 
     Windows::UI::Xaml::Controls::Image ^m_cvImage;
 
-    unsigned char *             GetInputDataPtr();
+    //unsigned char *             GetInputDataPtr();
 
 private:
 

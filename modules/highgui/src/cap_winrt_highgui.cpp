@@ -83,9 +83,9 @@ void HighguiBridge::SwapOutputBuffers()
     swap(backOutputBuffer, frontOutputBuffer);
 }
 
-unsigned char * HighguiBridge::GetInputDataPtr(){
-    return Video::get().GetInputDataPtr();
-}
+//unsigned char * HighguiBridge::GetInputDataPtr(){
+//    return Video::get().GetInputDataPtr();
+//}
 
 void imshow_winrt(cv::InputArray img)
 {
