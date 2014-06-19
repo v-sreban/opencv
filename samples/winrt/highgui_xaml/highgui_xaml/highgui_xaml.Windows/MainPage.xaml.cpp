@@ -45,6 +45,10 @@ MainPage::MainPage()
 {
     InitializeComponent();
 
+    // set XAML elements
+    HighguiBridge::get().cvImage = cvImage;
+    HighguiBridge::get().cvSlider = cvSlider;
+
     auto asyncTask = TaskWithProgressAsync();
     asyncTask->Progress = ref new AsyncActionProgressHandler<int>([this](IAsyncActionWithProgress<int>^ act, int progress)
     {
@@ -59,9 +63,6 @@ MainPage::MainPage()
                 int width = HighguiBridge::get().width;
                 int height = HighguiBridge::get().height;
 
-                // set XAML image element
-                HighguiBridge::get().m_cvImage = cvImage;
-
                 // buffers must alloc'd on UI thread
                 //HighguiBridge::get().m_frontInputBuffer = ref new WriteableBitmap(width, height);
                 //HighguiBridge::get().m_backInputBuffer = ref new WriteableBitmap(width, height);
@@ -70,6 +71,7 @@ MainPage::MainPage()
 
                 // video capture device init must be done on UI thread;
                 // code is located in the OpenCV Highgui DLL, class Video
+                // not class member due to linker errors
                 initGrabber(device, width, height);
         }
             break;
@@ -79,13 +81,16 @@ MainPage::MainPage()
         case HighguiBridge_UPDATE_IMAGE_ELEMENT:
             // zv
             // testing: for direct copy bypassing OpenCV:
-            // HighguiBridge::get().m_cvImage->Source = HighguiBridge::get().m_backInputBuffer;
+            // HighguiBridge::get().m_cvImage->Source = HighguiBridge::get().backInputPtr;
 
             // copy output Mat to WBM
             copyOutput();
 
             // set XAML image element with image WBM
-            HighguiBridge::get().m_cvImage->Source = HighguiBridge::get().frontOutputBuffer;
+            HighguiBridge::get().cvImage->Source = HighguiBridge::get().frontOutputBuffer;
+            break;
+        case HighGuiAssist_SHOW_TRACKBAR:
+            cvSlider->Visibility = Windows::UI::Xaml::Visibility::Visible;
             break;
         }
     });
