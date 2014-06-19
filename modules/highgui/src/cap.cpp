@@ -583,7 +583,8 @@ VideoCapture& VideoCapture::operator >> (Mat& image)
         retrieve(image);
 
         // needed here because setting Mat 'image' is not allowed by OutputArray in read()
-        auto p = HighguiBridge::get().frontInputPtr;      
+        auto p = HighguiBridge::get().backInputPtr;
+        // auto p = HighguiBridge::get().frontInputPtr;
         Mat m(HighguiBridge::get().height, HighguiBridge::get().width, CV_8UC4, p);
         image = m;
 
@@ -591,7 +592,7 @@ VideoCapture& VideoCapture::operator >> (Mat& image)
         //TC((void*)p); TCNL;
         //TC((void*)image.data); TCNL;
 
-        //HighguiBridge::get().SwapInputBuffers();
+        // HighguiBridge::get().SwapInputBuffers();
     }
 #else
     read(image);
