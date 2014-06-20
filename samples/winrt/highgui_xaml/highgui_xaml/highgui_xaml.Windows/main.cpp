@@ -48,7 +48,7 @@ void cvMain()
     // Mat edges;
     // namedWindow("edges", 1);
 
-    // test - nb value is not updated now
+    // test - TODO: value is not updated now
     int value;
     createTrackbar( "", "", &value, 100);
 

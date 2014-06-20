@@ -71,7 +71,6 @@ MainPage::MainPage()
 
                 // video capture device init must be done on UI thread;
                 // code is located in the OpenCV Highgui DLL, class Video
-                // not class member due to linker errors
                 initGrabber(device, width, height);
         }
             break;
@@ -88,6 +87,10 @@ MainPage::MainPage()
 
             // set XAML image element with image WBM
             HighguiBridge::get().cvImage->Source = HighguiBridge::get().frontOutputBuffer;
+
+            // test
+            //HighguiBridge::get().bIsFrameNew = false;
+
             break;
         case HighGuiAssist_SHOW_TRACKBAR:
             cvSlider->Visibility = Windows::UI::Xaml::Visibility::Visible;
