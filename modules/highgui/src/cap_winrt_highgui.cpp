@@ -70,11 +70,12 @@ HighguiBridge& HighguiBridge::get()
 void HighguiBridge::SwapInputBuffers()
 {
     lock_guard<mutex> lock(inputBufferMutex);
-    if (currentFrame != frameCounter)
-    {
-        currentFrame = frameCounter;
-        swap(backInputPtr, frontInputPtr);
-    }
+    swap(backInputPtr, frontInputPtr);
+    //if (currentFrame != frameCounter)
+    //{
+    //    currentFrame = frameCounter;
+    //    swap(backInputPtr, frontInputPtr);
+    //}
 }
 
 void HighguiBridge::SwapOutputBuffers()
