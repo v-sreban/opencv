@@ -85,8 +85,6 @@ namespace cv {
 
         if (HighguiBridge::get().bIsFrameNew)
         {
-            HighguiBridge::get().bIsFrameNew = false;
-
             return true;
         }
 
@@ -148,7 +146,7 @@ namespace cv {
         //TC((void*)outArray.getMat().ptr(0)); TCNL;
         //TC((void*)HighguiBridge::get().frontInputPtr); TCNL;
 
-        return true;
+        return HighguiBridge::get().bIsFrameNew;
     }
 
 
