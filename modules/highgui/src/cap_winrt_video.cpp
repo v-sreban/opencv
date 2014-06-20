@@ -242,94 +242,100 @@ void Video::_GrabFrameAsync(::Media::CaptureFrameGrabber^ frameGrabber)
     // use rgb24 layout
     create_task(frameGrabber->GetFrameAsync()).then([this, frameGrabber](const ComPtr<IMF2DBuffer2>& buffer)
     {
-        // do the RGB swizzle while copying the pixels from the IMF2DBuffer2
-        BYTE *pbScanline;
-        LONG plPitch;
-        unsigned int colBytes = width * bytesPerPixel;
-        CHK(buffer->Lock2D(&pbScanline, &plPitch));
+        // do not spend CPU time copying another frame if OpenCV has not processed the previous frame
+        if (!HighguiBridge::get().bIsFrameNew)
+        {
 
-        // TC(plPitch);    TC(numBytes);   TCNL;
+            // do the RGB swizzle while copying the pixels from the IMF2DBuffer2
+            BYTE *pbScanline;
+            LONG plPitch;
+            unsigned int colBytes = width * bytesPerPixel;
+            CHK(buffer->Lock2D(&pbScanline, &plPitch));
 
-        // flip
+            // TC(plPitch);    TC(numBytes);   TCNL;
+
+            // flip
 #if 1
-        if (bFlipImageX)
-        {
-            std::lock_guard<std::mutex> lock(HighguiBridge::get().inputBufferMutex);
-
-            // auto buf = GetData(HighguiBridge::get().m_backInputBuffer->PixelBuffer);
-            // uint8_t* buf = reinterpret_cast<uint8_t*>(m_backInputBuffer->getPixels());
-
-            // ptr to input Mat data array
-            auto buf = HighguiBridge::get().backInputPtr;
-
-
-            for (unsigned int row = 0; row < height; row++)
+            if (bFlipImageX)
             {
-                unsigned int i = 0;
-                unsigned int j = colBytes - 1;
+                std::lock_guard<std::mutex> lock(HighguiBridge::get().inputBufferMutex);
 
-                while (i < colBytes)
+                // auto buf = GetData(HighguiBridge::get().m_backInputBuffer->PixelBuffer);
+                // uint8_t* buf = reinterpret_cast<uint8_t*>(m_backInputBuffer->getPixels());
+
+                // ptr to input Mat data array
+                auto buf = HighguiBridge::get().backInputPtr;
+
+
+                for (unsigned int row = 0; row < height; row++)
                 {
-                    // reverse the scan line
-                    // as a side effect this also swizzles R and B channels
-                    buf[j--] = pbScanline[i++];
-                    buf[j--] = pbScanline[i++];
-                    buf[j--] = pbScanline[i++];
+                    unsigned int i = 0;
+                    unsigned int j = colBytes - 1;
+
+                    while (i < colBytes)
+                    {
+                        // reverse the scan line
+                        // as a side effect this also swizzles R and B channels
+                        buf[j--] = pbScanline[i++];
+                        buf[j--] = pbScanline[i++];
+                        buf[j--] = pbScanline[i++];
+                    }
+                    pbScanline += plPitch;
+                    buf += colBytes;
                 }
-                pbScanline += plPitch;
-                buf += colBytes;
             }
-        }
-        else
+            else
 #endif
-        {
-            std::lock_guard<std::mutex> lock(HighguiBridge::get().inputBufferMutex);
-            // auto buf = HighguiBridge::get().frontInputPtr;
-
-            // TCC("_GrabFrameAsync");  TC(HighguiBridge::get().frontInputPtr); TCNL;
-
-            // auto buf = GetData(HighguiBridge::get().m_frontInputBuffer->PixelBuffer);
-            // uint8_t* buf = reinterpret_cast<uint8_t*>(m_frontInputBuffer->getPixels());
-
-            // from test:
-            //auto bitmap = HighguiBridge::get().m_frontInputBuffer;
-            //CHK(buffer->ContiguousCopyTo(GetData(bitmap->PixelBuffer), bitmap->PixelBuffer->Capacity));
-            //unsigned long length;
-            //CHK(buffer->GetContiguousLength(&length));
-            //bitmap->PixelBuffer->Length = length;
-
-            // ptr to input Mat data array
-            auto buf = HighguiBridge::get().backInputPtr;
-
-            for (unsigned int row = 0; row < height; row++)
             {
-                for (unsigned int i = 0; i < colBytes; i++ /*i += bytesPerPixel*/)
+                std::lock_guard<std::mutex> lock(HighguiBridge::get().inputBufferMutex);
+                // auto buf = HighguiBridge::get().frontInputPtr;
+
+                // TCC("_GrabFrameAsync");  TC(HighguiBridge::get().frontInputPtr); TCNL;
+
+                // auto buf = GetData(HighguiBridge::get().m_frontInputBuffer->PixelBuffer);
+                // uint8_t* buf = reinterpret_cast<uint8_t*>(m_frontInputBuffer->getPixels());
+
+                // from test:
+                //auto bitmap = HighguiBridge::get().m_frontInputBuffer;
+                //CHK(buffer->ContiguousCopyTo(GetData(bitmap->PixelBuffer), bitmap->PixelBuffer->Capacity));
+                //unsigned long length;
+                //CHK(buffer->GetContiguousLength(&length));
+                //bitmap->PixelBuffer->Length = length;
+
+                // ptr to input Mat data array
+                auto buf = HighguiBridge::get().backInputPtr;
+
+                for (unsigned int row = 0; row < height; row++)
                 {
-                    // swizzle the R and B values (BGR to RGB)
-                    //buf[i] = pbScanline[i + 2];
-                    //buf[i + 1] = pbScanline[i + 1];
-                    //buf[i + 2] = pbScanline[i];
+                    for (unsigned int i = 0; i < colBytes; i++ /*i += bytesPerPixel*/)
+                    {
+                        // swizzle the R and B values (BGR to RGB)
+                        //buf[i] = pbScanline[i + 2];
+                        //buf[i + 1] = pbScanline[i + 1];
+                        //buf[i + 2] = pbScanline[i];
 
-                    buf[i] = pbScanline[i];
+                        buf[i] = pbScanline[i];
+                    }
+                    pbScanline += plPitch;
+                    buf += colBytes;
                 }
-                pbScanline += plPitch;
-                buf += colBytes;
             }
+            CHK(buffer->Unlock2D());
+
+            // set length
+            // HighguiBridge::get().m_backInputBuffer->PixelBuffer->Length = numBytes;
+
+            // notify frame is ready
+            HighguiBridge::get().bIsFrameNew = true;
+            HighguiBridge::get().frameCounter++;
+
+            // zv immed test
+            //HighguiBridge::get().m_cvImage->Source = HighguiBridge::get().frontInputBuffer;
+
+            //TCC("    grab");
+            //TC(HighguiBridge::get().frameCounter);
+            //TCNL;
         }
-        CHK(buffer->Unlock2D());
-
-        // set length
-        // HighguiBridge::get().m_backInputBuffer->PixelBuffer->Length = numBytes;
-
-        // notify frame is ready
-        HighguiBridge::get().bIsFrameNew = true;
-        HighguiBridge::get().frameCounter++;
-
-        // zv immed test
-        //HighguiBridge::get().m_cvImage->Source = HighguiBridge::get().m_frontInputBuffer;
-
-        //TC(HighguiBridge::get().frameCounter);
-        //TCNL;
 
         if (bGrabberInited)
         {
