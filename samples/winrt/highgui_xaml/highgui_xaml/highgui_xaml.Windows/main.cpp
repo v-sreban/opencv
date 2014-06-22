@@ -38,7 +38,7 @@
 
 using namespace cv;
 
-//__declspec(dllexport) 
+
 void cvMain()
 {
     VideoCapture cam;
@@ -48,8 +48,7 @@ void cvMain()
     // Mat edges;
     // namedWindow("edges", 1);
 
-    // test - TODO: value is not updated now
-    int value;
+    int value = 0;
     createTrackbar( "", "", &value, 100);
 
     Mat frame;
@@ -66,8 +65,9 @@ void cvMain()
         // debug
         TCC("    main:");
         TC(HighguiBridge::get().frameCounter);
-        TC((void*)frame.data); TCNL;
-        //TC((void*)frame.ptr(0)); TCNL;
+        TC((void*)frame.data); 
+        TC(value);
+        TCNL;
 
         // image processing calculations here
 
