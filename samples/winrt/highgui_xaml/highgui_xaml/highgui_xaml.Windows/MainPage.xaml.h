@@ -25,14 +25,9 @@ namespace highgui_xaml
 
         Windows::Foundation::IAsyncActionWithProgress<int>^ TaskWithProgressAsync();
 
-        // virtual void OnNavigatedTo(Windows::UI::Xaml::Navigation::NavigationEventArgs^ e) override;
+        void cvSlider_ValueChanged(Platform::Object^ sender, Windows::UI::Xaml::Controls::Primitives::RangeBaseValueChangedEventArgs^ e);
 
-    // how to add callback for slider value change?
-    // http://msdn.microsoft.com/en-us/library/windows/apps/windows.ui.xaml.controls.primitives.rangebase.onvaluechanged.aspx
-        //void OnValueChanged(
-        //    double oldValue,
-        //    double newValue
-        //    ) {}
+        // virtual void OnNavigatedTo(Windows::UI::Xaml::Navigation::NavigationEventArgs^ e) override;
 
     private:
 

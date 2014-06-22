@@ -40,24 +40,31 @@ using namespace Windows::UI::Xaml::Media::Imaging;
 extern bool initGrabber(int device, int w, int h);
 extern void copyOutput();
 
-
-MainPage::MainPage()
+namespace highgui_xaml
 {
-    InitializeComponent();
 
-    // set XAML elements
-    HighguiBridge::get().cvImage = cvImage;
-    HighguiBridge::get().cvSlider = cvSlider;
 
-    auto asyncTask = TaskWithProgressAsync();
-    asyncTask->Progress = ref new AsyncActionProgressHandler<int>([this](IAsyncActionWithProgress<int>^ act, int progress)
+    MainPage::MainPage()
     {
-        int action = progress;
+        InitializeComponent();
 
-        // these actions will be processed on the UI thread asynchronously
-        switch (action)
+        // set XAML elements
+        HighguiBridge::get().cvImage = cvImage;
+        HighguiBridge::get().cvSlider = cvSlider;
+
+        // handler
+        cvSlider->ValueChanged +=
+            ref new RangeBaseValueChangedEventHandler(this, &MainPage::cvSlider_ValueChanged);
+
+        auto asyncTask = TaskWithProgressAsync();
+        asyncTask->Progress = ref new AsyncActionProgressHandler<int>([this](IAsyncActionWithProgress<int>^ act, int progress)
         {
-        case HighguiBridge_OPEN_CAMERA:
+            int action = progress;
+
+            // these actions will be processed on the UI thread asynchronously
+            switch (action)
+            {
+            case HighguiBridge_OPEN_CAMERA:
             {
                 int device = HighguiBridge::get().deviceIndex;
                 int width = HighguiBridge::get().width;
@@ -72,32 +79,39 @@ MainPage::MainPage()
                 // video capture device init must be done on UI thread;
                 // code is located in the OpenCV Highgui DLL, class Video
                 initGrabber(device, width, height);
-        }
-            break;
-        case HighguiBridge_CLOSE_CAMERA:
-            // closeDevice();
-            break;
-        case HighguiBridge_UPDATE_IMAGE_ELEMENT:
-            // zv
-            // testing: for direct copy bypassing OpenCV:
-            // HighguiBridge::get().m_cvImage->Source = HighguiBridge::get().backInputPtr;
+            }
+                break;
+            case HighguiBridge_CLOSE_CAMERA:
+                // closeDevice();
+                break;
+            case HighguiBridge_UPDATE_IMAGE_ELEMENT:
+                // zv
+                // testing: for direct copy bypassing OpenCV:
+                // HighguiBridge::get().m_cvImage->Source = HighguiBridge::get().backInputPtr;
 
-            // copy output Mat to WBM
-            copyOutput();
+                // copy output Mat to WBM
+                copyOutput();
 
-            // set XAML image element with image WBM
-            HighguiBridge::get().cvImage->Source = HighguiBridge::get().frontOutputBuffer;
+                // set XAML image element with image WBM
+                HighguiBridge::get().cvImage->Source = HighguiBridge::get().frontOutputBuffer;
 
-            // test
-            //HighguiBridge::get().bIsFrameNew = false;
+                // test
+                //HighguiBridge::get().bIsFrameNew = false;
 
-            break;
-        case HighGuiAssist_SHOW_TRACKBAR:
-            cvSlider->Visibility = Windows::UI::Xaml::Visibility::Visible;
-            break;
-        }
-    });
+                break;
+            case HighGuiAssist_SHOW_TRACKBAR:
+                cvSlider->Visibility = Windows::UI::Xaml::Visibility::Visible;
+                break;
+            }
+        });
 
+
+    }
+
+    void MainPage::cvSlider_ValueChanged(Platform::Object^ sender, Windows::UI::Xaml::Controls::Primitives::RangeBaseValueChangedEventArgs^ e)
+    {
+        sliderChanged1(e->NewValue);
+    }
 }
 
 // implemented in main.cpp
