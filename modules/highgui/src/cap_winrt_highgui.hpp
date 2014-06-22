@@ -37,6 +37,7 @@
 #include <mutex>
 #include <memory>
 #include <atomic>
+#include <functional>
 // #include <future>
 // #include <condition_variable>
 
@@ -59,6 +60,7 @@ enum {
 
 __declspec(dllexport) bool initGrabber(int device, int w, int h);
 __declspec(dllexport) void copyOutput();
+__declspec(dllexport) void sliderChanged1(double value);
 
 
 // singleton
@@ -84,7 +86,8 @@ public:
     // bool initializeDevice();
 
     // highgui UI interface
-    void createTrackbar( /* callbackOnChange */);   // unhides trackbar and registers OpenCV callback
+    void createTrackbar( /*void *callbackOnChange() */);   // unhides trackbar and registers OpenCV callback
+    void createTrackbar( int* valptr );             // unhides trackbar and sets value
     void setTrackbarPos(int pos) {}                 // unhides trackbar and sets its position
 
     // void imshow(cv::InputArray matToShow);          // shows Mat in the cvImage element
@@ -139,6 +142,12 @@ public:
 
     //unsigned char *             GetInputDataPtr();
 
+    // double      sliderValue1;
+    int         *slider1ValPtr;
+
+    // callback
+    // std::function<void(int)> slider1cb;
+
 private:
 
     //Platform::Agile<Windows::Media::Capture::MediaCapture> m_capture;
@@ -157,6 +166,8 @@ private:
         bIsFrameNew = false;
         currentFrame = 0;
         frameCounter = 0;
+        // sliderValue1 = 0;
+        slider1ValPtr = nullptr;
     };
 
     // bool initializeDeviceTask();

@@ -45,6 +45,9 @@ using namespace ::Concurrency;
 
 using namespace ::std;
 
+// test
+#include <opencv2/highgui/cdebug.h>
+
 // non-blocking
 bool initGrabber(int device, int w, int h)
 {
@@ -88,8 +91,9 @@ void HighguiBridge::SwapOutputBuffers()
 //    return Video::get().GetInputDataPtr();
 //}
 
-void HighguiBridge::createTrackbar()
+void HighguiBridge::createTrackbar( int *valptr )
 {
+    slider1ValPtr = valptr;
     HighguiBridge::get().requestForUIthreadAsync(HighGuiAssist_SHOW_TRACKBAR);
 }
 
@@ -138,15 +142,30 @@ void imshow_winrt(cv::InputArray img)
     //    HighguiBridge::get().frontOutputBuffer->PixelBuffer->Length = length;
     //}
 
+    // not needed per discussion w Dale
     //HighguiBridge::get().SwapOutputBuffers();
+
     HighguiBridge::get().requestForUIthreadAsync(HighguiBridge_UPDATE_IMAGE_ELEMENT);
 }
 
+// nb on UI thread
 void copyOutput()
 {
     Video::get().CopyOutput();
 }
 
+// nb on UI thread
+void sliderChanged1(double value)
+{
+    auto i = (int)value;
+    if (HighguiBridge::get().slider1ValPtr != nullptr) 
+        *HighguiBridge::get().slider1ValPtr = i;
+
+    // HighguiBridge::get().sliderValue1 = i;
+
+    // this delegate is called on the UI thread
+    // if (HighguiBridge::get().slider1cb) HighguiBridge::get().slider1cb(i);
+}
 
 // maybe not needed?
 #if 0

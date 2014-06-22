@@ -40,6 +40,7 @@
 
 #define CHK(statement)  {HRESULT _hr = (statement); if (FAILED(_hr)) { throw ref new Platform::COMException(_hr); };}
 
+// test
 #include <opencv2/highgui/cdebug.h>
 
 using namespace Windows::Foundation;
@@ -125,6 +126,10 @@ namespace cv {
                 // test
                 //outArray.getMat() = frontInputMat;
                 //outArray.getObj();
+
+                TCC("    init");
+                TC((void*)backInputMat.ptr(0));
+                TCNL;
             }
 
             // request device init on UI thread - this does not block, and is async

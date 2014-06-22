@@ -548,20 +548,20 @@ CV_IMPL int
 cvCreateTrackbar( const char*, const char*,
                   int*, int, CvTrackbarCallback )
 {
-    CV_NO_GUI_ERROR( "cvCreateTrackbar" );
+    CV_NO_GUI_ERROR("cvCreateTrackbar");
     return -1;
 }
 
 CV_IMPL int
 cvCreateTrackbar2( const char* /*trackbar_name*/, const char* /*window_name*/,
-                   int* /*val*/, int /*count*/, CvTrackbarCallback2 /*on_notify2*/,
+                   int* valptr, int /*count*/, CvTrackbarCallback2 /*on_notify2*/,
                    void* /*userdata*/ )
 {
 #ifdef HAVE_WINRT
-    HighguiBridge::get().createTrackbar();
+    HighguiBridge::get().createTrackbar(valptr);
     return 0;
 #else
-    CV_NO_GUI_ERROR( "cvCreateTrackbar2" );
+    CV_NO_GUI_ERROR("cvCreateTrackbar2");
     return -1;
 #endif
 }
