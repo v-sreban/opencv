@@ -243,7 +243,16 @@ void Video::_GrabFrameAsync(::Media::CaptureFrameGrabber^ frameGrabber)
     create_task(frameGrabber->GetFrameAsync()).then([this, frameGrabber](const ComPtr<IMF2DBuffer2>& buffer)
     {
         // do not spend CPU time copying another frame if OpenCV has not processed the previous frame
-        if (!HighguiBridge::get().bIsFrameNew)
+        // nb. only get a frame if the back buffer contains an "old" (already processed) frame
+        //
+        // initially bIsFrameNew = 0, then when the frame is new and UNprocessed: bIsFrameNew = 1 (set here)
+        // then, when the buffers are swapped after reading by OpenCV, bIsFrameNew = 0 (set in cap.cpp)
+        // meaning, we need to get a new frame
+        //
+        // if (!HighguiBridge::get().bIsFrameNew)
+
+        // if (HighguiBridge::get().backInputPtr == nullptr) return;
+        // try
         {
 
             // do the RGB swizzle while copying the pixels from the IMF2DBuffer2
@@ -337,6 +346,10 @@ void Video::_GrabFrameAsync(::Media::CaptureFrameGrabber^ frameGrabber)
             //TCNL;
         }
 
+        //catch (...)
+        //{
+        //}
+
         if (bGrabberInited)
         {
             _GrabFrameAsync(frameGrabber);
@@ -364,6 +377,7 @@ void Video::CopyOutput()
         outAr[i] = inAr[i];
     HighguiBridge::get().frontOutputBuffer->PixelBuffer->Length = length;
 }
+
 
 
 #if 0
