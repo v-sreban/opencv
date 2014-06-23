@@ -30,6 +30,9 @@
 
 #pragma once
 
+// this header is included in the XAML App, so it may not include any
+// OpenCV headers, or a static assert will be raised
+
 #include <ppl.h>
 #include <ppltasks.h>
 #include <concrt.h>
@@ -61,6 +64,7 @@ enum {
 __declspec(dllexport) bool initGrabber(int device, int w, int h);
 __declspec(dllexport) void copyOutput();
 __declspec(dllexport) void sliderChanged1(double value);
+__declspec(dllexport) void allocateBuffers(int width, int height);
 
 
 // singleton
