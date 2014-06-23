@@ -78,8 +78,8 @@ namespace cv {
 
         void start();
 
-        Mat frontInputMat;
-        Mat backInputMat;
+        //Mat frontInputMat;
+        //Mat backInputMat;
 
     protected:
 

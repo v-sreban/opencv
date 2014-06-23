@@ -69,6 +69,38 @@ using namespace ::std;
 // from main app DLL
 // __declspec(dllimport) void SwapInputBuffers();
 
+
+// nb. VideoCapture_WinRT is not a singleton, so the Mats are made file statics
+// We do not support more than one capture device simultaneously with the
+// design at this time
+
+// nb. inputBufferMutex was not able to guarantee that OpenCV Mats were
+// ready to accept data in the UI thread (memory access exceptions were thrown
+// even though buffer address was good).
+// Therefore allocation of Mats is also done on the UI thread before the video
+// device is initialized.  Mats are undefined in the UI thread due to OpenCV
+// not allowing headers outside the DLL (a static assert is raised), so 
+// allocateBuffers() is located in the OpenCV Highgui DLL.
+
+static cv::Mat frontInputMat;
+static cv::Mat backInputMat;
+
+// performed on UI thread
+void allocateBuffers(int width, int height)
+{
+    // allocate input Mats (bgra8 for test)
+    frontInputMat.create(height, width, CV_8UC4);
+    backInputMat.create(height, width, CV_8UC4);
+    HighguiBridge::get().frontInputPtr = frontInputMat.ptr(0);
+    HighguiBridge::get().backInputPtr = backInputMat.ptr(0);
+
+    // debug
+    TCC("    init");
+    TC((void*)backInputMat.ptr(0));
+    TCNL;
+}
+
+
 namespace cv {
 
     VideoCapture_WinRT::VideoCapture_WinRT(int device) : started(false)
@@ -113,23 +145,21 @@ namespace cv {
                 HighguiBridge::get().width = width;
                 HighguiBridge::get().height = height;
 
+                // Mats will be alloc'd on UI thread
+
                 //frontAr.create(height, width, CV_8UC4);
                 //auto p = frontAr.getMat().ptr(0);
                 //HighguiBridge::get().frontInputPtr = p;
 
-                // allocate input Mats (bgra8 for test)
-                frontInputMat.create(height, width, CV_8UC4);
-                backInputMat.create(height, width, CV_8UC4);
-                HighguiBridge::get().frontInputPtr = frontInputMat.ptr(0);
-                HighguiBridge::get().backInputPtr = backInputMat.ptr(0);
+                //// allocate input Mats (bgra8 for test)
+                //frontInputMat.create(height, width, CV_8UC4);
+                //backInputMat.create(height, width, CV_8UC4);
+                //HighguiBridge::get().frontInputPtr = frontInputMat.ptr(0);
+                //HighguiBridge::get().backInputPtr = backInputMat.ptr(0);
 
                 // test
                 //outArray.getMat() = frontInputMat;
                 //outArray.getObj();
-
-                TCC("    init");
-                TC((void*)backInputMat.ptr(0));
-                TCNL;
             }
 
             // request device init on UI thread - this does not block, and is async
@@ -137,7 +167,7 @@ namespace cv {
                 outArray.size().width, outArray.size().height);
 
             started = true;
-            return false;       // no frame was available
+            return true;
         }
 
         if (!started) return false;

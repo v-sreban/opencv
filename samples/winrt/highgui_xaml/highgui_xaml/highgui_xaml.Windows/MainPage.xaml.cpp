@@ -75,6 +75,7 @@ namespace highgui_xaml
                 //HighguiBridge::get().m_backInputBuffer = ref new WriteableBitmap(width, height);
                 HighguiBridge::get().frontOutputBuffer = ref new WriteableBitmap(width, height);
                 HighguiBridge::get().backOutputBuffer = ref new WriteableBitmap(width, height);
+                allocateBuffers(width, height);
 
                 // video capture device init must be done on UI thread;
                 // code is located in the OpenCV Highgui DLL, class Video

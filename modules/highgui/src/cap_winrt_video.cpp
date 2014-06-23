@@ -275,7 +275,6 @@ void Video::_GrabFrameAsync(::Media::CaptureFrameGrabber^ frameGrabber)
                 // ptr to input Mat data array
                 auto buf = HighguiBridge::get().backInputPtr;
 
-
                 for (unsigned int row = 0; row < height; row++)
                 {
                     unsigned int i = 0;
@@ -341,6 +340,7 @@ void Video::_GrabFrameAsync(::Media::CaptureFrameGrabber^ frameGrabber)
             // zv immed test
             //HighguiBridge::get().m_cvImage->Source = HighguiBridge::get().frontInputBuffer;
 
+            // debug
             //TCC("    grab");
             //TC(HighguiBridge::get().frameCounter);
             //TCNL;
