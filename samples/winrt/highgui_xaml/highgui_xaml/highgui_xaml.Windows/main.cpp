@@ -64,9 +64,9 @@ void cvMain()
 
         // debug
         TCC("    main:");
+        TC(value);
         TC(HighguiBridge::get().frameCounter);
         TC((void*)frame.data); 
-        TC(value);
         TCNL;
 
         // image processing calculations here
