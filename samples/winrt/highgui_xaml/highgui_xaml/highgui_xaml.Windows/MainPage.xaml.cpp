@@ -71,8 +71,6 @@ namespace highgui_xaml
                 int height = HighguiBridge::get().height;
 
                 // buffers must alloc'd on UI thread
-                //HighguiBridge::get().m_frontInputBuffer = ref new WriteableBitmap(width, height);
-                //HighguiBridge::get().m_backInputBuffer = ref new WriteableBitmap(width, height);
                 HighguiBridge::get().frontOutputBuffer = ref new WriteableBitmap(width, height);
                 HighguiBridge::get().backOutputBuffer = ref new WriteableBitmap(width, height);
                 allocateBuffers(width, height);
