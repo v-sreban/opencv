@@ -5,6 +5,7 @@
 
 #include "pch.h"
 #include "MainPage.xaml.h"
+#include "App.xaml.h"
 
 using namespace highgui_xaml;
 
@@ -25,6 +26,8 @@ using namespace Windows::UI::Xaml::Navigation;
 
 // The Blank Application template is documented at http://go.microsoft.com/fwlink/?LinkId=234227
 
+#include "../highgui_xaml.Windows/cdebug.h"
+
 /// <summary>
 /// Initializes the singleton application object. This is the first line of authored code
 /// executed, and as such is the logical equivalent of main() or WinMain().
@@ -33,6 +36,7 @@ App::App()
 {
 	InitializeComponent();
 	Suspending += ref new SuspendingEventHandler(this, &App::OnSuspending);
+    Resuming += ref new Windows::Foundation::EventHandler<Platform::Object ^>(this, &highgui_xaml::App::OnResuming);
 }
 
 /// <summary>
@@ -139,4 +143,16 @@ void App::OnSuspending(Object^ sender, SuspendingEventArgs^ e)
 	(void) e;		// Unused parameter
 
 	// TODO: Save application state and stop any background activity
+
+    TCC("    OnSuspending"); TCNL;
+
+    // set m_framegrabber to null
+    // resuming??
+}
+
+void highgui_xaml::App::OnResuming(Platform::Object ^sender, Platform::Object ^args)
+{
+    TCC("    OnResuming"); TCNL;
+
+    // throw ref new Platform::NotImplementedException();
 }

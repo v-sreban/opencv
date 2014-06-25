@@ -28,5 +28,6 @@ namespace highgui_xaml
 #endif
 
 		void OnSuspending(Platform::Object^ sender, Windows::ApplicationModel::SuspendingEventArgs^ e);
-	};
+        void OnResuming(Platform::Object ^sender, Platform::Object ^args);
+    };
 }
