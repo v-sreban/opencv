@@ -570,7 +570,7 @@ bool VideoCapture::read(OutputArray image)
 
     //TCC("    read");
     //TC((void*)image.getMat().ptr(0)); TCNL;
-    //TC((void*)HighguiBridge::get().frontInputPtr); TCNL;
+    //TC((void*)HighguiBridge::getInstance().frontInputPtr); TCNL;
 
     return !image.empty();
 }
@@ -583,16 +583,16 @@ VideoCapture& VideoCapture::operator >> (Mat& image)
         if (retrieve(image))
         {
             // needed here because setting Mat 'image' is not allowed by OutputArray in read()
-            auto p = HighguiBridge::get().backInputPtr;
-            Mat m(HighguiBridge::get().height, HighguiBridge::get().width, CV_8UC3, p);
+            auto p = HighguiBridge::getInstance().backInputPtr;
+            Mat m(HighguiBridge::getInstance().height, HighguiBridge::getInstance().width, CV_8UC3, p);
             image = m;
 
             //TCC("    operator>>");
             //TC((void*)p); TCNL;
             //TC((void*)image.data); TCNL;
 
-            // HighguiBridge::get().SwapInputBuffers();
-            HighguiBridge::get().bIsFrameNew = false;
+            // HighguiBridge::getInstance().SwapInputBuffers();
+            HighguiBridge::getInstance().bIsFrameNew = false;
         }
     }
 #else

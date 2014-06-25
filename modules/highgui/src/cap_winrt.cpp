@@ -89,8 +89,10 @@ void allocateBuffers(int width, int height)
     // allocate input Mats (bgra8 = CV_8UC4, RGB24 = CV_8UC3)
     frontInputMat.create(height, width, CV_8UC3);
     backInputMat.create(height, width, CV_8UC3);
-    HighguiBridge::get().frontInputPtr = frontInputMat.ptr(0);
-    HighguiBridge::get().backInputPtr = backInputMat.ptr(0);
+    HighguiBridge::getInstance().frontInputPtr = frontInputMat.ptr(0);
+    HighguiBridge::getInstance().backInputPtr = backInputMat.ptr(0);
+
+    HighguiBridge::getInstance().allocateOutputBuffer();
 
     // debug
     TCC("    init");
@@ -103,7 +105,7 @@ namespace cv {
 
     VideoCapture_WinRT::VideoCapture_WinRT(int device) : started(false)
     {
-        HighguiBridge::get().deviceIndex = device;
+        HighguiBridge::getInstance().deviceIndex = device;
     }
 
     // grab a frame:
@@ -114,14 +116,14 @@ namespace cv {
         // if device is not started we must return true so retrieveFrame() is called to start device
         if (!started) return true;
 
-        if (HighguiBridge::get().bIsFrameNew)
+        if (HighguiBridge::getInstance().bIsFrameNew)
         {
             return true;
         }
 
         // for blocking:
-        //unique_lock<mutex> lock(HighguiBridge::get().frameReadyMutex);
-        //HighguiBridge::get().frameReadyEvent.wait(lock);
+        //unique_lock<mutex> lock(HighguiBridge::getInstance().frameReadyMutex);
+        //HighguiBridge::getInstance().frameReadyEvent.wait(lock);
         return false;
     }
 
@@ -132,7 +134,7 @@ namespace cv {
         if (!started) {
 
             {
-                std::lock_guard<std::mutex> lock(HighguiBridge::get().inputBufferMutex);
+                std::lock_guard<std::mutex> lock(HighguiBridge::getInstance().inputBufferMutex);
 
                 int width, height;
                 width = outArray.size().width;
@@ -140,20 +142,20 @@ namespace cv {
                 if (width == 0) width = 640;
                 if (height == 0) height = 480;
 
-                HighguiBridge::get().width = width;
-                HighguiBridge::get().height = height;
+                HighguiBridge::getInstance().width = width;
+                HighguiBridge::getInstance().height = height;
 
                 // Mats will be alloc'd on UI thread
 
                 //frontAr.create(height, width, CV_8UC4);
                 //auto p = frontAr.getMat().ptr(0);
-                //HighguiBridge::get().frontInputPtr = p;
+                //HighguiBridge::getInstance().frontInputPtr = p;
 
                 //// allocate input Mats (bgra8 for test)
                 //frontInputMat.create(height, width, CV_8UC4);
                 //backInputMat.create(height, width, CV_8UC4);
-                //HighguiBridge::get().frontInputPtr = frontInputMat.ptr(0);
-                //HighguiBridge::get().backInputPtr = backInputMat.ptr(0);
+                //HighguiBridge::getInstance().frontInputPtr = frontInputMat.ptr(0);
+                //HighguiBridge::getInstance().backInputPtr = backInputMat.ptr(0);
 
                 // test
                 //outArray.getMat() = frontInputMat;
@@ -161,7 +163,7 @@ namespace cv {
             }
 
             // request device init on UI thread - this does not block, and is async
-            HighguiBridge::get().requestForUIthreadAsync(HighguiBridge_OPEN_CAMERA,
+            HighguiBridge::getInstance().requestForUIthreadAsync(OPEN_CAMERA,
                 outArray.size().width, outArray.size().height);
 
             started = true;
@@ -177,9 +179,9 @@ namespace cv {
 
         //TCC("    retrieveFrame");
         //TC((void*)outArray.getMat().ptr(0)); TCNL;
-        //TC((void*)HighguiBridge::get().frontInputPtr); TCNL;
+        //TC((void*)HighguiBridge::getInstance().frontInputPtr); TCNL;
 
-        return HighguiBridge::get().bIsFrameNew;
+        return HighguiBridge::getInstance().bIsFrameNew;
     }
 
 

@@ -54,7 +54,12 @@ bool initGrabber(int device, int w, int h)
     // nb. Video class is not exported outside of this DLL
     // due to complexities in the CaptureFrameGrabber ref class 
     // as written in the header not mixing well with pure C++ classes
-    return Video::get().initGrabber(device, w, h);
+    return Video::getInstance().initGrabber(device, w, h);
+}
+
+void closeGrabber()
+{
+    Video::getInstance().closeGrabber();
 }
 
 // non-blocking
@@ -63,7 +68,7 @@ void HighguiBridge::requestForUIthreadAsync(int action, int widthp, int heightp)
     reporter.report(action);
 }
 
-HighguiBridge& HighguiBridge::get()
+HighguiBridge& HighguiBridge::getInstance()
 {
     static HighguiBridge instance;
     return instance;
@@ -81,26 +86,32 @@ void HighguiBridge::SwapInputBuffers()
     //}
 }
 
-void HighguiBridge::SwapOutputBuffers()
-{
-    lock_guard<mutex> lock(outputBufferMutex);
-    swap(backOutputBuffer, frontOutputBuffer);
-}
+//void HighguiBridge::SwapOutputBuffers()
+//{
+//    lock_guard<mutex> lock(outputBufferMutex);
+//    swap(backOutputBuffer, outputBuffer);
+//}
 
 //unsigned char * HighguiBridge::GetInputDataPtr(){
-//    return Video::get().GetInputDataPtr();
+//    return Video::getInstance().GetInputDataPtr();
 //}
 
 void HighguiBridge::createTrackbar( int *valptr )
 {
     slider1ValPtr = valptr;
-    HighguiBridge::get().requestForUIthreadAsync(HighGuiAssist_SHOW_TRACKBAR);
+    HighguiBridge::getInstance().requestForUIthreadAsync(SHOW_TRACKBAR);
+}
+
+void HighguiBridge::allocateOutputBuffer()
+{
+    outputBuffer = ref new WriteableBitmap(width, height);
+    // backOutputBuffer = ref new WriteableBitmap(width, height);
 }
 
 void imshow_winrt(cv::InputArray img)
 {
     //auto m = img.getMat();
-    //auto in = HighguiBridge::get().frontInputPtr;
+    //auto in = HighguiBridge::getInstance().frontInputPtr;
     //// auto in = m.ptr(0);
 
     //int width = img.size().width;
@@ -108,7 +119,7 @@ void imshow_winrt(cv::InputArray img)
 
     // GetOutputDataPtr() throws exception - moved to Video class
 #if 0
-    auto out = Video::get().GetOutputDataPtr();
+    auto out = Video::getInstance().GetOutputDataPtr();
 
     // copy InputArray to Writeable bitmap
     const int bytesPerPixel = 3;
@@ -129,42 +140,42 @@ void imshow_winrt(cv::InputArray img)
     }
 #endif
 
-    //Video::get().CopyOutputBuffer(in, width, height, 4, width);
+    //Video::getInstance().CopyOutputBuffer(in, width, height, 4, width);
 
     // copy from input Mat to output WBM
     // cannot do it on this thread
     //{
     //    unsigned length = width * height * 4;
-    //    auto inAr = HighguiBridge::get().frontInputPtr;
-    //    auto outAr = GetData(HighguiBridge::get().frontOutputBuffer->PixelBuffer);
+    //    auto inAr = HighguiBridge::getInstance().frontInputPtr;
+    //    auto outAr = GetData(HighguiBridge::getInstance().outputBuffer->PixelBuffer);
     //    for (unsigned int i = 0; i < length; i++)
     //        outAr[i] = inAr[i];
-    //    HighguiBridge::get().frontOutputBuffer->PixelBuffer->Length = length;
+    //    HighguiBridge::getInstance().outputBuffer->PixelBuffer->Length = length;
     //}
 
     // not needed per discussion w Dale
-    //HighguiBridge::get().SwapOutputBuffers();
+    //HighguiBridge::getInstance().SwapOutputBuffers();
 
-    HighguiBridge::get().requestForUIthreadAsync(HighguiBridge_UPDATE_IMAGE_ELEMENT);
+    HighguiBridge::getInstance().requestForUIthreadAsync(UPDATE_IMAGE_ELEMENT);
 }
 
 // nb on UI thread
 void copyOutput()
 {
-    Video::get().CopyOutput();
+    Video::getInstance().CopyOutput();
 }
 
 // nb on UI thread
 void sliderChanged1(double value)
 {
     auto i = (int)value;
-    if (HighguiBridge::get().slider1ValPtr != nullptr) 
-        *HighguiBridge::get().slider1ValPtr = i;
+    if (HighguiBridge::getInstance().slider1ValPtr != nullptr) 
+        *HighguiBridge::getInstance().slider1ValPtr = i;
 
-    // HighguiBridge::get().sliderValue1 = i;
+    // HighguiBridge::getInstance().sliderValue1 = i;
 
     // this delegate is called on the UI thread
-    // if (HighguiBridge::get().slider1cb) HighguiBridge::get().slider1cb(i);
+    // if (HighguiBridge::getInstance().slider1cb) HighguiBridge::getInstance().slider1cb(i);
 }
 
 // maybe not needed?
@@ -178,8 +189,8 @@ void HighguiBridge::CopyOutputBuffer(unsigned char *p, int width, int height, in
     unsigned int numBytes = width * bytesPerPixel;
 
     {
-        std::lock_guard<std::mutex> lock(HighguiBridge::get().outputBufferMutex);
-        auto buf = GetData(HighguiBridge::get().m_backOutputBuffer->PixelBuffer);
+        std::lock_guard<std::mutex> lock(HighguiBridge::getInstance().outputBufferMutex);
+        auto buf = GetData(HighguiBridge::getInstance().m_backOutputBuffer->PixelBuffer);
 
         for (unsigned int row = 0; row < height; row++)
         {
@@ -233,8 +244,8 @@ void HighguiBridge::imshow(cv::InputArray matToShow)
     CHK(buffer->Lock2D(&pbScanline, &plPitch));
 
     {
-        std::lock_guard<std::mutex> lock(HighguiBridge::get().outputBufferMutex);
-        auto buf = GetData(HighguiBridge::get().m_backOutputBuffer->PixelBuffer);
+        std::lock_guard<std::mutex> lock(HighguiBridge::getInstance().outputBufferMutex);
+        auto buf = GetData(HighguiBridge::getInstance().m_backOutputBuffer->PixelBuffer);
 
         for (unsigned int row = 0; row < height; row++)
         {
@@ -357,8 +368,8 @@ void GrabFrameAsync(::Media::CaptureFrameGrabber^ frameGrabber)
 {
     create_task(frameGrabber->GetFrameAsync()).then([frameGrabber](const ComPtr<IMF2DBuffer2>& buffer)
     {
-        auto width = HighguiBridge::get().width;
-        auto height = HighguiBridge::get().height;
+        auto width = HighguiBridge::getInstance().width;
+        auto height = HighguiBridge::getInstance().height;
 #if 1
         auto bitmap = ref new WriteableBitmap(width, height);
 
@@ -399,12 +410,12 @@ void GrabFrameAsync(::Media::CaptureFrameGrabber^ frameGrabber)
         if (gOutput) gOutput->Source = *m_backBuffer.get();
 #endif
 
-        HighguiBridge::get().frameCounter++;
+        HighguiBridge::getInstance().frameCounter++;
 
         // notify frame is ready
         {
-            unique_lock<mutex> lck(HighguiBridge::get().frameReadyMutex);
-            HighguiBridge::get().frameReadyEvent.notify_one();
+            unique_lock<mutex> lck(HighguiBridge::getInstance().frameReadyMutex);
+            HighguiBridge::getInstance().frameReadyEvent.notify_one();
         }
 
         GrabFrameAsync(frameGrabber);
