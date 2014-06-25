@@ -36,6 +36,9 @@ using namespace ::Windows::Foundation;
 
 using namespace Windows::UI::Xaml::Media::Imaging;
 
+// debug
+#include "../highgui_xaml.Windows/cdebug.h"
+
 // needed for linker
 extern bool initGrabber(int device, int w, int h);
 extern void copyOutput();
@@ -48,9 +51,15 @@ namespace highgui_xaml
     {
         InitializeComponent();
 
+        // from samples:
+        //        visibilityToken = Window::Current->VisibilityChanged::add(ref new WindowVisibilityChangedEventHandler(this, &Scenario1::VisibilityChanged));
+        // Window::Current->VisibilityChanged
+
+        Window::Current->VisibilityChanged += ref new Windows::UI::Xaml::WindowVisibilityChangedEventHandler(this, &highgui_xaml::MainPage::OnVisibilityChanged);
+
         // set XAML elements
-        HighguiBridge::get().cvImage = cvImage;
-        HighguiBridge::get().cvSlider = cvSlider;
+        HighguiBridge::getInstance().cvImage = cvImage;
+        HighguiBridge::getInstance().cvSlider = cvSlider;
 
         // handler
         cvSlider->ValueChanged +=
@@ -64,41 +73,40 @@ namespace highgui_xaml
             // these actions will be processed on the UI thread asynchronously
             switch (action)
             {
-            case HighguiBridge_OPEN_CAMERA:
+            case OPEN_CAMERA:
             {
-                int device = HighguiBridge::get().deviceIndex;
-                int width = HighguiBridge::get().width;
-                int height = HighguiBridge::get().height;
+                int device = HighguiBridge::getInstance().deviceIndex;
+                int width = HighguiBridge::getInstance().width;
+                int height = HighguiBridge::getInstance().height;
 
                 // buffers must alloc'd on UI thread
-                HighguiBridge::get().frontOutputBuffer = ref new WriteableBitmap(width, height);
-                HighguiBridge::get().backOutputBuffer = ref new WriteableBitmap(width, height);
                 allocateBuffers(width, height);
 
                 // video capture device init must be done on UI thread;
                 // code is located in the OpenCV Highgui DLL, class Video
-                initGrabber(device, width, height);
+                // initGrabber will be called whenever the window is made visible
+                ///initGrabber(device, width, height);
             }
                 break;
-            case HighguiBridge_CLOSE_CAMERA:
-                // closeDevice();
+            case CLOSE_CAMERA:
+                closeGrabber();
                 break;
-            case HighguiBridge_UPDATE_IMAGE_ELEMENT:
+            case UPDATE_IMAGE_ELEMENT:
                 // zv
                 // testing: for direct copy bypassing OpenCV:
-                // HighguiBridge::get().m_cvImage->Source = HighguiBridge::get().backInputPtr;
+                // HighguiBridge::getInstance().m_cvImage->Source = HighguiBridge::getInstance().backInputPtr;
 
                 // copy output Mat to WBM
                 copyOutput();
 
                 // set XAML image element with image WBM
-                HighguiBridge::get().cvImage->Source = HighguiBridge::get().frontOutputBuffer;
+                HighguiBridge::getInstance().cvImage->Source = HighguiBridge::getInstance().outputBuffer;
 
                 // test
-                //HighguiBridge::get().bIsFrameNew = false;
+                //HighguiBridge::getInstance().bIsFrameNew = false;
 
                 break;
-            case HighGuiAssist_SHOW_TRACKBAR:
+            case SHOW_TRACKBAR:
                 cvSlider->Visibility = Windows::UI::Xaml::Visibility::Visible;
                 break;
             }
@@ -122,8 +130,33 @@ IAsyncActionWithProgress<int>^ MainPage::TaskWithProgressAsync()
 {
     return create_async([this](progress_reporter<int> reporter)
     {
-        HighguiBridge::get().setReporter(reporter);
+        HighguiBridge::getInstance().setReporter(reporter);
         cvMain();
     });
 }
 
+
+
+void highgui_xaml::MainPage::OnVisibilityChanged(Platform::Object ^sender, Windows::UI::Core::VisibilityChangedEventArgs ^e)
+{
+    TCC("    OnVisibilityChanged"); TC(e->Visible); TCNL;
+
+    if (e->Visible) 
+    {
+        // only start the grabber if the camera was opened in OpenCV
+        if (HighguiBridge::getInstance().backInputPtr != nullptr)
+        {
+            int device = HighguiBridge::getInstance().deviceIndex;
+            int width = HighguiBridge::getInstance().width;
+            int height = HighguiBridge::getInstance().height;
+
+            initGrabber(device, width, height);
+        }
+    }
+    else 
+    {
+        closeGrabber();
+    }
+
+//    throw ref new Platform::NotImplementedException();
+}

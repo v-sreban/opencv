@@ -31,5 +31,6 @@ namespace highgui_xaml
 
     private:
 
+        void OnVisibilityChanged(Platform::Object ^sender, Windows::UI::Core::VisibilityChangedEventArgs ^e);
     };
 }
