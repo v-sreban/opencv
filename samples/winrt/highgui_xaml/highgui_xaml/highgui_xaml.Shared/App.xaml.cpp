@@ -26,6 +26,7 @@ using namespace Windows::UI::Xaml::Navigation;
 
 // The Blank Application template is documented at http://go.microsoft.com/fwlink/?LinkId=234227
 
+// debug
 #include "../highgui_xaml.Windows/cdebug.h"
 
 /// <summary>
@@ -144,7 +145,7 @@ void App::OnSuspending(Object^ sender, SuspendingEventArgs^ e)
 
 	// TODO: Save application state and stop any background activity
 
-    TCC("    OnSuspending"); TCNL;
+    // TCC("    OnSuspending"); TCNL;
 
     // set m_framegrabber to null
     // resuming??
@@ -152,7 +153,8 @@ void App::OnSuspending(Object^ sender, SuspendingEventArgs^ e)
 
 void highgui_xaml::App::OnResuming(Platform::Object ^sender, Platform::Object ^args)
 {
-    TCC("    OnResuming"); TCNL;
+    // TCC("    OnResuming"); TCNL;
 
     // throw ref new Platform::NotImplementedException();
 }
+
