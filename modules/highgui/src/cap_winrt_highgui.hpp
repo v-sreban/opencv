@@ -50,10 +50,10 @@
  
 
 enum {
-    HighguiBridge_OPEN_CAMERA = 300,
-    HighguiBridge_CLOSE_CAMERA,
-    HighguiBridge_UPDATE_IMAGE_ELEMENT,
-    HighGuiAssist_SHOW_TRACKBAR
+    OPEN_CAMERA = 300,
+    CLOSE_CAMERA,
+    UPDATE_IMAGE_ELEMENT,
+    SHOW_TRACKBAR
 };
 
 
@@ -62,6 +62,7 @@ enum {
 // (or can it be extended?)
 
 __declspec(dllexport) bool initGrabber(int device, int w, int h);
+__declspec(dllexport) void closeGrabber();
 __declspec(dllexport) void copyOutput();
 __declspec(dllexport) void sliderChanged1(double value);
 __declspec(dllexport) void allocateBuffers(int width, int height);
@@ -73,7 +74,7 @@ class HighguiBridge
 public:
     // common methods for all DLLs
 
-    __declspec(dllexport) static HighguiBridge& get();
+    __declspec(dllexport) static HighguiBridge& getInstance();
 
     // called from XAML task (UI thread)
     // __declspec(dllexport) void processOnUIthread(int action);
@@ -124,19 +125,19 @@ public:
     //std::mutex              frameReadyMutex;
     //std::condition_variable frameReadyEvent;
 
-    // TODO: input buffers probably have to be cv::OutputArrays or cv::Mats, not WriteableBitmap
-    // to avoid extra copying in OpenCV
-
-    // double buffering
+    // inout is double buffered
     std::mutex                  inputBufferMutex;
     unsigned char *frontInputPtr;                                               // OpenCV reads this
     unsigned char *backInputPtr;                                                // video writes this
     void SwapInputBuffers();
 
-    std::mutex                  outputBufferMutex;
-    Windows::UI::Xaml::Media::Imaging::WriteableBitmap^ frontOutputBuffer;      // XAML reads this
-    Windows::UI::Xaml::Media::Imaging::WriteableBitmap^ backOutputBuffer;       // OpenCV writes this
-    void SwapOutputBuffers();
+    // output is single buffered
+    Windows::UI::Xaml::Media::Imaging::WriteableBitmap^ outputBuffer;
+    void allocateOutputBuffer();
+
+    // std::mutex                  outputBufferMutex;
+    // Windows::UI::Xaml::Media::Imaging::WriteableBitmap^ backOutputBuffer;       // OpenCV writes this
+    // void SwapOutputBuffers();
 
     std::atomic<unsigned long>  frameCounter;
     unsigned long               currentFrame;
