@@ -558,7 +558,7 @@ cvCreateTrackbar2( const char* /*trackbar_name*/, const char* /*window_name*/,
                    void* /*userdata*/ )
 {
 #ifdef HAVE_WINRT
-    HighguiBridge::get().createTrackbar(valptr);
+    HighguiBridge::getInstance().createTrackbar(valptr);
     return 0;
 #else
     CV_NO_GUI_ERROR("cvCreateTrackbar2");
