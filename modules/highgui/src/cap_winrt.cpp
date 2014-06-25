@@ -78,9 +78,7 @@ using namespace ::std;
 // ready to accept data in the UI thread (memory access exceptions were thrown
 // even though buffer address was good).
 // Therefore allocation of Mats is also done on the UI thread before the video
-// device is initialized.  Mats are undefined in the UI thread due to OpenCV
-// not allowing headers outside the DLL (a static assert is raised), so 
-// allocateBuffers() is located in the OpenCV Highgui DLL.
+// device is initialized.  
 
 static cv::Mat frontInputMat;
 static cv::Mat backInputMat;
@@ -88,9 +86,9 @@ static cv::Mat backInputMat;
 // performed on UI thread
 void allocateBuffers(int width, int height)
 {
-    // allocate input Mats (bgra8 for test)
-    frontInputMat.create(height, width, CV_8UC4);
-    backInputMat.create(height, width, CV_8UC4);
+    // allocate input Mats (bgra8 = CV_8UC4, RGB24 = CV_8UC3)
+    frontInputMat.create(height, width, CV_8UC3);
+    backInputMat.create(height, width, CV_8UC3);
     HighguiBridge::get().frontInputPtr = frontInputMat.ptr(0);
     HighguiBridge::get().backInputPtr = backInputMat.ptr(0);
 

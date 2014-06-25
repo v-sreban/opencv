@@ -584,8 +584,7 @@ VideoCapture& VideoCapture::operator >> (Mat& image)
         {
             // needed here because setting Mat 'image' is not allowed by OutputArray in read()
             auto p = HighguiBridge::get().backInputPtr;
-            // auto p = HighguiBridge::get().frontInputPtr;
-            Mat m(HighguiBridge::get().height, HighguiBridge::get().width, CV_8UC4, p);
+            Mat m(HighguiBridge::get().height, HighguiBridge::get().width, CV_8UC3, p);
             image = m;
 
             //TCC("    operator>>");
