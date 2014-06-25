@@ -66,9 +66,16 @@ using namespace Windows::Devices::Enumeration;
 Video::Video() {
 }
 
-Video &Video::get() {
+Video &Video::getInstance() {
     static Video v;
     return v;
+}
+
+void Video::closeGrabber()
+{
+    // assigning nullptr should cause deref of grabber and thus close the device
+    // m_frameGrabber = nullptr;
+    bGrabberInited = false;
 }
 
 
@@ -76,8 +83,12 @@ bool Video::initGrabber(int device, int w, int h)
 {
     // std::atomic<bool> ready(false);
 
+    // already started?
+    if (bGrabberInited) return false;
+
     width = w;
     height = h;
+
     bGrabberInited = false;
 
     //m_frontBuffer = std::unique_ptr<ofPixels>(new ofPixels);
@@ -149,6 +160,8 @@ bool Video::initGrabber(int device, int w, int h)
             bGrabberInited = true;
             //ready = true;
             _GrabFrameAsync(frameGrabber);
+
+            // zv ref:
             //ofAddListener(ofEvents().appResume, this, &ofWinrtVideoGrabber::appResume, ofEventOrder::OF_EVENT_ORDER_AFTER_APP);
         });
 
@@ -178,15 +191,15 @@ void Video::_GrabFrameAsync(::Media::CaptureFrameGrabber^ frameGrabber)
         unsigned long length;
         // auto in = ref new WriteableBitmap(width, height);
         {
-            std::lock_guard<std::mutex> lock(HighguiBridge::get().inputBufferMutex);
+            std::lock_guard<std::mutex> lock(HighguiBridge::getInstance().inputBufferMutex);
 
             // test
             // auto bitmap = ref new WriteableBitmap(width, height);
             // TCNL;  TC(bitmap->PixelBuffer->Capacity); TCNL;
-            // auto bitmap = HighguiBridge::get().frontOutputBuffer;
+            // auto bitmap = HighguiBridge::getInstance().outputBuffer;
 
             // ptr to input Mat data array
-            auto inAr = HighguiBridge::get().backInputPtr;
+            auto inAr = HighguiBridge::getInstance().backInputPtr;
 
             // CHK(buffer->ContiguousCopyTo(GetData(bitmap->PixelBuffer), bitmap->PixelBuffer->Capacity));
             // CHK(buffer->ContiguousCopyTo(GetData(in->PixelBuffer), in->PixelBuffer->Capacity));
@@ -200,23 +213,23 @@ void Video::_GrabFrameAsync(::Media::CaptureFrameGrabber^ frameGrabber)
         }
 
         // zv test
-        // HighguiBridge::get().m_cvImage->Source = HighguiBridge::get().frontOutputBuffer;
+        // HighguiBridge::getInstance().m_cvImage->Source = HighguiBridge::getInstance().outputBuffer;
 
         // notify frame is ready
-        HighguiBridge::get().bIsFrameNew = true;
-        HighguiBridge::get().frameCounter++;
+        HighguiBridge::getInstance().bIsFrameNew = true;
+        HighguiBridge::getInstance().frameCounter++;
 
-        if (HighguiBridge::get().frameCounter == 1) {
-            // TCC("\n_GrabFrameAsync");  TC((void *)HighguiBridge::get().frontInputPtr); TCC("\n\n");
+        if (HighguiBridge::getInstance().frameCounter == 1) {
+            // TCC("\n_GrabFrameAsync");  TC((void *)HighguiBridge::getInstance().frontInputPtr); TCC("\n\n");
         }
-        // TC(HighguiBridge::get().frameCounter); TCNL;
+        // TC(HighguiBridge::getInstance().frameCounter); TCNL;
 
-        // HighguiBridge::get().SwapInputBuffers();
+        // HighguiBridge::getInstance().SwapInputBuffers();
 
         // test: copy from input WBM to input Mat
         //{
         //    auto inAr = GetData(in->PixelBuffer);
-        //    auto outAr = HighguiBridge::get().frontInputPtr;
+        //    auto outAr = HighguiBridge::getInstance().frontInputPtr;
         //    for (unsigned int i = 0; i < length; i++)
         //        outAr[i] = inAr[i];
         //}
@@ -225,16 +238,16 @@ void Video::_GrabFrameAsync(::Media::CaptureFrameGrabber^ frameGrabber)
         // CopyOutput();
 
         // post output WBM to XAML image element
-        // HighguiBridge::get().m_cvImage->Source = HighguiBridge::get().frontOutputBuffer;
-        //HighguiBridge::get().m_cvImage->Source = in;
+        // HighguiBridge::getInstance().m_cvImage->Source = HighguiBridge::getInstance().outputBuffer;
+        //HighguiBridge::getInstance().m_cvImage->Source = in;
 
         // test
-        // HighguiBridge::get().requestForUIthreadAsync(HighguiBridge_UPDATE_IMAGE_ELEMENT);
+        // HighguiBridge::getInstance().requestForUIthreadAsync(HighguiBridge_UPDATE_IMAGE_ELEMENT);
 
         // for blocking:
         //{
-        //    unique_lock<mutex> lck(HighguiBridge::get().frameReadyMutex);
-        //    HighguiBridge::get().frameReadyEvent.notify_one();
+        //    unique_lock<mutex> lck(HighguiBridge::getInstance().frameReadyMutex);
+        //    HighguiBridge::getInstance().frameReadyEvent.notify_one();
         //}
 
         // loss of camera device & restart is not yet handled
@@ -253,9 +266,9 @@ void Video::_GrabFrameAsync(::Media::CaptureFrameGrabber^ frameGrabber)
         // then, when the buffers are swapped after reading by OpenCV, bIsFrameNew = 0 (set in cap.cpp)
         // meaning, we need to get a new frame
         //
-        // if (!HighguiBridge::get().bIsFrameNew)
+        // if (!HighguiBridge::getInstance().bIsFrameNew)
 
-        // if (HighguiBridge::get().backInputPtr == nullptr) return;
+        // if (HighguiBridge::getInstance().backInputPtr == nullptr) return;
         // try
 
         {
@@ -272,13 +285,13 @@ void Video::_GrabFrameAsync(::Media::CaptureFrameGrabber^ frameGrabber)
 #if 1
             if (bFlipImageX)
             {
-                std::lock_guard<std::mutex> lock(HighguiBridge::get().inputBufferMutex);
+                std::lock_guard<std::mutex> lock(HighguiBridge::getInstance().inputBufferMutex);
 
-                // auto buf = GetData(HighguiBridge::get().m_backInputBuffer->PixelBuffer);
+                // auto buf = GetData(HighguiBridge::getInstance().m_backInputBuffer->PixelBuffer);
                 // uint8_t* buf = reinterpret_cast<uint8_t*>(m_backInputBuffer->getPixels());
 
                 // ptr to input Mat data array
-                auto buf = HighguiBridge::get().backInputPtr;
+                auto buf = HighguiBridge::getInstance().backInputPtr;
 
                 for (unsigned int row = 0; row < height; row++)
                 {
@@ -300,23 +313,23 @@ void Video::_GrabFrameAsync(::Media::CaptureFrameGrabber^ frameGrabber)
             else
 #endif
             {
-                std::lock_guard<std::mutex> lock(HighguiBridge::get().inputBufferMutex);
-                // auto buf = HighguiBridge::get().frontInputPtr;
+                std::lock_guard<std::mutex> lock(HighguiBridge::getInstance().inputBufferMutex);
+                // auto buf = HighguiBridge::getInstance().frontInputPtr;
 
-                // TCC("_GrabFrameAsync");  TC(HighguiBridge::get().frontInputPtr); TCNL;
+                // TCC("_GrabFrameAsync");  TC(HighguiBridge::getInstance().frontInputPtr); TCNL;
 
-                // auto buf = GetData(HighguiBridge::get().m_frontInputBuffer->PixelBuffer);
+                // auto buf = GetData(HighguiBridge::getInstance().m_frontInputBuffer->PixelBuffer);
                 // uint8_t* buf = reinterpret_cast<uint8_t*>(m_frontInputBuffer->getPixels());
 
                 // from test:
-                //auto bitmap = HighguiBridge::get().m_frontInputBuffer;
+                //auto bitmap = HighguiBridge::getInstance().m_frontInputBuffer;
                 //CHK(buffer->ContiguousCopyTo(GetData(bitmap->PixelBuffer), bitmap->PixelBuffer->Capacity));
                 //unsigned long length;
                 //CHK(buffer->GetContiguousLength(&length));
                 //bitmap->PixelBuffer->Length = length;
 
                 // ptr to input Mat data array
-                auto buf = HighguiBridge::get().backInputPtr;
+                auto buf = HighguiBridge::getInstance().backInputPtr;
 
                 for (unsigned int row = 0; row < height; row++)
                 {
@@ -345,18 +358,18 @@ void Video::_GrabFrameAsync(::Media::CaptureFrameGrabber^ frameGrabber)
             CHK(buffer->Unlock2D());
 
             // set length
-            // HighguiBridge::get().m_backInputBuffer->PixelBuffer->Length = numBytes;
+            // HighguiBridge::getInstance().m_backInputBuffer->PixelBuffer->Length = numBytes;
 
             // notify frame is ready
-            HighguiBridge::get().bIsFrameNew = true;
-            HighguiBridge::get().frameCounter++;
+            HighguiBridge::getInstance().bIsFrameNew = true;
+            HighguiBridge::getInstance().frameCounter++;
 
             // zv immed test
-            //HighguiBridge::get().m_cvImage->Source = HighguiBridge::get().frontInputBuffer;
+            //HighguiBridge::getInstance().m_cvImage->Source = HighguiBridge::getInstance().frontInputBuffer;
 
             // debug
             //TCC("    grab");
-            //TC(HighguiBridge::get().frameCounter);
+            //TC(HighguiBridge::getInstance().frameCounter);
             //TCNL;
         }
 
@@ -378,14 +391,11 @@ void Video::_GrabFrameAsync(::Media::CaptureFrameGrabber^ frameGrabber)
 // must be on UI thread
 void Video::CopyOutput()
 {
-    //std::lock_guard<std::mutex> lock1(HighguiBridge::get().inputBufferMutex);
-    //std::lock_guard<std::mutex> lock2(HighguiBridge::get().outputBufferMutex);
+    // std::lock_guard<std::mutex> lock(HighguiBridge::getInstance().outputBufferMutex);
 
-    std::lock_guard<std::mutex> lock(HighguiBridge::get().outputBufferMutex);
-
-    auto inAr = HighguiBridge::get().backInputPtr;
-    // auto inAr = HighguiBridge::get().frontInputPtr;
-    auto outAr = GetData(HighguiBridge::get().frontOutputBuffer->PixelBuffer);
+    auto inAr = HighguiBridge::getInstance().backInputPtr;
+    // auto inAr = HighguiBridge::getInstance().frontInputPtr;
+    auto outAr = GetData(HighguiBridge::getInstance().outputBuffer->PixelBuffer);
 
     // NOT USED
     // unsigned inLength = width * height;
@@ -433,7 +443,7 @@ void Video::CopyOutput()
         pbScanline += plPitch;
         buf += colBytes;
     }
-    HighguiBridge::get().frontOutputBuffer->PixelBuffer->Length = width * height * 4;
+    HighguiBridge::getInstance().outputBuffer->PixelBuffer->Length = width * height * 4;
 }
 
 
@@ -448,11 +458,11 @@ void Video::CopyOutputBuffer(unsigned char *p, int width, int height, int bytesP
 
     {
         // test:
-        //std::lock_guard<std::mutex> lock(HighguiBridge::get().inputBufferMutex);
-        //auto buf = GetData(HighguiBridge::get().m_frontInputBuffer->PixelBuffer);
+        //std::lock_guard<std::mutex> lock(HighguiBridge::getInstance().inputBufferMutex);
+        //auto buf = GetData(HighguiBridge::getInstance().m_frontInputBuffer->PixelBuffer);
 
-        std::lock_guard<std::mutex> lock(HighguiBridge::get().outputBufferMutex);
-        auto buf = GetData(HighguiBridge::get().backOutputBuffer->PixelBuffer);
+        std::lock_guard<std::mutex> lock(HighguiBridge::getInstance().outputBufferMutex);
+        auto buf = GetData(HighguiBridge::getInstance().backOutputBuffer->PixelBuffer);
 
         for (unsigned int row = 0; row < (unsigned)height; row++)
         {
@@ -469,19 +479,19 @@ void Video::CopyOutputBuffer(unsigned char *p, int width, int height, int bytesP
         }
     }
 
-    HighguiBridge::get().SwapOutputBuffers();
+    HighguiBridge::getInstance().SwapOutputBuffers();
 }
 
 // must be in this file for GetData macro
 unsigned char* Video::GetInputDataPtr()
 {
-    //auto bp = GetData(HighguiBridge::get().m_frontInputBuffer->PixelBuffer);
+    //auto bp = GetData(HighguiBridge::getInstance().m_frontInputBuffer->PixelBuffer);
     return 0;
 }
 
 unsigned char* Video::GetOutputDataPtr()
 {
-    auto bp = GetData(HighguiBridge::get().backOutputBuffer->PixelBuffer);
+    auto bp = GetData(HighguiBridge::getInstance().backOutputBuffer->PixelBuffer);
     return bp;
 }
 #endif

@@ -40,11 +40,12 @@ class Video {
 public:
 
     bool initGrabber(int device, int w, int h);
+    void closeGrabber();
 
     // Windows::UI::Xaml::Controls::Image^ m_cvImage;
 
     // singleton
-    static Video &get();
+    static Video &getInstance();
 
     void CopyOutput();
 
