@@ -48,8 +48,8 @@ void cvMain()
     // Mat edges;
     // namedWindow("edges", 1);
 
-    int value = 0;
-    createTrackbar( "", "", &value, 100);
+    int sliderValue = 0;
+    createTrackbar("", "", &sliderValue, 100);
 
     Mat frame;
 
@@ -64,18 +64,20 @@ void cvMain()
 
         // debug
         TCC("    main:");
-        TC(value);
+        TC(sliderValue);
         TC(HighguiBridge::get().frameCounter);
         TC((void*)frame.data); 
         TCNL;
 
         // image processing calculations here
+        // nb Mat frame is in RGB24 format (8UC3)
 
-        // test img manip - write color starting at row 100 for 100 rows
+        // test img manip - write blue color bar at row 100 for 200 rows
         auto ar = frame.ptr(100);
-        // insert a green area
-        for (int i = 0; i < 640 * 100 * 4; i+=4 ) ar[i] = 0xff;
+        int bytesPerPixel = 3;
+        for (int i = 2; i < 640 * 100 * bytesPerPixel; i += bytesPerPixel) ar[i] = 0xff;
 
+        // using OpenCV template:
         //for (int i = 0; i < 1000; i++)
         //    frame.at<unsigned char>(i, i) = 0xFF;
 
