@@ -60,13 +60,14 @@ void cvMain()
         cam >> frame;
 
         // don't reprocess the same frame again
+        // nb if commented then flashing may occur
         if (!cam.grab()) continue;
 
         // debug
         TCC("    main:");
         TC(sliderValue);
-        TC(HighguiBridge::get().frameCounter);
-        TC((void*)frame.data); 
+        TC(HighguiBridge::getInstance().frameCounter);
+        //TC((void*)frame.data); 
         TCNL;
 
         // image processing calculations here
@@ -75,7 +76,13 @@ void cvMain()
         // test img manip - write blue color bar at row 100 for 200 rows
         auto ar = frame.ptr(100);
         int bytesPerPixel = 3;
-        for (int i = 2; i < 640 * 100 * bytesPerPixel; i += bytesPerPixel) ar[i] = 0xff;
+        int adjust = (int)(((float)sliderValue / 100.0f) * 255.0);
+        for (int i = 0; i < 640 * 100 * bytesPerPixel;)
+        {
+            ar[i++] = adjust;           // R
+            i++;                        // G
+            ar[i++] = 255 - adjust;     // B
+        }
 
         // using OpenCV template:
         //for (int i = 0; i < 1000; i++)
