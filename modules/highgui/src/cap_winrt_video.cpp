@@ -120,19 +120,23 @@ bool Video::initGrabber(int device, int w, int h)
         settings->VideoDeviceId = devInfo->Id;
 
         auto location = devInfo->EnclosureLocation;
-        if (location != nullptr && location->Panel == Windows::Devices::Enumeration::Panel::Front)
+        bFlipImageX = true;
+        if (location != nullptr && location->Panel == Windows::Devices::Enumeration::Panel::Back)
         {
-            bFlipImageX = true;
+            bFlipImageX = false;
         }
 
         m_capture = ref new MediaCapture();
         create_task(m_capture->InitializeAsync(settings)).then([this](){
 
             auto props = safe_cast<VideoEncodingProperties^>(m_capture->VideoDeviceController->GetMediaStreamProperties(MediaStreamType::VideoPreview));
-            // zv
-            // props->Subtype = MediaEncodingSubtypes::Rgb24;          // for 24 bpp
-            props->Subtype = MediaEncodingSubtypes::Bgra8;       // for test
-            bytesPerPixel = 4;
+
+            // for 24 bpp
+            props->Subtype = MediaEncodingSubtypes::Rgb24;      bytesPerPixel = 3;
+
+            // format used by XAML & WBM
+            // props->Subtype = MediaEncodingSubtypes::Bgra8;   bytesPerPixel = 4;
+
 
             props->Width = width;
             props->Height = height;
@@ -253,6 +257,7 @@ void Video::_GrabFrameAsync(::Media::CaptureFrameGrabber^ frameGrabber)
 
         // if (HighguiBridge::get().backInputPtr == nullptr) return;
         // try
+
         {
 
             // do the RGB swizzle while copying the pixels from the IMF2DBuffer2
@@ -261,7 +266,7 @@ void Video::_GrabFrameAsync(::Media::CaptureFrameGrabber^ frameGrabber)
             unsigned int colBytes = width * bytesPerPixel;
             CHK(buffer->Lock2D(&pbScanline, &plPitch));
 
-            // TC(plPitch);    TC(numBytes);   TCNL;
+            // TC(plPitch);    TC(colBytes);   TCNL;
 
             // flip
 #if 1
@@ -315,15 +320,24 @@ void Video::_GrabFrameAsync(::Media::CaptureFrameGrabber^ frameGrabber)
 
                 for (unsigned int row = 0; row < height; row++)
                 {
-                    for (unsigned int i = 0; i < colBytes; i++ /*i += bytesPerPixel*/)
+                    // used for Bgr8:
+                    //for (unsigned int i = 0; i < colBytes; i++ )
+                    //    buf[i] = pbScanline[i];
+
+                    // used for RGB24:
+                    for (unsigned int i = 0; i < colBytes; i += bytesPerPixel)
                     {
                         // swizzle the R and B values (BGR to RGB)
-                        //buf[i] = pbScanline[i + 2];
-                        //buf[i + 1] = pbScanline[i + 1];
-                        //buf[i + 2] = pbScanline[i];
+                        buf[i] = pbScanline[i + 2];
+                        buf[i + 1] = pbScanline[i + 1];
+                        buf[i + 2] = pbScanline[i];
 
-                        buf[i] = pbScanline[i];
+                        // no swizzle
+                        //buf[i] = pbScanline[i];
+                        //buf[i + 1] = pbScanline[i + 1];
+                        //buf[i + 2] = pbScanline[i + 2];
                     }
+
                     pbScanline += plPitch;
                     buf += colBytes;
                 }
@@ -369,13 +383,57 @@ void Video::CopyOutput()
 
     std::lock_guard<std::mutex> lock(HighguiBridge::get().outputBufferMutex);
 
-    unsigned length = width * height * 4;
     auto inAr = HighguiBridge::get().backInputPtr;
     // auto inAr = HighguiBridge::get().frontInputPtr;
     auto outAr = GetData(HighguiBridge::get().frontOutputBuffer->PixelBuffer);
-    for (unsigned int i = 0; i < length; i++)
-        outAr[i] = inAr[i];
-    HighguiBridge::get().frontOutputBuffer->PixelBuffer->Length = length;
+
+    // NOT USED
+    // unsigned inLength = width * height;
+    //unsigned int colBytes = width * bytesPerPixel;
+    //unsigned int j = colBytes - 1;
+    //for (unsigned int i = 0, j = 0; i < inLength * bytesPerPixel;)
+    //{
+    //    // no swizzle
+    //    outAr[j++] = inAr[i++];
+    //    outAr[j++] = inAr[i++];
+    //    outAr[j++] = inAr[i++];
+    //    outAr[j++] = 0xff;
+    //}
+
+    const unsigned int bytesPerPixel = 3;
+    auto pbScanline = inAr;
+    auto plPitch = width * bytesPerPixel;
+
+    auto buf = outAr;
+    unsigned int colBytes = width * 4;
+
+    // copy RGB24 to bgra8
+    for (unsigned int row = 0; row < height; row++)
+    {
+        // used for Bgr8:
+        //for (unsigned int i = 0; i < colBytes; i++ )
+        //    buf[i] = pbScanline[i];
+
+        // used for RGB24:
+        for (unsigned int i = 0, j = 0; i < plPitch; i += bytesPerPixel, j += 4)
+        {
+            // swizzle the R and B values (RGB24 to Bgr8)
+            buf[j] = pbScanline[i + 2];
+            buf[j + 1] = pbScanline[i + 1];
+            buf[j + 2] = pbScanline[i];
+            buf[j + 3] = 0xff;
+
+            // no swizzle
+            //buf[i] = pbScanline[i];
+            //buf[i + 1] = pbScanline[i + 1];
+            //buf[i + 2] = pbScanline[i + 2];
+            //buf[i + 3] = 0xff;
+        }
+
+        pbScanline += plPitch;
+        buf += colBytes;
+    }
+    HighguiBridge::get().frontOutputBuffer->PixelBuffer->Length = width * height * 4;
 }
 
 
