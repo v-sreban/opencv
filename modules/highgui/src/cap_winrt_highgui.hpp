@@ -30,23 +30,18 @@
 
 #pragma once
 
-// this header is included in the XAML App, so it may not include any
+// this header is included in the XAML App, so it cannot include any
 // OpenCV headers, or a static assert will be raised
 
 #include <ppl.h>
 #include <ppltasks.h>
 #include <concrt.h>
+#include <agile.h>
 
 #include <mutex>
 #include <memory>
 #include <atomic>
 #include <functional>
-// #include <future>
-// #include <condition_variable>
-
-#include <agile.h>
-
-// #include "cap_winrt/CaptureFrameGrabber.h"
  
 
 enum {
@@ -59,7 +54,6 @@ enum {
 
 // class HighguiBridge is needed because the interface for 
 // VideoCapture_WinRT in cap_winrt.hpp is fixed by OpenCV
-// (or can it be extended?)
 
 __declspec(dllexport) bool initGrabber(int device, int w, int h);
 __declspec(dllexport) void closeGrabber();
@@ -72,25 +66,19 @@ __declspec(dllexport) void allocateBuffers(int width, int height);
 class HighguiBridge
 {
 public:
-    // common methods for all DLLs
+
+// common methods for all DLLs:
 
     __declspec(dllexport) static HighguiBridge& getInstance();
-
-    // called from XAML task (UI thread)
-    // __declspec(dllexport) void processOnUIthread(int action);
 
     // call after initialization
     void setReporter(Concurrency::progress_reporter<int> pr) { reporter = pr; }
 
     // to be called from cvMain via cap_winrt on bg thread - non-blocking (async)
-    void requestForUIthreadAsync(int action, int width=0, int height=0);
+    void requestForUIthreadAsync( int action, int width=0, int height=0 );
     
-    //void waitForUIthreadRequest();
+// highgui UI interface:
 
-    // highgui video interface
-    // bool initializeDevice();
-
-    // highgui UI interface
     void createTrackbar( /*void *callbackOnChange() */);   // unhides trackbar and registers OpenCV callback
     void createTrackbar( int* valptr );             // unhides trackbar and sets value
     void setTrackbarPos(int pos) {}                 // unhides trackbar and sets its position
@@ -113,31 +101,25 @@ public:
     // setOpenGlContext                             // no op
     // updateWindow                                 // no op
 
-    // end highgui UI interface
+// end highgui UI interface
 
-    // MediaCapture ^capture;
-    int deviceIndex;
-    int width, height;
 
-    std::atomic<bool>       bIsFrameNew;
+// private:
+    // TODO: write getters/setters or specify friend classes
 
-    // for blocking
-    //std::mutex              frameReadyMutex;
-    //std::condition_variable frameReadyEvent;
+    int                         deviceIndex, width, height;
 
-    // inout is double buffered
+    std::atomic<bool>           bIsFrameNew;
+
+    // input is double buffered
     std::mutex                  inputBufferMutex;
-    unsigned char *frontInputPtr;                                               // OpenCV reads this
-    unsigned char *backInputPtr;                                                // video writes this
-    void SwapInputBuffers();
+    unsigned char *             frontInputPtr;      // OpenCV reads this
+    unsigned char *             backInputPtr;       // video writes this
+    void                        SwapInputBuffers();
 
     // output is single buffered
     Windows::UI::Xaml::Media::Imaging::WriteableBitmap^ outputBuffer;
     void allocateOutputBuffer();
-
-    // std::mutex                  outputBufferMutex;
-    // Windows::UI::Xaml::Media::Imaging::WriteableBitmap^ backOutputBuffer;       // OpenCV writes this
-    // void SwapOutputBuffers();
 
     std::atomic<unsigned long>  frameCounter;
     unsigned long               currentFrame;
@@ -145,22 +127,9 @@ public:
     Windows::UI::Xaml::Controls::Image ^cvImage;
     Windows::UI::Xaml::Controls::Slider ^cvSlider;
 
-    //unsigned char *             GetInputDataPtr();
-
-    // double      sliderValue1;
-    int         *slider1ValPtr;
-
-    // callback
-    // std::function<void(int)> slider1cb;
+    int *                       slider1ValPtr;
 
 private:
-
-    //Platform::Agile<Windows::Media::Capture::MediaCapture> m_capture;
-    //Platform::Agile<Windows::Devices::Enumeration::DeviceInformationCollection> m_devices;
-
-    // to solve linker error, CaptureFrameGrabber cannot be a member of this class
-    // ::Media::CaptureFrameGrabber^ m_frameGrabber;
-    //void GrabFrameAsync(Media::CaptureFrameGrabber^ frameGrabber);
 
     HighguiBridge() {
         deviceIndex = 0;
@@ -171,13 +140,10 @@ private:
         bIsFrameNew = false;
         currentFrame = 0;
         frameCounter = 0;
-        // sliderValue1 = 0;
         slider1ValPtr = nullptr;
     };
 
-    // bool initializeDeviceTask();
-
-    std::atomic<bool>       deviceReady;
+    std::atomic<bool>           deviceReady;
 
     // singleton
     HighguiBridge(HighguiBridge const &);
@@ -186,11 +152,5 @@ private:
     Concurrency::progress_reporter<int> reporter;
 
     std::atomic<bool> UIthreadTaskDone;
-
-    // void CopyOutputBuffer(unsigned char *p, int width, int height, int bytesPerPixel, int stride);
-
 };
 
-
-// cannot decl here since OpenCV is not included
-// void imshow_winrt(cv::InputArray img);

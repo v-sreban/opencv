@@ -45,9 +45,6 @@ using namespace ::Concurrency;
 
 using namespace ::std;
 
-// test
-#include <opencv2/highgui/cdebug.h>
-
 // non-blocking
 bool initGrabber(int device, int w, int h)
 {
@@ -74,7 +71,6 @@ HighguiBridge& HighguiBridge::getInstance()
     return instance;
 }
 
-
 void HighguiBridge::SwapInputBuffers()
 {
     lock_guard<mutex> lock(inputBufferMutex);
@@ -85,16 +81,6 @@ void HighguiBridge::SwapInputBuffers()
     //    swap(backInputPtr, frontInputPtr);
     //}
 }
-
-//void HighguiBridge::SwapOutputBuffers()
-//{
-//    lock_guard<mutex> lock(outputBufferMutex);
-//    swap(backOutputBuffer, outputBuffer);
-//}
-
-//unsigned char * HighguiBridge::GetInputDataPtr(){
-//    return Video::getInstance().GetInputDataPtr();
-//}
 
 void HighguiBridge::createTrackbar( int *valptr )
 {
@@ -110,52 +96,6 @@ void HighguiBridge::allocateOutputBuffer()
 
 void imshow_winrt(cv::InputArray img)
 {
-    //auto m = img.getMat();
-    //auto in = HighguiBridge::getInstance().frontInputPtr;
-    //// auto in = m.ptr(0);
-
-    //int width = img.size().width;
-    //int height = img.size().height;
-
-    // GetOutputDataPtr() throws exception - moved to Video class
-#if 0
-    auto out = Video::getInstance().GetOutputDataPtr();
-
-    // copy InputArray to Writeable bitmap
-    const int bytesPerPixel = 3;
-    BYTE *pbScanline = in;
-    LONG plPitch = width;
-    unsigned int numBytes = width * bytesPerPixel;
-    auto buf = out;
-    for (unsigned int row = 0; row < (unsigned)height; row++)
-    {
-        for (unsigned int i = 0; i < numBytes; i += bytesPerPixel)
-        {
-            buf[i] = pbScanline[i];
-            buf[i + 1] = pbScanline[i + 1];
-            buf[i + 2] = pbScanline[i + 2];
-        }
-        pbScanline += plPitch;
-        buf += numBytes;
-    }
-#endif
-
-    //Video::getInstance().CopyOutputBuffer(in, width, height, 4, width);
-
-    // copy from input Mat to output WBM
-    // cannot do it on this thread
-    //{
-    //    unsigned length = width * height * 4;
-    //    auto inAr = HighguiBridge::getInstance().frontInputPtr;
-    //    auto outAr = GetData(HighguiBridge::getInstance().outputBuffer->PixelBuffer);
-    //    for (unsigned int i = 0; i < length; i++)
-    //        outAr[i] = inAr[i];
-    //    HighguiBridge::getInstance().outputBuffer->PixelBuffer->Length = length;
-    //}
-
-    // not needed per discussion w Dale
-    //HighguiBridge::getInstance().SwapOutputBuffers();
-
     HighguiBridge::getInstance().requestForUIthreadAsync(UPDATE_IMAGE_ELEMENT);
 }
 
@@ -171,256 +111,7 @@ void sliderChanged1(double value)
     auto i = (int)value;
     if (HighguiBridge::getInstance().slider1ValPtr != nullptr) 
         *HighguiBridge::getInstance().slider1ValPtr = i;
-
-    // HighguiBridge::getInstance().sliderValue1 = i;
-
-    // this delegate is called on the UI thread
-    // if (HighguiBridge::getInstance().slider1cb) HighguiBridge::getInstance().slider1cb(i);
-}
-
-// maybe not needed?
-#if 0
-
-void HighguiBridge::CopyOutputBuffer(unsigned char *p, int width, int height, int bytesPerPixel, int stride)
-{
-    // do the RGB swizzle while copying the pixels from the IMF2DBuffer2
-    BYTE *pbScanline = p;
-    LONG plPitch = stride;
-    unsigned int numBytes = width * bytesPerPixel;
-
-    {
-        std::lock_guard<std::mutex> lock(HighguiBridge::getInstance().outputBufferMutex);
-        auto buf = GetData(HighguiBridge::getInstance().m_backOutputBuffer->PixelBuffer);
-
-        for (unsigned int row = 0; row < height; row++)
-        {
-            for (unsigned int i = 0; i < numBytes; i += bytesPerPixel)
-            {
-                // swizzle the R and B values (BGR to RGB)
-                buf[i] = pbScanline[i + 2];
-                buf[i + 1] = pbScanline[i + 1];
-                buf[i + 2] = pbScanline[i];
-            }
-            pbScanline += plPitch;
-            buf += numBytes;
-        }
-    }
-}
-
-// extracted from MFincludes.h:
-#include <robuffer.h>
-
-namespace WSS = ::Windows::Storage::Streams;
-namespace MW = ::Microsoft::WRL;
-
-#define CHK(statement)  {HRESULT _hr = (statement); if (FAILED(_hr)) { throw ref new Platform::COMException(_hr); };}
-
-// Cast a C++/CX smartpointer to an ABI smartpointer
-template<typename T, typename U>
-MW::ComPtr<T> As(U^ in)
-{
-    MW::ComPtr<T> out;
-    CHK(reinterpret_cast<IInspectable*>(in)->QueryInterface(IID_PPV_ARGS(&out)));
-    return out;
-}
-
-unsigned char* GetData(_In_ WSS::IBuffer^ buffer)
-{
-    unsigned char* bytes = nullptr;
-    CHK(As<WSS::IBufferByteAccess>(buffer)->Buffer(&bytes));
-    return bytes;
-}
-
-void HighguiBridge::imshow(cv::InputArray matToShow)
-{
-    const int bytesPerPixel = 3;
-
-    // copy from matToShow into back buffer
-    // INCOMPLETE
-
-    BYTE *pbScanline;
-    LONG plPitch;
-    unsigned int numBytes = width * bytesPerPixel;
-    CHK(buffer->Lock2D(&pbScanline, &plPitch));
-
-    {
-        std::lock_guard<std::mutex> lock(HighguiBridge::getInstance().outputBufferMutex);
-        auto buf = GetData(HighguiBridge::getInstance().m_backOutputBuffer->PixelBuffer);
-
-        for (unsigned int row = 0; row < height; row++)
-        {
-            for (unsigned int i = 0; i < numBytes; i += bytesPerPixel)
-            {
-                buf[i] = pbScanline[i];
-                buf[i + 1] = pbScanline[i + 1];
-                buf[i + 2] = pbScanline[i + 2];
-            }
-            pbScanline += plPitch;
-            buf += numBytes;
-        }
-    }
-
-    CHK(buffer->Unlock2D());
-
-    SwapOutputBuffers();
-    requestForUIthreadAsync(HighguiBridge_UPDATE_IMAGE_ELEMENT);
-}
-#endif
-
-
-// notes
-#if 0
-void HighguiBridge::processOnUIthread(int action)
-{
-    // this is running on the UI thread
-    switch (action)
-    {
-    case HighguiBridge_OPEN_CAMERA:
-        // initializeDevice();
-        break;
-    case HighguiBridge_CLOSE_CAMERA:
-        // closeDevice();
-        break;
-    case HighguiBridge_UPDATE_IMAGE_ELEMENT:
-        // copy Mat into backbuffer;
-        // swap preview buffers
-        // Preview = frontbuffer;
-        break;
-    }
-}
-
-bool HighguiBridge::initializeDevice()
-{
-    // blocking requires both a future and a spinlock on the atomic in the task completion
-    UIthreadTaskDone = false;
-    std::future<bool> result = std::async(std::launch::async, &HighguiBridge::initializeDeviceTask, this);
-    return result.get();
 }
 
 
-// static void GrabFrameAsync(Media::CaptureFrameGrabber^ frameGrabber);
-
-
-bool HighguiBridge::initializeDeviceTask()
-{
-    std::atomic<bool> ready(false);
-
-    auto settings = ref new MediaCaptureInitializationSettings();
-    settings->StreamingCaptureMode = StreamingCaptureMode::Video; // Video-only capture
-
-    // set m_devices adn  m_capture
-    m_capture = ref new MediaCapture();
-
-    create_task(DeviceInformation::FindAllAsync(DeviceClass::VideoCapture))
-        .then([this, &ready](task<DeviceInformationCollection^> findTask)
-    {
-        m_devices = findTask.get();
-
-        if (deviceIndex < 0 || (unsigned)deviceIndex >= m_devices.Get()->Size)
-            return false;
-
-        auto devInfo = m_devices.Get()->GetAt(deviceIndex);
-
-        auto settings = ref new MediaCaptureInitializationSettings();
-        settings->StreamingCaptureMode = StreamingCaptureMode::Video; // Video-only capture
-        settings->VideoDeviceId = devInfo->Id;
-
-        create_task(m_capture->InitializeAsync(settings)).then([this](){
-
-            auto props = safe_cast<VideoEncodingProperties^>(m_capture->VideoDeviceController->GetMediaStreamProperties(MediaStreamType::VideoPreview));
-            props->Subtype = MediaEncodingSubtypes::Rgb24;
-            props->Width = width;
-            props->Height = height;
-
-            return ::Media::CaptureFrameGrabber::CreateAsync(m_capture.Get(), props);
-
-        }).then([this](::Media::CaptureFrameGrabber^ frameGrabber)
-        {
-            // m_frameGrabber = frameGrabber;
-            deviceReady = true;
-            // GrabFrameAsync(frameGrabber);
-            //ofAddListener(ofEvents().appResume, this, &ofWinrtVideoGrabber::appResume, ofEventOrder::OF_EVENT_ORDER_AFTER_APP);
-        });
-        return true;
-    });
-
-    // wait for async tasks to complete
-    int count = 0;
-    while (!deviceReady)
-    {
-        count++;
-    }
-    UIthreadTaskDone = true;
-
-    return true;
-}
-
-void HighguiBridge::waitForUIthreadRequest()
-{
-    int count = 0;
-    while (!UIthreadTaskDone)
-    {
-        count++;
-    }
-}
-
-void GrabFrameAsync(::Media::CaptureFrameGrabber^ frameGrabber)
-{
-    create_task(frameGrabber->GetFrameAsync()).then([frameGrabber](const ComPtr<IMF2DBuffer2>& buffer)
-    {
-        auto width = HighguiBridge::getInstance().width;
-        auto height = HighguiBridge::getInstance().height;
-#if 1
-        auto bitmap = ref new WriteableBitmap(width, height);
-
-        CHK(buffer->ContiguousCopyTo(GetData(bitmap->PixelBuffer),
-            bitmap->PixelBuffer->Capacity));
-
-        unsigned long length;
-        CHK(buffer->GetContiguousLength(&length));
-        bitmap->PixelBuffer->Length = length;
-
-        // write to the XAML image element (temp)
-        // if (gOutput) gOutput->Source = bitmap;
-#else
-
-        const int bytesPerPixel = 3;
-
-        auto p = m_backBuffer.get();
-        auto pbOut = GetData((*p)->PixelBuffer);
-
-        BYTE *pbScanline;
-        LONG plPitch;
-        unsigned int numBytes = width * bytesPerPixel;
-        CHK(buffer->Lock2D(&pbScanline, &plPitch));
-        {
-            lock_guard<mutex> lock(bufferMutex);
-
-            // nb. no R/B swizzle seems to be needed
-            cv::Mat InputFrame(height, width, CV_8UC3 | CV_MAT_CONT_FLAG, pbScanline);
-            cv::Mat OutputFrame(height, width, CV_8UC3 | CV_MAT_CONT_FLAG, pbOut);
-
-            // no effect - straight copy
-            InputFrame.copyTo(OutputFrame);
-        }
-
-        CHK(buffer->Unlock2D());
-
-        // TODO: move to draw loop and add buffer swapping code
-        if (gOutput) gOutput->Source = *m_backBuffer.get();
-#endif
-
-        HighguiBridge::getInstance().frameCounter++;
-
-        // notify frame is ready
-        {
-            unique_lock<mutex> lck(HighguiBridge::getInstance().frameReadyMutex);
-            HighguiBridge::getInstance().frameReadyEvent.notify_one();
-        }
-
-        GrabFrameAsync(frameGrabber);
-
-    }, task_continuation_context::use_current());
-}
-
-#endif
+// end

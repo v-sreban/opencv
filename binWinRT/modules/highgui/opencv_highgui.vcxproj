@@ -257,7 +257,6 @@
     <ClCompile Include="..\..\..\modules\highgui\src\cap_winrt_video.cpp" />
     <ClCompile Include="..\..\..\modules\highgui\src\loadsave.cpp" />
     <ClCompile Include="..\..\..\modules\highgui\src\utils.cpp" />
-    <ClCompile Include="..\..\..\modules\highgui\src\window.cpp" />
     <ClCompile Include="..\..\..\modules\highgui\src\cap_cmu.cpp" />
     <ClCompile Include="..\..\..\modules\highgui\src\grfmt_base.cpp" />
     <ClCompile Include="..\..\..\modules\highgui\src\grfmt_bmp.cpp" />
@@ -272,6 +271,7 @@
     <ClCompile Include="..\..\..\modules\highgui\src\grfmt_webp.cpp" />
     <ClCompile Include="..\..\..\modules\highgui\src\bitstrm.cpp" />
     <ClCompile Include="..\..\..\modules\highgui\src\rgbe.cpp" />
+    <ClCompile Include="..\..\..\modules\highgui\src\window.cpp" />
     <ClCompile Include="opencv_highgui_pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">precomp.hpp</PrecompiledHeaderFile>

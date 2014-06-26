@@ -47,9 +47,6 @@
 #include "cap_winrt_highgui.hpp"
 #endif
 
-// zv test
-#include "cdebug.h"
-
 
 #if defined _M_X64 && defined _MSC_VER && !defined CV_ICC
 #pragma optimize("",off)
@@ -568,10 +565,6 @@ bool VideoCapture::read(OutputArray image)
     else
         image.release();
 
-    //TCC("    read");
-    //TC((void*)image.getMat().ptr(0)); TCNL;
-    //TC((void*)HighguiBridge::getInstance().frontInputPtr); TCNL;
-
     return !image.empty();
 }
 
@@ -587,11 +580,9 @@ VideoCapture& VideoCapture::operator >> (Mat& image)
             Mat m(HighguiBridge::getInstance().height, HighguiBridge::getInstance().width, CV_8UC3, p);
             image = m;
 
-            //TCC("    operator>>");
-            //TC((void*)p); TCNL;
-            //TC((void*)image.data); TCNL;
-
+            // nb. input dbl buffering is off - no artifacts seen
             // HighguiBridge::getInstance().SwapInputBuffers();
+
             HighguiBridge::getInstance().bIsFrameNew = false;
         }
     }

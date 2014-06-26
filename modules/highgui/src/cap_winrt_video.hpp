@@ -34,7 +34,6 @@
 
 #include <mutex>
 #include <memory>
-//#include <condition_variable>
 
 class Video {
 public:
@@ -42,17 +41,10 @@ public:
     bool initGrabber(int device, int w, int h);
     void closeGrabber();
 
-    // Windows::UI::Xaml::Controls::Image^ m_cvImage;
-
     // singleton
     static Video &getInstance();
 
     void CopyOutput();
-
-    //unsigned char* GetInputDataPtr();
-    //unsigned char* GetOutputDataPtr();
-
-    // void CopyOutputBuffer(unsigned char *p, int width, int height, int bytesPerPixel, int stride);
 
 private:
     // singleton

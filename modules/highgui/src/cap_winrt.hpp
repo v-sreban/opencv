@@ -32,8 +32,6 @@
 
 #include "precomp.hpp"
 
-//#include <collection.h>
-//#include <ppltasks.h>
 #include <mutex>
 #include <memory>
 #include <condition_variable>
@@ -41,29 +39,19 @@
 
 #include <agile.h>
 
-// #include "cap_winrt/CaptureFrameGrabber.h"
 
-// implement the newer IVideoCapture so that we can work
-// directly with Mat, not the cv interface which has added overhead
+// nb. implemented the newer IVideoCapture C++ interface so that we can work
+// directly with Mat, not the older C cv interface 
+// (which may have added overhead for IPL file conversion)
 
 namespace cv {
 
     class VideoCapture_WinRT : public IVideoCapture
     {
     public:
-        VideoCapture_WinRT() :
-            started(false)
-            //bytesPerPixel(0),
-            //frameCounter(0),
-            //frameCurrent(0),
-        {}
-
+        VideoCapture_WinRT() : started(false) {}
         VideoCapture_WinRT(int device);
-
-        virtual ~VideoCapture_WinRT()
-        {
-            // close();
-        }
+        virtual ~VideoCapture_WinRT() {}
 
         // from base class IVideoCapture
         virtual double getProperty(int) { return 0; }
@@ -74,23 +62,9 @@ namespace cv {
         // Return the type of the capture object
         virtual int getCaptureDomain() { return CAP_WINRT; }
 
-        // std::vector<std::string> listDevices();
-
-        void start();
-
-        //Mat frontInputMat;
-        //Mat backInputMat;
-
     protected:
 
-        // cannot be in this class because we don't have an instance of Media::CaptureFrameGrabber^
-        //void GrabFrameAsync(::Media::CaptureFrameGrabber^ frameGrabber);
-
-        //Platform::Agile<::Windows::Media::Capture::MediaCapture> m_capture;
-        //Platform::Agile<Windows::Devices::Enumeration::DeviceInformationCollection> m_devices;
-
-        bool    started;
-
+        bool                    started;
         CvSize                  size;
         int                     bytesPerPixel;
         unsigned long           frameCurrent;

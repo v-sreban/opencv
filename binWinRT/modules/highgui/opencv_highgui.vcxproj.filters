@@ -16,9 +16,6 @@
     <ClCompile Include="..\..\..\modules\highgui\src\utils.cpp">
       <Filter>Src</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\modules\highgui\src\window.cpp">
-      <Filter>Src</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\modules\highgui\src\cap_cmu.cpp">
       <Filter>Src</Filter>
     </ClCompile>
@@ -77,6 +74,9 @@
       <Filter>Src</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\modules\highgui\src\cap_winrt_video.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\modules\highgui\src\window.cpp">
       <Filter>Src</Filter>
     </ClCompile>
   </ItemGroup>

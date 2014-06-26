@@ -32,12 +32,7 @@
 #include <opencv2/features2d.hpp>
 #include <opencv2/highgui.hpp>
 
-// test
-#include "../../../modules/highgui/src/cap_winrt_highgui.hpp"
-#include <opencv2/highgui/cdebug.h>
-
 using namespace cv;
-
 
 void cvMain()
 {
@@ -63,17 +58,10 @@ void cvMain()
         // nb if commented then flashing may occur
         if (!cam.grab()) continue;
 
-        // debug
-        TCC("    main:");
-        TC(sliderValue);
-        TC(HighguiBridge::getInstance().frameCounter);
-        //TC((void*)frame.data); 
-        TCNL;
-
         // image processing calculations here
         // nb Mat frame is in RGB24 format (8UC3)
 
-        // test img manip - write blue color bar at row 100 for 200 rows
+        // image manipulation test - write blue color bar at row 100 for 200 rows
         auto ar = frame.ptr(100);
         int bytesPerPixel = 3;
         int adjust = (int)(((float)sliderValue / 100.0f) * 255.0);
@@ -84,94 +72,14 @@ void cvMain()
             ar[i++] = 255 - adjust;     // B
         }
 
-        // using OpenCV template:
-        //for (int i = 0; i < 1000; i++)
-        //    frame.at<unsigned char>(i, i) = 0xFF;
-
         imshow("", frame);
     }
 
+    // notes for additional image processing tests:
+    //
     // cvtColor(frame, edges, CV_BGR2GRAY);
-    //GaussianBlur(edges, edges, Size(7, 7), 1.5, 1.5);
-    //Canny(edges, edges, 0, 30, 3);
-    ////imshow("edges", edges);
+    // GaussianBlur(edges, edges, Size(7, 7), 1.5, 1.5);
+    // Canny(edges, edges, 0, 30, 3);
+    // imshow("edges", edges);
 }
 
-
-// not used & notes
-#if 0
-
-// for XAML
-#include "pch.h"
-#include "App.xaml.h"
-
-// called by XAML window OnNavigate event (please see MainPage.xaml.cpp)
-void init()
-{
-    // for testing only
-    TCC("main thread running");
-    TC(std::this_thread::get_id);
-    TCNL;
-
-    // move all this code to cvMain
-
-    cam.open(0);    // open the default camera - but do not start until size is set    
-
-    // set desired frame size before starting - WinRT requirement
-    cam.set(CAP_PROP_FRAME_WIDTH, 640);
-    cam.set(CAP_PROP_FRAME_HEIGHT, 480);
-
-    // start the device on main thread - WinRT requirement
-    cam.set(CAP_PROP_WINRT_START_DEVICE, 1);
-
-//    image_processing_thread.join();
-}
-
-// end
-
-
-// DISABLE_XAML_GENERATED_MAIN must be defined to allow main to be located here
-// nb. we don't do anything special here yet
-//
-int __cdecl main(::Platform::Array<::Platform::String^>^ args)
-{
-    (void)args; // Unused parameter
-    Windows::UI::Xaml::Application::Start(ref new Windows::UI::Xaml::ApplicationInitializationCallback(
-        [](Windows::UI::Xaml::ApplicationInitializationCallbackParams^ ) {
-        auto app = ref new ::video_xaml::App();
-    }));
-    // control never gets here
-}
-
-// mainPanel.Children.Add(myCanvas);
-
-
-
-// from
-http://docs.opencv.org/modules/highgui/doc/reading_and_writing_images_and_video.html#videocapture
-#include "opencv2/opencv.hpp"
-
-using namespace cv;
-
-int main(int, char**)
-{
-    VideoCapture cap(0); // open the default camera
-    if (!cap.isOpened())  // check if we succeeded
-        return -1;
-
-    Mat edges;
-    namedWindow("edges", 1);
-    for (;;)
-    {
-        Mat frame;
-        cap >> frame; // get a new frame from camera
-        cvtColor(frame, edges, CV_BGR2GRAY);
-        GaussianBlur(edges, edges, Size(7, 7), 1.5, 1.5);
-        Canny(edges, edges, 0, 30, 3);
-        imshow("edges", edges);
-        if (waitKey(30) >= 0) break;
-    }
-    // the camera will be deinitialized automatically in VideoCapture destructor
-    return 0;
-}
-#endif
