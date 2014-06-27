@@ -67,7 +67,7 @@ void allocateBuffers(int width, int height)
     HighguiBridge::getInstance().frontInputPtr = frontInputMat.ptr(0);
     HighguiBridge::getInstance().backInputPtr = backInputMat.ptr(0);
 
-    HighguiBridge::getInstance().allocateOutputBuffer();
+    HighguiBridge::getInstance().AllocateOutputBuffers();
 }
 
 
@@ -84,6 +84,7 @@ namespace cv {
     bool VideoCapture_WinRT::grabFrame()
     {
         // if device is not started we must return true so retrieveFrame() is called to start device
+        // nb. we cannot start the device here because we do not know the size of the input Mat
         if (!started) return true;
 
         if (HighguiBridge::getInstance().bIsFrameNew)
@@ -103,27 +104,23 @@ namespace cv {
     {
         if (!started) {
 
-            {
-                std::lock_guard<std::mutex> lock(HighguiBridge::getInstance().inputBufferMutex);
+            int width, height;
+            width = outArray.size().width;
+            height = outArray.size().height;
+            if (width == 0) width = 640;
+            if (height == 0) height = 480;
 
-                int width, height;
-                width = outArray.size().width;
-                height = outArray.size().height;
-                if (width == 0) width = 640;
-                if (height == 0) height = 480;
+            HighguiBridge::getInstance().width = width;
+            HighguiBridge::getInstance().height = height;
 
-                HighguiBridge::getInstance().width = width;
-                HighguiBridge::getInstance().height = height;
-
-                // nb. Mats will be alloc'd on UI thread
-            }
+            // nb. Mats will be alloc'd on UI thread
 
             // request device init on UI thread - this does not block, and is async
             HighguiBridge::getInstance().requestForUIthreadAsync(OPEN_CAMERA,
                 outArray.size().width, outArray.size().height);
 
             started = true;
-            return true;
+            return false;
         }
 
         if (!started) return false;
