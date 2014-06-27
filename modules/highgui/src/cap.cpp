@@ -575,15 +575,17 @@ VideoCapture& VideoCapture::operator >> (Mat& image)
     {
         if (retrieve(image))
         {
-            // needed here because setting Mat 'image' is not allowed by OutputArray in read()
-            auto p = HighguiBridge::getInstance().backInputPtr;
-            Mat m(HighguiBridge::getInstance().height, HighguiBridge::getInstance().width, CV_8UC3, p);
-            image = m;
+            std::lock_guard<std::mutex> lock(HighguiBridge::getInstance().inputBufferMutex);
 
-            // nb. input dbl buffering is off - no artifacts seen
-            // HighguiBridge::getInstance().SwapInputBuffers();
+            // double buffering
+            HighguiBridge::getInstance().SwapInputBuffers();
+            auto p = HighguiBridge::getInstance().frontInputPtr;
 
             HighguiBridge::getInstance().bIsFrameNew = false;
+
+            // needed here because setting Mat 'image' is not allowed by OutputArray in read()
+            Mat m(HighguiBridge::getInstance().height, HighguiBridge::getInstance().width, CV_8UC3, p);
+            image = m;
         }
     }
 #else
