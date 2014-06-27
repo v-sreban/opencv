@@ -73,7 +73,8 @@ HighguiBridge& HighguiBridge::getInstance()
 
 void HighguiBridge::SwapInputBuffers()
 {
-    lock_guard<mutex> lock(inputBufferMutex);
+    // already locked
+    // lock_guard<mutex> lock(inputBufferMutex);
     swap(backInputPtr, frontInputPtr);
     //if (currentFrame != frameCounter)
     //{
@@ -82,20 +83,27 @@ void HighguiBridge::SwapInputBuffers()
     //}
 }
 
+void HighguiBridge::SwapOutputBuffers()
+{
+    lock_guard<mutex> lock(outputBufferMutex);
+    swap(frontOutputBuffer, backOutputBuffer);
+}
+
 void HighguiBridge::createTrackbar( int *valptr )
 {
     slider1ValPtr = valptr;
     HighguiBridge::getInstance().requestForUIthreadAsync(SHOW_TRACKBAR);
 }
 
-void HighguiBridge::allocateOutputBuffer()
+void HighguiBridge::AllocateOutputBuffers()
 {
-    outputBuffer = ref new WriteableBitmap(width, height);
-    // backOutputBuffer = ref new WriteableBitmap(width, height);
+    frontOutputBuffer = ref new WriteableBitmap(width, height);
+    backOutputBuffer = ref new WriteableBitmap(width, height);
 }
 
 void imshow_winrt(cv::InputArray img)
 {
+    HighguiBridge::getInstance().SwapOutputBuffers();
     HighguiBridge::getInstance().requestForUIthreadAsync(UPDATE_IMAGE_ELEMENT);
 }
 

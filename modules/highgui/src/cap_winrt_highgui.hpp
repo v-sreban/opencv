@@ -113,13 +113,16 @@ public:
 
     // input is double buffered
     std::mutex                  inputBufferMutex;
-    unsigned char *             frontInputPtr;      // OpenCV reads this
-    unsigned char *             backInputPtr;       // video writes this
+    unsigned char *             frontInputPtr;                              // OpenCV reads this
+    unsigned char *             backInputPtr;                               // video grabber writes this
     void                        SwapInputBuffers();
 
-    // output is single buffered
-    Windows::UI::Xaml::Media::Imaging::WriteableBitmap^ outputBuffer;
-    void allocateOutputBuffer();
+    // output is double buffered
+    std::mutex                  outputBufferMutex;
+    Windows::UI::Xaml::Media::Imaging::WriteableBitmap^ frontOutputBuffer;  // OpenCV write this
+    Windows::UI::Xaml::Media::Imaging::WriteableBitmap^ backOutputBuffer;   // XAML reads this
+    void                        AllocateOutputBuffers();
+    __declspec(dllexport) void  SwapOutputBuffers();
 
     std::atomic<unsigned long>  frameCounter;
     unsigned long               currentFrame;
