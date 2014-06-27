@@ -182,6 +182,7 @@ void Video::_GrabFrameAsync(::Media::CaptureFrameGrabber^ frameGrabber)
                 pbScanline += plPitch;
                 buf += colBytes;
             }
+            HighguiBridge::getInstance().bIsFrameNew = true;
         }
         else
         {
@@ -213,11 +214,10 @@ void Video::_GrabFrameAsync(::Media::CaptureFrameGrabber^ frameGrabber)
                 pbScanline += plPitch;
                 buf += colBytes;
             }
+            HighguiBridge::getInstance().bIsFrameNew = true;
         }
         CHK(buffer->Unlock2D());
 
-        // notify frame is ready
-        HighguiBridge::getInstance().bIsFrameNew = true;
         HighguiBridge::getInstance().frameCounter++;
 
         if (bGrabberInited)
@@ -232,47 +232,48 @@ void Video::_GrabFrameAsync(::Media::CaptureFrameGrabber^ frameGrabber)
 // must be on UI thread
 void Video::CopyOutput()
 {
-    // std::lock_guard<std::mutex> lock(HighguiBridge::getInstance().outputBufferMutex);
-
-    auto inAr = HighguiBridge::getInstance().backInputPtr;
-    // auto inAr = HighguiBridge::getInstance().frontInputPtr;
-    auto outAr = GetData(HighguiBridge::getInstance().outputBuffer->PixelBuffer);
-
-    const unsigned int bytesPerPixel = 3;
-    auto pbScanline = inAr;
-    auto plPitch = width * bytesPerPixel;
-
-    auto buf = outAr;
-    unsigned int colBytes = width * 4;
-
-    // copy RGB24 to bgra8
-    for (unsigned int row = 0; row < height; row++)
     {
-        // used for Bgr8:
-        // nb. no alpha
-        // for (unsigned int i = 0; i < colBytes; i++ ) buf[i] = pbScanline[i];
+        std::lock_guard<std::mutex> lock(HighguiBridge::getInstance().outputBufferMutex);
 
-        // used for RGB24:
-        // nb. alpha is set to full opaque
-        for (unsigned int i = 0, j = 0; i < plPitch; i += bytesPerPixel, j += 4)
+        auto inAr = HighguiBridge::getInstance().frontInputPtr;
+        auto outAr = GetData(HighguiBridge::getInstance().frontOutputBuffer->PixelBuffer);
+
+        const unsigned int bytesPerPixel = 3;
+        auto pbScanline = inAr;
+        auto plPitch = width * bytesPerPixel;
+
+        auto buf = outAr;
+        unsigned int colBytes = width * 4;
+
+        // copy RGB24 to bgra8
+        for (unsigned int row = 0; row < height; row++)
         {
-            // swizzle the R and B values (RGB24 to Bgr8)
-            buf[j] = pbScanline[i + 2];
-            buf[j + 1] = pbScanline[i + 1];
-            buf[j + 2] = pbScanline[i];
-            buf[j + 3] = 0xff;
+            // used for Bgr8:
+            // nb. no alpha
+            // for (unsigned int i = 0; i < colBytes; i++ ) buf[i] = pbScanline[i];
 
-            // if no swizzle is desired:
-            //buf[i] = pbScanline[i];
-            //buf[i + 1] = pbScanline[i + 1];
-            //buf[i + 2] = pbScanline[i + 2];
-            //buf[i + 3] = 0xff;
+            // used for RGB24:
+            // nb. alpha is set to full opaque
+            for (unsigned int i = 0, j = 0; i < plPitch; i += bytesPerPixel, j += 4)
+            {
+                // swizzle the R and B values (RGB24 to Bgr8)
+                buf[j] = pbScanline[i + 2];
+                buf[j + 1] = pbScanline[i + 1];
+                buf[j + 2] = pbScanline[i];
+                buf[j + 3] = 0xff;
+
+                // if no swizzle is desired:
+                //buf[i] = pbScanline[i];
+                //buf[i + 1] = pbScanline[i + 1];
+                //buf[i + 2] = pbScanline[i + 2];
+                //buf[i + 3] = 0xff;
+            }
+
+            pbScanline += plPitch;
+            buf += colBytes;
         }
-
-        pbScanline += plPitch;
-        buf += colBytes;
+        HighguiBridge::getInstance().frontOutputBuffer->PixelBuffer->Length = width * height * 4;
     }
-    HighguiBridge::getInstance().outputBuffer->PixelBuffer->Length = width * height * 4;
 }
 
 
