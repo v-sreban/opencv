@@ -43,6 +43,8 @@ namespace highgui_xaml
     {
         InitializeComponent();
 
+        grabberStarted = false;
+
         Window::Current->VisibilityChanged += ref new Windows::UI::Xaml::WindowVisibilityChangedEventHandler(this, &highgui_xaml::MainPage::OnVisibilityChanged);
 
         // set XAML elements
@@ -62,31 +64,34 @@ namespace highgui_xaml
             switch (action)
             {
             case OPEN_CAMERA:
-            {
-                int device = HighguiBridge::getInstance().deviceIndex;
-                int width = HighguiBridge::getInstance().width;
-                int height = HighguiBridge::getInstance().height;
+                {
+                    int device = HighguiBridge::getInstance().deviceIndex;
+                    int width = HighguiBridge::getInstance().width;
+                    int height = HighguiBridge::getInstance().height;
 
-                // buffers must alloc'd on UI thread
-                allocateBuffers(width, height);
+                    // buffers must alloc'd on UI thread
+                    allocateBuffers(width, height);
 
-                // nb. video capture device init must be done on UI thread;
-                // code is located in the OpenCV Highgui DLL, class Video
-                // initGrabber will be called whenever the window is made visible
-                // by the visibility event handler
-            }
+                    // nb. video capture device init must be done on UI thread;
+                    // code is located in the OpenCV Highgui DLL, class Video
+                    if (!grabberStarted)
+                    {
+                        grabberStarted = true;
+                        initGrabber(device, width, height);
+                    }
+                }
                 break;
             case CLOSE_CAMERA:
                 closeGrabber();
                 break;
             case UPDATE_IMAGE_ELEMENT:
+                {
+                    // copy output Mat to WBM
+                    copyOutput();
 
-                // copy output Mat to WBM
-                copyOutput();
-
-                // set XAML image element with image WBM
-                HighguiBridge::getInstance().cvImage->Source = HighguiBridge::getInstance().outputBuffer;
-
+                    // set XAML image element with image WBM
+                    HighguiBridge::getInstance().cvImage->Source = HighguiBridge::getInstance().backOutputBuffer;
+                }
                 break;
             case SHOW_TRACKBAR:
                 cvSlider->Visibility = Windows::UI::Xaml::Visibility::Visible;
@@ -127,6 +132,8 @@ void highgui_xaml::MainPage::OnVisibilityChanged(Platform::Object ^sender,
         // only start the grabber if the camera was opened in OpenCV
         if (HighguiBridge::getInstance().backInputPtr != nullptr)
         {
+            if (grabberStarted) return; 
+
             int device = HighguiBridge::getInstance().deviceIndex;
             int width = HighguiBridge::getInstance().width;
             int height = HighguiBridge::getInstance().height;
@@ -136,6 +143,7 @@ void highgui_xaml::MainPage::OnVisibilityChanged(Platform::Object ^sender,
     }
     else 
     {
+        grabberStarted = false;
         closeGrabber();
     }
 }
