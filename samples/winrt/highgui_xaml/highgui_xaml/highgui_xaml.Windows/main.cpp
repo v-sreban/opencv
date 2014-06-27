@@ -40,8 +40,8 @@ void cvMain()
 
     cam.open(0);    // open the default camera  
 
-    // Mat edges;
-    // namedWindow("edges", 1);
+    Mat edges;
+    namedWindow("edges", 1);
 
     int sliderValue = 0;
     createTrackbar("", "", &sliderValue, 100);
@@ -61,7 +61,11 @@ void cvMain()
         // image processing calculations here
         // nb Mat frame is in RGB24 format (8UC3)
 
-        // image manipulation test - write blue color bar at row 100 for 200 rows
+        // select test 1 or 2
+#if 0
+        // image manipulation test 1
+        // write color bar at row 100 for 200 rows
+        // slider adjusts color
         auto ar = frame.ptr(100);
         int bytesPerPixel = 3;
         int adjust = (int)(((float)sliderValue / 100.0f) * 255.0);
@@ -71,15 +75,17 @@ void cvMain()
             i++;                        // G
             ar[i++] = 255 - adjust;     // B
         }
+#else
+        // image processing test 2
+        // slider adjusts upper threshold
+        cvtColor(frame, edges, COLOR_RGB2GRAY);
+        GaussianBlur(edges, edges, Size(7, 7), 1.5, 1.5);
+        // Canny(edges, edges, 0, 30, 3);
+        Canny(edges, edges, 0, sliderValue, 3);
+        cvtColor(edges, frame, COLOR_GRAY2RGB);
+#endif
 
         imshow("", frame);
     }
-
-    // notes for additional image processing tests:
-    //
-    // cvtColor(frame, edges, CV_BGR2GRAY);
-    // GaussianBlur(edges, edges, Size(7, 7), 1.5, 1.5);
-    // Canny(edges, edges, 0, 30, 3);
-    // imshow("edges", edges);
 }
 
