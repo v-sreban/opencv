@@ -513,8 +513,12 @@ int cv::createButton(const String&, ButtonCallback, void*, int , bool )
 
 CV_IMPL int cvNamedWindow( const char*, int )
 {
+#ifdef HAVE_WINRT
+    return 0;
+#else
     CV_NO_GUI_ERROR("cvNamedWindow");
     return -1;
+#endif
 }
 
 CV_IMPL void cvDestroyWindow( const char* )
