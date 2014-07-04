@@ -57,6 +57,14 @@
 # endif
 #endif
 
+#if defined(HAVE_WINRT)
+const char* getenv(const char* name)
+{
+    return NULL;
+}
+
+#endif
+
 // TODO Move to some common place
 static size_t getConfigurationParameterForSize(const char* name, size_t defaultValue)
 {

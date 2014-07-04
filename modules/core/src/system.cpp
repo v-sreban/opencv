@@ -87,6 +87,7 @@
 
 #ifdef HAVE_WINRT
 #include <wrl/client.h>
+#include <string>
 #ifndef __cplusplus_winrt
 #include <windows.storage.h>
 #pragma comment(lib, "runtimeobject.lib")
