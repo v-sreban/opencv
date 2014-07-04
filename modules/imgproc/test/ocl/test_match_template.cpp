@@ -62,9 +62,9 @@ PARAM_TEST_CASE(MatchTemplate, MatDepth, Channels, MatchTemplType, bool)
     int method;
     bool use_roi;
 
-    TEST_DECLARE_INPUT_PARAMETER(image)
-    TEST_DECLARE_INPUT_PARAMETER(templ)
-    TEST_DECLARE_OUTPUT_PARAMETER(result)
+    TEST_DECLARE_INPUT_PARAMETER(image);
+    TEST_DECLARE_INPUT_PARAMETER(templ);
+    TEST_DECLARE_OUTPUT_PARAMETER(result);
 
     virtual void SetUp()
     {
@@ -92,9 +92,9 @@ PARAM_TEST_CASE(MatchTemplate, MatDepth, Channels, MatchTemplType, bool)
         Border resultBorder = randomBorder(0, use_roi ? MAX_VALUE : 0);
         randomSubMat(result, result_roi, result_roiSize, resultBorder, CV_32FC1, -upValue, upValue);
 
-        UMAT_UPLOAD_INPUT_PARAMETER(image)
-        UMAT_UPLOAD_INPUT_PARAMETER(templ)
-        UMAT_UPLOAD_OUTPUT_PARAMETER(result)
+        UMAT_UPLOAD_INPUT_PARAMETER(image);
+        UMAT_UPLOAD_INPUT_PARAMETER(templ);
+        UMAT_UPLOAD_OUTPUT_PARAMETER(result);
     }
 
     void Near(double threshold = 0.0)
@@ -118,7 +118,7 @@ OCL_TEST_P(MatchTemplate, Mat)
 
 OCL_INSTANTIATE_TEST_CASE_P(ImageProc, MatchTemplate, Combine(
                                 Values(CV_8U, CV_32F),
-                                Values(1, 2, 4),
+                                Values(1, 2, 3, 4),
                                 MatchTemplType::all(),
                                 Bool())
                            );

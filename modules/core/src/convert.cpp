@@ -270,21 +270,22 @@ namespace cv {
 
 static bool ocl_split( InputArray _m, OutputArrayOfArrays _mv )
 {
-    int type = _m.type(), depth = CV_MAT_DEPTH(type), cn = CV_MAT_CN(type);
+    int type = _m.type(), depth = CV_MAT_DEPTH(type), cn = CV_MAT_CN(type),
+            rowsPerWI = ocl::Device::getDefault().isIntel() ? 4 : 1;
 
-    String dstargs, dstdecl, processelem;
+    String dstargs, processelem, indexdecl;
     for (int i = 0; i < cn; ++i)
     {
         dstargs += format("DECLARE_DST_PARAM(%d)", i);
-        dstdecl += format("DECLARE_DATA(%d)", i);
+        indexdecl += format("DECLARE_INDEX(%d)", i);
         processelem += format("PROCESS_ELEM(%d)", i);
     }
 
     ocl::Kernel k("split", ocl::core::split_merge_oclsrc,
-                  format("-D T=%s -D OP_SPLIT -D cn=%d -D DECLARE_DST_PARAMS=%s "
-                         "-D DECLARE_DATA_N=%s -D PROCESS_ELEMS_N=%s",
+                  format("-D T=%s -D OP_SPLIT -D cn=%d -D DECLARE_DST_PARAMS=%s"
+                         " -D PROCESS_ELEMS_N=%s -D DECLARE_INDEX_N=%s",
                          ocl::memopTypeToStr(depth), cn, dstargs.c_str(),
-                         dstdecl.c_str(), processelem.c_str()));
+                         processelem.c_str(), indexdecl.c_str()));
     if (k.empty())
         return false;
 
@@ -299,8 +300,9 @@ static bool ocl_split( InputArray _m, OutputArrayOfArrays _mv )
     int argidx = k.set(0, ocl::KernelArg::ReadOnly(_m.getUMat()));
     for (int i = 0; i < cn; ++i)
         argidx = k.set(argidx, ocl::KernelArg::WriteOnlyNoSize(dst[i]));
+    k.set(argidx, rowsPerWI);
 
-    size_t globalsize[2] = { size.width, size.height };
+    size_t globalsize[2] = { size.width, (size.height + rowsPerWI - 1) / rowsPerWI };
     return k.run(2, globalsize, NULL, false);
 }
 
@@ -415,45 +417,59 @@ namespace cv {
 
 static bool ocl_merge( InputArrayOfArrays _mv, OutputArray _dst )
 {
-    std::vector<UMat> src;
+    std::vector<UMat> src, ksrc;
     _mv.getUMatVector(src);
     CV_Assert(!src.empty());
 
-    int type = src[0].type(), depth = CV_MAT_DEPTH(type);
+    int type = src[0].type(), depth = CV_MAT_DEPTH(type),
+            rowsPerWI = ocl::Device::getDefault().isIntel() ? 4 : 1;
     Size size = src[0].size();
 
-    size_t srcsize = src.size();
-    for (size_t i = 0; i < srcsize; ++i)
+    for (size_t i = 0, srcsize = src.size(); i < srcsize; ++i)
     {
-        int itype = src[i].type(), icn = CV_MAT_CN(itype), idepth = CV_MAT_DEPTH(itype);
-        if (src[i].dims > 2 || icn != 1)
+        int itype = src[i].type(), icn = CV_MAT_CN(itype), idepth = CV_MAT_DEPTH(itype),
+                esz1 = CV_ELEM_SIZE1(idepth);
+        if (src[i].dims > 2)
             return false;
-        CV_Assert(size == src[i].size() && depth == idepth);
-    }
 
-    String srcargs, srcdecl, processelem;
-    for (size_t i = 0; i < srcsize; ++i)
+        CV_Assert(size == src[i].size() && depth == idepth);
+
+        for (int cn = 0; cn < icn; ++cn)
+        {
+            UMat tsrc = src[i];
+            tsrc.offset += cn * esz1;
+            ksrc.push_back(tsrc);
+        }
+    }
+    int dcn = (int)ksrc.size();
+
+    String srcargs, processelem, cndecl, indexdecl;
+    for (int i = 0; i < dcn; ++i)
     {
         srcargs += format("DECLARE_SRC_PARAM(%d)", i);
-        srcdecl += format("DECLARE_DATA(%d)", i);
         processelem += format("PROCESS_ELEM(%d)", i);
+        indexdecl += format("DECLARE_INDEX(%d)", i);
+        cndecl += format(" -D scn%d=%d", i, ksrc[i].channels());
     }
 
     ocl::Kernel k("merge", ocl::core::split_merge_oclsrc,
-                  format("-D OP_MERGE -D cn=%d -D T=%s -D DECLARE_SRC_PARAMS_N=%s -D DECLARE_DATA_N=%s -D PROCESS_ELEMS_N=%s",
-                         (int)srcsize, ocl::memopTypeToStr(depth), srcargs.c_str(), srcdecl.c_str(), processelem.c_str()));
+                  format("-D OP_MERGE -D cn=%d -D T=%s -D DECLARE_SRC_PARAMS_N=%s"
+                         " -D DECLARE_INDEX_N=%s -D PROCESS_ELEMS_N=%s%s",
+                         dcn, ocl::memopTypeToStr(depth), srcargs.c_str(),
+                         indexdecl.c_str(), processelem.c_str(), cndecl.c_str()));
     if (k.empty())
         return false;
 
-    _dst.create(size, CV_MAKE_TYPE(depth, (int)srcsize));
+    _dst.create(size, CV_MAKE_TYPE(depth, dcn));
     UMat dst = _dst.getUMat();
 
     int argidx = 0;
-    for (size_t i = 0; i < srcsize; ++i)
-        argidx = k.set(argidx, ocl::KernelArg::ReadOnlyNoSize(src[i]));
-    k.set(argidx, ocl::KernelArg::WriteOnly(dst));
+    for (int i = 0; i < dcn; ++i)
+        argidx = k.set(argidx, ocl::KernelArg::ReadOnlyNoSize(ksrc[i]));
+    argidx = k.set(argidx, ocl::KernelArg::WriteOnly(dst));
+    k.set(argidx, rowsPerWI);
 
-    size_t globalsize[2] = { dst.cols, dst.rows };
+    size_t globalsize[2] = { dst.cols, (dst.rows + rowsPerWI - 1) / rowsPerWI };
     return k.run(2, globalsize, NULL, false);
 }
 
@@ -671,14 +687,15 @@ static bool ocl_mixChannels(InputArrayOfArrays _src, InputOutputArrayOfArrays _d
     CV_Assert(nsrc > 0 && ndst > 0);
 
     Size size = src[0].size();
-    int depth = src[0].depth(), esz = CV_ELEM_SIZE(depth);
+    int depth = src[0].depth(), esz = CV_ELEM_SIZE(depth),
+            rowsPerWI = ocl::Device::getDefault().isIntel() ? 4 : 1;
 
     for (size_t i = 1, ssize = src.size(); i < ssize; ++i)
         CV_Assert(src[i].size() == size && src[i].depth() == depth);
     for (size_t i = 0, dsize = dst.size(); i < dsize; ++i)
         CV_Assert(dst[i].size() == size && dst[i].depth() == depth);
 
-    String declsrc, decldst, declproc, declcn;
+    String declsrc, decldst, declproc, declcn, indexdecl;
     std::vector<UMat> srcargs(npairs), dstargs(npairs);
 
     for (size_t i = 0; i < npairs; ++i)
@@ -699,14 +716,16 @@ static bool ocl_mixChannels(InputArrayOfArrays _src, InputOutputArrayOfArrays _d
 
         declsrc += format("DECLARE_INPUT_MAT(%d)", i);
         decldst += format("DECLARE_OUTPUT_MAT(%d)", i);
+        indexdecl += format("DECLARE_INDEX(%d)", i);
         declproc += format("PROCESS_ELEM(%d)", i);
         declcn += format(" -D scn%d=%d -D dcn%d=%d", i, src[src_idx].channels(), i, dst[dst_idx].channels());
     }
 
     ocl::Kernel k("mixChannels", ocl::core::mixchannels_oclsrc,
-                  format("-D T=%s -D DECLARE_INPUT_MATS=%s -D DECLARE_OUTPUT_MATS=%s"
-                         " -D PROCESS_ELEMS=%s%s", ocl::memopTypeToStr(depth),
-                         declsrc.c_str(), decldst.c_str(), declproc.c_str(), declcn.c_str()));
+                  format("-D T=%s -D DECLARE_INPUT_MAT_N=%s -D DECLARE_OUTPUT_MAT_N=%s"
+                         " -D PROCESS_ELEM_N=%s -D DECLARE_INDEX_N=%s%s",
+                         ocl::memopTypeToStr(depth), declsrc.c_str(), decldst.c_str(),
+                         declproc.c_str(), indexdecl.c_str(), declcn.c_str()));
     if (k.empty())
         return false;
 
@@ -715,9 +734,11 @@ static bool ocl_mixChannels(InputArrayOfArrays _src, InputOutputArrayOfArrays _d
         argindex = k.set(argindex, ocl::KernelArg::ReadOnlyNoSize(srcargs[i]));
     for (size_t i = 0; i < npairs; ++i)
         argindex = k.set(argindex, ocl::KernelArg::WriteOnlyNoSize(dstargs[i]));
-    k.set(k.set(argindex, size.height), size.width);
+    argindex = k.set(argindex, size.height);
+    argindex = k.set(argindex, size.width);
+    k.set(argindex, rowsPerWI);
 
-    size_t globalsize[2] = { size.width, size.height };
+    size_t globalsize[2] = { size.width, (size.height + rowsPerWI - 1) / rowsPerWI };
     return k.run(2, globalsize, NULL, false);
 }
 
@@ -1067,6 +1088,41 @@ dtype* dst, size_t dstep, Size size, double* scale) \
     cvtScale_(src, sstep, dst, dstep, size, (wtype)scale[0], (wtype)scale[1]); \
 }
 
+#if defined(HAVE_IPP)
+#define DEF_CVT_FUNC_F(suffix, stype, dtype, ippFavor) \
+static void cvt##suffix( const stype* src, size_t sstep, const uchar*, size_t, \
+                         dtype* dst, size_t dstep, Size size, double*) \
+{ \
+    if (src && dst)\
+    {\
+        if (ippiConvert_##ippFavor(src, (int)sstep, dst, (int)dstep, ippiSize(size.width, size.height)) >= 0) \
+            return; \
+        setIppErrorStatus(); \
+    }\
+    cvt_(src, sstep, dst, dstep, size); \
+}
+
+#define DEF_CVT_FUNC_F2(suffix, stype, dtype, ippFavor) \
+static void cvt##suffix( const stype* src, size_t sstep, const uchar*, size_t, \
+                         dtype* dst, size_t dstep, Size size, double*) \
+{ \
+    if (src && dst)\
+    {\
+        if (ippiConvert_##ippFavor(src, (int)sstep, dst, (int)dstep, ippiSize(size.width, size.height), ippRndFinancial, 0) >= 0) \
+            return; \
+        setIppErrorStatus(); \
+    }\
+    cvt_(src, sstep, dst, dstep, size); \
+}
+#else
+#define DEF_CVT_FUNC_F(suffix, stype, dtype, ippFavor) \
+static void cvt##suffix( const stype* src, size_t sstep, const uchar*, size_t, \
+                         dtype* dst, size_t dstep, Size size, double*) \
+{ \
+    cvt_(src, sstep, dst, dstep, size); \
+}
+#define DEF_CVT_FUNC_F2 DEF_CVT_FUNC_F
+#endif
 
 #define DEF_CVT_FUNC(suffix, stype, dtype) \
 static void cvt##suffix( const stype* src, size_t sstep, const uchar*, size_t, \
@@ -1077,7 +1133,7 @@ static void cvt##suffix( const stype* src, size_t sstep, const uchar*, size_t, \
 
 #define DEF_CPY_FUNC(suffix, stype) \
 static void cvt##suffix( const stype* src, size_t sstep, const uchar*, size_t, \
-stype* dst, size_t dstep, Size size, double*) \
+                         stype* dst, size_t dstep, Size size, double*) \
 { \
     cpy_(src, sstep, dst, dstep, size); \
 }
@@ -1148,48 +1204,48 @@ DEF_CVT_SCALE_FUNC(32f64f, float, double, double)
 DEF_CVT_SCALE_FUNC(64f,    double, double, double)
 
 DEF_CPY_FUNC(8u,     uchar)
-DEF_CVT_FUNC(8s8u,   schar, uchar)
-DEF_CVT_FUNC(16u8u,  ushort, uchar)
-DEF_CVT_FUNC(16s8u,  short, uchar)
-DEF_CVT_FUNC(32s8u,  int, uchar)
-DEF_CVT_FUNC(32f8u,  float, uchar)
+DEF_CVT_FUNC_F(8s8u,   schar, uchar, 8s8u_C1Rs)
+DEF_CVT_FUNC_F(16u8u,  ushort, uchar, 16u8u_C1R)
+DEF_CVT_FUNC_F(16s8u,  short, uchar, 16s8u_C1R)
+DEF_CVT_FUNC_F(32s8u,  int, uchar, 32s8u_C1R)
+DEF_CVT_FUNC_F2(32f8u,  float, uchar, 32f8u_C1RSfs)
 DEF_CVT_FUNC(64f8u,  double, uchar)
 
-DEF_CVT_FUNC(8u8s,   uchar, schar)
-DEF_CVT_FUNC(16u8s,  ushort, schar)
-DEF_CVT_FUNC(16s8s,  short, schar)
-DEF_CVT_FUNC(32s8s,  int, schar)
-DEF_CVT_FUNC(32f8s,  float, schar)
+DEF_CVT_FUNC_F2(8u8s,   uchar, schar, 8u8s_C1RSfs)
+DEF_CVT_FUNC_F2(16u8s,  ushort, schar, 16u8s_C1RSfs)
+DEF_CVT_FUNC_F2(16s8s,  short, schar, 16s8s_C1RSfs)
+DEF_CVT_FUNC_F(32s8s,  int, schar, 32s8s_C1R)
+DEF_CVT_FUNC_F2(32f8s,  float, schar, 32f8s_C1RSfs)
 DEF_CVT_FUNC(64f8s,  double, schar)
 
-DEF_CVT_FUNC(8u16u,  uchar, ushort)
-DEF_CVT_FUNC(8s16u,  schar, ushort)
+DEF_CVT_FUNC_F(8u16u,  uchar, ushort, 8u16u_C1R)
+DEF_CVT_FUNC_F(8s16u,  schar, ushort, 8s16u_C1Rs)
 DEF_CPY_FUNC(16u,    ushort)
-DEF_CVT_FUNC(16s16u, short, ushort)
-DEF_CVT_FUNC(32s16u, int, ushort)
-DEF_CVT_FUNC(32f16u, float, ushort)
+DEF_CVT_FUNC_F(16s16u, short, ushort, 16s16u_C1Rs)
+DEF_CVT_FUNC_F2(32s16u, int, ushort, 32s16u_C1RSfs)
+DEF_CVT_FUNC_F2(32f16u, float, ushort, 32f16u_C1RSfs)
 DEF_CVT_FUNC(64f16u, double, ushort)
 
-DEF_CVT_FUNC(8u16s,  uchar, short)
-DEF_CVT_FUNC(8s16s,  schar, short)
-DEF_CVT_FUNC(16u16s, ushort, short)
-DEF_CVT_FUNC(32s16s, int, short)
-DEF_CVT_FUNC(32f16s, float, short)
+DEF_CVT_FUNC_F(8u16s,  uchar, short, 8u16s_C1R)
+DEF_CVT_FUNC_F(8s16s,  schar, short, 8s16s_C1R)
+DEF_CVT_FUNC_F2(16u16s, ushort, short, 16u16s_C1RSfs)
+DEF_CVT_FUNC_F2(32s16s, int, short, 32s16s_C1RSfs)
+DEF_CVT_FUNC_F2(32f16s, float, short, 32f16s_C1RSfs)
 DEF_CVT_FUNC(64f16s, double, short)
 
-DEF_CVT_FUNC(8u32s,  uchar, int)
-DEF_CVT_FUNC(8s32s,  schar, int)
-DEF_CVT_FUNC(16u32s, ushort, int)
-DEF_CVT_FUNC(16s32s, short, int)
+DEF_CVT_FUNC_F(8u32s,  uchar, int, 8u32s_C1R)
+DEF_CVT_FUNC_F(8s32s,  schar, int, 8s32s_C1R)
+DEF_CVT_FUNC_F(16u32s, ushort, int, 16u32s_C1R)
+DEF_CVT_FUNC_F(16s32s, short, int, 16s32s_C1R)
 DEF_CPY_FUNC(32s,    int)
-DEF_CVT_FUNC(32f32s, float, int)
+DEF_CVT_FUNC_F2(32f32s, float, int, 32f32s_C1RSfs)
 DEF_CVT_FUNC(64f32s, double, int)
 
-DEF_CVT_FUNC(8u32f,  uchar, float)
-DEF_CVT_FUNC(8s32f,  schar, float)
-DEF_CVT_FUNC(16u32f, ushort, float)
-DEF_CVT_FUNC(16s32f, short, float)
-DEF_CVT_FUNC(32s32f, int, float)
+DEF_CVT_FUNC_F(8u32f,  uchar, float, 8u32f_C1R)
+DEF_CVT_FUNC_F(8s32f,  schar, float, 8s32f_C1R)
+DEF_CVT_FUNC_F(16u32f, ushort, float, 16u32f_C1R)
+DEF_CVT_FUNC_F(16s32f, short, float, 16s32f_C1R)
+DEF_CVT_FUNC_F(32s32f, int, float, 32s32f_C1R)
 DEF_CVT_FUNC(64f32f, double, float)
 
 DEF_CVT_FUNC(8u64f,  uchar, double)
@@ -1310,9 +1366,10 @@ static BinaryFunc getConvertScaleFunc(int sdepth, int ddepth)
 
 static bool ocl_convertScaleAbs( InputArray _src, OutputArray _dst, double alpha, double beta )
 {
+    const ocl::Device & d = ocl::Device::getDefault();
     int type = _src.type(), depth = CV_MAT_DEPTH(type), cn = CV_MAT_CN(type),
-        kercn = ocl::predictOptimalVectorWidth(_src, _dst);
-    bool doubleSupport = ocl::Device::getDefault().doubleFPConfig() > 0;
+        kercn = ocl::predictOptimalVectorWidth(_src, _dst), rowsPerWI = d.isIntel() ? 4 : 1;
+    bool doubleSupport = d.doubleFPConfig() > 0;
 
     if (!doubleSupport && depth == CV_64F)
         return false;
@@ -1321,13 +1378,14 @@ static bool ocl_convertScaleAbs( InputArray _src, OutputArray _dst, double alpha
     int wdepth = std::max(depth, CV_32F);
     ocl::Kernel k("KF", ocl::core::arithm_oclsrc,
                   format("-D OP_CONVERT_SCALE_ABS -D UNARY_OP -D dstT=%s -D srcT1=%s"
-                         " -D workT=%s -D wdepth=%d -D convertToWT1=%s -D convertToDT=%s -D workT1=%s%s",
+                         " -D workT=%s -D wdepth=%d -D convertToWT1=%s -D convertToDT=%s"
+                         " -D workT1=%s -D rowsPerWI=%d%s",
                          ocl::typeToStr(CV_8UC(kercn)),
                          ocl::typeToStr(CV_MAKE_TYPE(depth, kercn)),
                          ocl::typeToStr(CV_MAKE_TYPE(wdepth, kercn)), wdepth,
                          ocl::convertTypeStr(depth, wdepth, kercn, cvt[0]),
                          ocl::convertTypeStr(wdepth, CV_8U, kercn, cvt[1]),
-                         ocl::typeToStr(wdepth),
+                         ocl::typeToStr(wdepth), rowsPerWI,
                          doubleSupport ? " -D DOUBLE_SUPPORT" : ""));
     if (k.empty())
         return false;
@@ -1344,7 +1402,7 @@ static bool ocl_convertScaleAbs( InputArray _src, OutputArray _dst, double alpha
     else if (wdepth == CV_64F)
         k.args(srcarg, dstarg, alpha, beta);
 
-    size_t globalsize[2] = { src.cols * cn / kercn, src.rows };
+    size_t globalsize[2] = { src.cols * cn / kercn, (src.rows + rowsPerWI - 1) / rowsPerWI };
     return k.run(2, globalsize, NULL, false);
 }
 
@@ -1422,7 +1480,7 @@ void cv::Mat::convertTo(OutputArray _dst, int _type, double alpha, double beta) 
         Size sz((int)(it.size*cn), 1);
 
         for( size_t i = 0; i < it.nplanes; i++, ++it )
-            func(ptrs[0], 0, 0, 0, ptrs[1], 0, sz, scale);
+            func(ptrs[0], 1, 0, 0, ptrs[1], 1, sz, scale);
     }
 }
 
@@ -1496,26 +1554,226 @@ static LUTFunc lutTab[] =
 
 static bool ocl_LUT(InputArray _src, InputArray _lut, OutputArray _dst)
 {
-    int dtype = _dst.type(), lcn = _lut.channels(), dcn = CV_MAT_CN(dtype), ddepth = CV_MAT_DEPTH(dtype);
+    int lcn = _lut.channels(), dcn = _src.channels(), ddepth = _lut.depth();
 
     UMat src = _src.getUMat(), lut = _lut.getUMat();
-    _dst.create(src.size(), dtype);
+    _dst.create(src.size(), CV_MAKETYPE(ddepth, dcn));
     UMat dst = _dst.getUMat();
+    bool bAligned = (1 == lcn) && (0 == (src.offset % 4)) && (0 == ((dcn * src.cols) % 4));
+    // dst.cols == src.cols by params of dst.create
 
     ocl::Kernel k("LUT", ocl::core::lut_oclsrc,
-                  format("-D dcn=%d -D lcn=%d -D srcT=%s -D dstT=%s", dcn, lcn,
-                         ocl::typeToStr(src.depth()), ocl::memopTypeToStr(ddepth)));
+                  format("-D dcn=%d -D lcn=%d -D srcT=%s -D dstT=%s", bAligned ? 4 : dcn, lcn,
+                         ocl::typeToStr(src.depth()), ocl::memopTypeToStr(ddepth)
+                         ));
     if (k.empty())
         return false;
 
-    k.args(ocl::KernelArg::ReadOnlyNoSize(src), ocl::KernelArg::ReadOnlyNoSize(lut),
-           ocl::KernelArg::WriteOnly(dst));
+    int cols = bAligned ? dcn * dst.cols / 4 : dst.cols;
 
-    size_t globalSize[2] = { dst.cols, dst.rows };
+    k.args(ocl::KernelArg::ReadOnlyNoSize(src), ocl::KernelArg::ReadOnlyNoSize(lut),
+        ocl::KernelArg::WriteOnlyNoSize(dst), dst.rows, cols);
+
+    size_t globalSize[2] = { cols, (dst.rows + 3) / 4 };
     return k.run(2, globalSize, NULL, false);
 }
 
 #endif
+
+#if defined(HAVE_IPP)
+namespace ipp {
+
+#if 0 // there are no performance benefits (PR #2653)
+class IppLUTParallelBody_LUTC1 : public ParallelLoopBody
+{
+public:
+    bool* ok;
+    const Mat& src_;
+    const Mat& lut_;
+    Mat& dst_;
+
+    typedef IppStatus (*IppFn)(const Ipp8u* pSrc, int srcStep, void* pDst, int dstStep,
+                          IppiSize roiSize, const void* pTable, int nBitSize);
+    IppFn fn;
+
+    int width;
+
+    IppLUTParallelBody_LUTC1(const Mat& src, const Mat& lut, Mat& dst, bool* _ok)
+        : ok(_ok), src_(src), lut_(lut), dst_(dst)
+    {
+        width = dst.cols * dst.channels();
+
+        size_t elemSize1 = CV_ELEM_SIZE1(dst.depth());
+
+        fn =
+                elemSize1 == 1 ? (IppFn)ippiLUTPalette_8u_C1R :
+                elemSize1 == 4 ? (IppFn)ippiLUTPalette_8u32u_C1R :
+                NULL;
+
+        *ok = (fn != NULL);
+    }
+
+    void operator()( const cv::Range& range ) const
+    {
+        if (!*ok)
+            return;
+
+        const int row0 = range.start;
+        const int row1 = range.end;
+
+        Mat src = src_.rowRange(row0, row1);
+        Mat dst = dst_.rowRange(row0, row1);
+
+        IppiSize sz = { width, dst.rows };
+
+        CV_DbgAssert(fn != NULL);
+        if (fn(src.data, (int)src.step[0], dst.data, (int)dst.step[0], sz, lut_.data, 8) < 0)
+        {
+            setIppErrorStatus();
+            *ok = false;
+        }
+    }
+private:
+    IppLUTParallelBody_LUTC1(const IppLUTParallelBody_LUTC1&);
+    IppLUTParallelBody_LUTC1& operator=(const IppLUTParallelBody_LUTC1&);
+};
+#endif
+
+class IppLUTParallelBody_LUTCN : public ParallelLoopBody
+{
+public:
+    bool *ok;
+    const Mat& src_;
+    const Mat& lut_;
+    Mat& dst_;
+
+    int lutcn;
+
+    uchar* lutBuffer;
+    uchar* lutTable[4];
+
+    IppLUTParallelBody_LUTCN(const Mat& src, const Mat& lut, Mat& dst, bool* _ok)
+        : ok(_ok), src_(src), lut_(lut), dst_(dst), lutBuffer(NULL)
+    {
+        lutcn = lut.channels();
+        IppiSize sz256 = {256, 1};
+
+        size_t elemSize1 = dst.elemSize1();
+        CV_DbgAssert(elemSize1 == 1);
+        lutBuffer = (uchar*)ippMalloc(256 * (int)elemSize1 * 4);
+        lutTable[0] = lutBuffer + 0;
+        lutTable[1] = lutBuffer + 1 * 256 * elemSize1;
+        lutTable[2] = lutBuffer + 2 * 256 * elemSize1;
+        lutTable[3] = lutBuffer + 3 * 256 * elemSize1;
+
+        CV_DbgAssert(lutcn == 3 || lutcn == 4);
+        if (lutcn == 3)
+        {
+            IppStatus status = ippiCopy_8u_C3P3R(lut.data, (int)lut.step[0], lutTable, (int)lut.step[0], sz256);
+            if (status < 0)
+            {
+                setIppErrorStatus();
+                return;
+            }
+        }
+        else if (lutcn == 4)
+        {
+            IppStatus status = ippiCopy_8u_C4P4R(lut.data, (int)lut.step[0], lutTable, (int)lut.step[0], sz256);
+            if (status < 0)
+            {
+                setIppErrorStatus();
+                return;
+            }
+        }
+
+        *ok = true;
+    }
+
+    ~IppLUTParallelBody_LUTCN()
+    {
+        if (lutBuffer != NULL)
+            ippFree(lutBuffer);
+        lutBuffer = NULL;
+        lutTable[0] = NULL;
+    }
+
+    void operator()( const cv::Range& range ) const
+    {
+        if (!*ok)
+            return;
+
+        const int row0 = range.start;
+        const int row1 = range.end;
+
+        Mat src = src_.rowRange(row0, row1);
+        Mat dst = dst_.rowRange(row0, row1);
+
+        if (lutcn == 3)
+        {
+            if (ippiLUTPalette_8u_C3R(
+                    src.data, (int)src.step[0], dst.data, (int)dst.step[0],
+                    ippiSize(dst.size()), lutTable, 8) >= 0)
+                return;
+        }
+        else if (lutcn == 4)
+        {
+            if (ippiLUTPalette_8u_C4R(
+                    src.data, (int)src.step[0], dst.data, (int)dst.step[0],
+                    ippiSize(dst.size()), lutTable, 8) >= 0)
+                return;
+        }
+        setIppErrorStatus();
+        *ok = false;
+    }
+private:
+    IppLUTParallelBody_LUTCN(const IppLUTParallelBody_LUTCN&);
+    IppLUTParallelBody_LUTCN& operator=(const IppLUTParallelBody_LUTCN&);
+};
+} // namespace ipp
+#endif // IPP
+
+class LUTParallelBody : public ParallelLoopBody
+{
+public:
+    bool* ok;
+    const Mat& src_;
+    const Mat& lut_;
+    Mat& dst_;
+
+    LUTFunc func;
+
+    LUTParallelBody(const Mat& src, const Mat& lut, Mat& dst, bool* _ok)
+        : ok(_ok), src_(src), lut_(lut), dst_(dst)
+    {
+        func = lutTab[lut.depth()];
+        *ok = (func != NULL);
+    }
+
+    void operator()( const cv::Range& range ) const
+    {
+        CV_DbgAssert(*ok);
+
+        const int row0 = range.start;
+        const int row1 = range.end;
+
+        Mat src = src_.rowRange(row0, row1);
+        Mat dst = dst_.rowRange(row0, row1);
+
+        int cn = src.channels();
+        int lutcn = lut_.channels();
+
+        const Mat* arrays[] = {&src, &dst, 0};
+        uchar* ptrs[2];
+        NAryMatIterator it(arrays, ptrs);
+        int len = (int)it.size;
+
+        for( size_t i = 0; i < it.nplanes; i++, ++it )
+            func(ptrs[0], lut_.data, ptrs[1], len, cn, lutcn);
+    }
+private:
+    LUTParallelBody(const LUTParallelBody&);
+    LUTParallelBody& operator=(const LUTParallelBody&);
+};
 
 }
 
@@ -1535,6 +1793,44 @@ void cv::LUT( InputArray _src, InputArray _lut, OutputArray _dst )
     _dst.create(src.dims, src.size, CV_MAKETYPE(_lut.depth(), cn));
     Mat dst = _dst.getMat();
 
+    if (_src.dims() <= 2)
+    {
+        bool ok = false;
+        Ptr<ParallelLoopBody> body;
+#if defined(HAVE_IPP)
+        size_t elemSize1 = CV_ELEM_SIZE1(dst.depth());
+#if 0 // there are no performance benefits (PR #2653)
+        if (lutcn == 1)
+        {
+            ParallelLoopBody* p = new ipp::IppLUTParallelBody_LUTC1(src, lut, dst, &ok);
+            body.reset(p);
+        }
+        else
+#endif
+        if ((lutcn == 3 || lutcn == 4) && elemSize1 == 1)
+        {
+            ParallelLoopBody* p = new ipp::IppLUTParallelBody_LUTCN(src, lut, dst, &ok);
+            body.reset(p);
+        }
+#endif
+        if (body == NULL || ok == false)
+        {
+            ok = false;
+            ParallelLoopBody* p = new LUTParallelBody(src, lut, dst, &ok);
+            body.reset(p);
+        }
+        if (body != NULL && ok)
+        {
+            Range all(0, dst.rows);
+            if (dst.total()>>18)
+                parallel_for_(all, *body, (double)std::max((size_t)1, dst.total()>>16));
+            else
+                (*body)(all);
+            if (ok)
+                return;
+        }
+    }
+
     LUTFunc func = lutTab[lut.depth()];
     CV_Assert( func != 0 );
 
@@ -1551,18 +1847,86 @@ namespace cv {
 
 #ifdef HAVE_OPENCL
 
-static bool ocl_normalize( InputArray _src, OutputArray _dst, InputArray _mask, int rtype,
-                           double scale, double shift )
+static bool ocl_normalize( InputArray _src, InputOutputArray _dst, InputArray _mask, int dtype,
+                           double scale, double delta )
 {
-    UMat src = _src.getUMat(), dst = _dst.getUMat();
+    UMat src = _src.getUMat();
 
     if( _mask.empty() )
-        src.convertTo( dst, rtype, scale, shift );
+        src.convertTo( _dst, dtype, scale, delta );
+    else if (src.channels() <= 4)
+    {
+        const ocl::Device & dev = ocl::Device::getDefault();
+
+        int stype = _src.type(), sdepth = CV_MAT_DEPTH(stype), cn = CV_MAT_CN(stype),
+                ddepth = CV_MAT_DEPTH(dtype), wdepth = std::max(CV_32F, std::max(sdepth, ddepth)),
+                rowsPerWI = dev.isIntel() ? 4 : 1;
+
+        float fscale = static_cast<float>(scale), fdelta = static_cast<float>(delta);
+        bool haveScale = std::fabs(scale - 1) > DBL_EPSILON,
+                haveZeroScale = !(std::fabs(scale) > DBL_EPSILON),
+                haveDelta = std::fabs(delta) > DBL_EPSILON,
+                doubleSupport = dev.doubleFPConfig() > 0;
+
+        if (!haveScale && !haveDelta && stype == dtype)
+        {
+            _src.copyTo(_dst, _mask);
+            return true;
+        }
+        if (haveZeroScale)
+        {
+            _dst.setTo(Scalar(delta), _mask);
+            return true;
+        }
+
+        if ((sdepth == CV_64F || ddepth == CV_64F) && !doubleSupport)
+            return false;
+
+        char cvt[2][40];
+        String opts = format("-D srcT=%s -D dstT=%s -D convertToWT=%s -D cn=%d -D rowsPerWI=%d"
+                             " -D convertToDT=%s -D workT=%s%s%s%s -D srcT1=%s -D dstT1=%s",
+                             ocl::typeToStr(stype), ocl::typeToStr(dtype),
+                             ocl::convertTypeStr(sdepth, wdepth, cn, cvt[0]), cn,
+                             rowsPerWI, ocl::convertTypeStr(wdepth, ddepth, cn, cvt[1]),
+                             ocl::typeToStr(CV_MAKE_TYPE(wdepth, cn)),
+                             doubleSupport ? " -D DOUBLE_SUPPORT" : "",
+                             haveScale ? " -D HAVE_SCALE" : "",
+                             haveDelta ? " -D HAVE_DELTA" : "",
+                             ocl::typeToStr(sdepth), ocl::typeToStr(ddepth));
+
+        ocl::Kernel k("normalizek", ocl::core::normalize_oclsrc, opts);
+        if (k.empty())
+            return false;
+
+        UMat mask = _mask.getUMat(), dst = _dst.getUMat();
+
+        ocl::KernelArg srcarg = ocl::KernelArg::ReadOnlyNoSize(src),
+                maskarg = ocl::KernelArg::ReadOnlyNoSize(mask),
+                dstarg = ocl::KernelArg::ReadWrite(dst);
+
+        if (haveScale)
+        {
+            if (haveDelta)
+                k.args(srcarg, maskarg, dstarg, fscale, fdelta);
+            else
+                k.args(srcarg, maskarg, dstarg, fscale);
+        }
+        else
+        {
+            if (haveDelta)
+                k.args(srcarg, maskarg, dstarg, fdelta);
+            else
+                k.args(srcarg, maskarg, dstarg);
+        }
+
+        size_t globalsize[2] = { src.cols, (src.rows + rowsPerWI - 1) / rowsPerWI };
+        return k.run(2, globalsize, NULL, false);
+    }
     else
     {
         UMat temp;
-        src.convertTo( temp, rtype, scale, shift );
-        temp.copyTo( dst, _mask );
+        src.convertTo( temp, dtype, scale, delta );
+        temp.copyTo( _dst, _mask );
     }
 
     return true;
@@ -1572,7 +1936,7 @@ static bool ocl_normalize( InputArray _src, OutputArray _dst, InputArray _mask, 
 
 }
 
-void cv::normalize( InputArray _src, OutputArray _dst, double a, double b,
+void cv::normalize( InputArray _src, InputOutputArray _dst, double a, double b,
                     int norm_type, int rtype, InputArray _mask )
 {
     double scale = 1, shift = 0;

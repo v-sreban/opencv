@@ -69,7 +69,7 @@
     #define HAVE_GCD
 #endif
 
-#if defined _MSC_VER && _MSC_VER >= 1600 && !defined(HAVE_WINRT)
+#if defined _MSC_VER && _MSC_VER >= 1600
     #define HAVE_CONCURRENCY
 #endif
 
