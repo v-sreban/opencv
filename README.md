@@ -26,7 +26,7 @@ Since CMake cannot create WinRT project files directly, the following procedure 
 * Where is the source code: path to opencv-pr
 * Where to build the binaries: path to opencv-pr/bin
 
-#####3. Select the following Options
+#####3. Select ONLY the following Options
 
 ######Note: Make sure the ENABLE_WINRT_MODE	option is off. This step builds for Win32.
 
