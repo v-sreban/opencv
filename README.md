@@ -23,12 +23,12 @@ Since CMake cannot create WinRT project files directly, the following procedure 
 #####1. Open CMake gui
 
 #####2. Set the build paths
-* Where is the source code: path to opencv-pr
-* Where to build the binaries: path to opencv-pr/bin
+* Where is the source code: path to opencv
+* Where to build the binaries: path to opencv/bin
 
 #####3. Select ONLY the following Options
 
-######Note: Make sure the ENABLE_WINRT_MODE	option is off. This step builds for Win32.
+######Note: Make sure the ```ENABLE_WINRT_MODE```	option is off. This step builds for Win32.
 
 * BUILD_JASPER
 * BUILD_JPEG
@@ -65,7 +65,7 @@ Since CMake cannot create WinRT project files directly, the following procedure 
 #####4. Click on Configure
 #####5. Click on Generate
 
-This will generate all of the files needed to build the Win32 open_cv projects in opencv\bin. Open the opencv-pr\bin directory and open the OpenCV.sln. Build all of the projects. They should build without errors.
+This will generate all of the files needed to build the Win32 open_cv projects in ```opencv\bin```. Open the ```opencv\bin``` directory and open the ```OpenCV.sln```. Build all of the projects. They should build without errors.
 
 #####6. Return to Cmake Gui and enable the following option:
 
@@ -75,7 +75,7 @@ This will generate all of the files needed to build the Win32 open_cv projects i
 
 This will generate all of the files needed to build the open_cv projects in opencv\binWinRT
 
-#####7. Open the opencv-pr\binWinRT directory and run the convertprojects.ps1 script. The script will create the WinRT projects in the opencv-pr\binWinRT directory. The WP8 projects will be in opencv-pr\binWP8.
+#####7. Open the ```opencv\binWinRT``` directory and run the ```convertprojects.ps1``` script. The script will create the WinRT projects in the ```opencv\binWinRT``` directory. The WP8 projects will be in ```opencv\binWP8```.
 
 
 * open the binWinRT folder
