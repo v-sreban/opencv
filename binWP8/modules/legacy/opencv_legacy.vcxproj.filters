@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="..\..\..\modules\legacy\src\3dtracker.cpp">
       <Filter>Src</Filter>
@@ -318,22 +318,22 @@
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source Files">
-      <UniqueIdentifier>{5A2FE3E6-5038-47EF-888F-B9042F531F5D}</UniqueIdentifier>
+      <UniqueIdentifier>{90E64889-1D95-460D-BFD9-35EE83FF116F}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files">
-      <UniqueIdentifier>{0CF67FDD-3F4B-4BF9-AECB-25BEA5CB5810}</UniqueIdentifier>
+      <UniqueIdentifier>{A963E64D-1554-41B8-BABA-DFAD98933114}</UniqueIdentifier>
     </Filter>
     <Filter Include="Src">
-      <UniqueIdentifier>{77DE41D6-46C7-4D22-9EAD-4C65A21738C5}</UniqueIdentifier>
+      <UniqueIdentifier>{0C71B0CA-A542-4FD0-A602-5AC0D09C952A}</UniqueIdentifier>
     </Filter>
     <Filter Include="Include">
-      <UniqueIdentifier>{270EF06C-457D-487D-89F9-6B9131DD44E8}</UniqueIdentifier>
+      <UniqueIdentifier>{1C4897B5-95FE-4C1A-9356-42E54FEF8D3F}</UniqueIdentifier>
     </Filter>
     <Filter Include="Include\opencv2">
-      <UniqueIdentifier>{F3E23CA5-39A5-47C2-8583-DAD526ACBC40}</UniqueIdentifier>
+      <UniqueIdentifier>{9D92CB75-6501-449D-B71F-8D872339CFAD}</UniqueIdentifier>
     </Filter>
     <Filter Include="Include\opencv2\legacy">
-      <UniqueIdentifier>{EBCAF25A-1656-419E-AAC4-321B816ED8A0}</UniqueIdentifier>
+      <UniqueIdentifier>{D97BB104-7CD3-4310-BEBB-10D746D7B0CF}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

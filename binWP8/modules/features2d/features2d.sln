@@ -1,7 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "opencv_features2d", "opencv_features2d.vcxproj", "{33931C17-25EE-4086-974F-4F2F2D1D17DA}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "opencv_core", "..\core\opencv_core.vcxproj", "{8D3BE1F9-3D36-4FC9-8547-7EDE3ADE73B9}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "opencv_imgproc", "..\imgproc\opencv_imgproc.vcxproj", "{A74BB3B0-0E22-4B8B-B0E2-0348F80732B1}"

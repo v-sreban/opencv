@@ -10,6 +10,8 @@ namespace ocl
 namespace stitching
 {
 
+extern const struct ProgramEntry multibandblend;
+extern ProgramSource multibandblend_oclsrc;
 extern const struct ProgramEntry warpers;
 extern ProgramSource warpers_oclsrc;
 }

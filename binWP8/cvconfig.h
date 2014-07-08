@@ -93,6 +93,10 @@
 
 /* Intel Integrated Performance Primitives */
 /* #undef HAVE_IPP */
+/* #undef HAVE_IPP_ICV_ONLY */
+
+/* Intel IPP Async */
+/* #undef HAVE_IPP_A */
 
 /* JPEG-2000 codec */
 #define HAVE_JASPER

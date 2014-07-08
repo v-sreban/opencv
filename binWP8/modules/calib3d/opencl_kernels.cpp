@@ -97,6 +97,8 @@ const struct ProgramEntry stereobm={"stereobm",
 "__local int best_disp[2];\n"
 "__local int best_cost[2];\n"
 "best_cost[nthread] = MAX_VAL;\n"
+"best_disp[nthread] = MAX_VAL;\n"
+"barrier(CLK_LOCAL_MEM_FENCE);\n"
 "short costbuf[wsz];\n"
 "int head = 0;\n"
 "int shiftX = wsz2 + ndisp + mindisp - 1;\n"
@@ -104,7 +106,7 @@ const struct ProgramEntry stereobm={"stereobm",
 "int x = gx + shiftX, y = gy + shiftY, lx = 0, ly = 0;\n"
 "int costIdx = calcLocalIdx(lx, ly, d, sizeY);\n"
 "cost = costFunc + costIdx;\n"
-"short tempcost = 0;\n"
+"int tempcost = 0;\n"
 "if(x < cols-wsz2-mindisp && y < rows-wsz2)\n"
 "{\n"
 "int shift = 1*nthread + cols*(1-nthread);\n"
@@ -135,7 +137,7 @@ const struct ProgramEntry stereobm={"stereobm",
 "}\n"
 "barrier(CLK_LOCAL_MEM_FENCE);\n"
 "if(best_cost[1] == tempcost)\n"
-"best_disp[1] = ndisp - d - 1;\n"
+"atomic_min(best_disp + 1, ndisp - d - 1);\n"
 "barrier(CLK_LOCAL_MEM_FENCE);\n"
 "int dispIdx = mad24(gy, disp_step, disp_offset + gx*(int)sizeof(short));\n"
 "disp = (__global short *)(dispptr + dispIdx);\n"
@@ -149,6 +151,7 @@ const struct ProgramEntry stereobm={"stereobm",
 "x = (lx < sizeX) ? gx + shiftX + lx : cols;\n"
 "y = (ly < sizeY) ? gy + shiftY + ly : rows;\n"
 "best_cost[nthread] = MAX_VAL;\n"
+"best_disp[nthread] = MAX_VAL;\n"
 "barrier(CLK_LOCAL_MEM_FENCE);\n"
 "costIdx = calcLocalIdx(lx, ly, d, sizeY);\n"
 "cost = costFunc + costIdx;\n"
@@ -164,7 +167,7 @@ const struct ProgramEntry stereobm={"stereobm",
 "atomic_min(best_cost + nthread, tempcost);\n"
 "barrier(CLK_LOCAL_MEM_FENCE);\n"
 "if(best_cost[nthread] == tempcost)\n"
-"best_disp[nthread] = ndisp - d - 1;\n"
+"atomic_min(best_disp + nthread, ndisp - d - 1);\n"
 "barrier(CLK_LOCAL_MEM_FENCE);\n"
 "int dispIdx = mad24(gy+ly, disp_step, disp_offset + (gx+lx)*(int)sizeof(short));\n"
 "disp = (__global short *)(dispptr + dispIdx);\n"
@@ -213,7 +216,7 @@ const struct ProgramEntry stereobm={"stereobm",
 "output[y * cols + x] = cov & 0xFF;\n"
 "}\n"
 "}\n"
-, "ded0c4ec564158054ba2bcbe0d40355c"};
+, "44a2ee0752e67a62bfb8470da9f0664f"};
 ProgramSource stereobm_oclsrc(stereobm.programStr);
 }
 }}

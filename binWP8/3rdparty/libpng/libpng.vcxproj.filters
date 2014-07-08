@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="..\..\..\3rdparty\libpng\png.c">
       <Filter>Source Files</Filter>
@@ -75,10 +75,10 @@
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source Files">
-      <UniqueIdentifier>{5A2FE3E6-5038-47EF-888F-B9042F531F5D}</UniqueIdentifier>
+      <UniqueIdentifier>{90E64889-1D95-460D-BFD9-35EE83FF116F}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files">
-      <UniqueIdentifier>{0CF67FDD-3F4B-4BF9-AECB-25BEA5CB5810}</UniqueIdentifier>
+      <UniqueIdentifier>{A963E64D-1554-41B8-BABA-DFAD98933114}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

@@ -1,4 +1,4 @@
 REM usage: run from github directory 
 
 CopyOcvIncHHPP ..\..\openframeworks\addons\ofxOpenCv\libs\opencv\include ..\..
-CopyOcvLib	
+REM CopyOcvLib	

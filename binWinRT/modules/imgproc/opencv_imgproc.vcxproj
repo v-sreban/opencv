@@ -291,6 +291,7 @@
     <None Include="..\..\..\modules\imgproc\src\opencl\bilateral.cl" />
     <None Include="..\..\..\modules\imgproc\src\opencl\blend_linear.cl" />
     <None Include="..\..\..\modules\imgproc\src\opencl\boxFilter.cl" />
+    <None Include="..\..\..\modules\imgproc\src\opencl\boxFilterSmall.cl" />
     <None Include="..\..\..\modules\imgproc\src\opencl\calc_back_project.cl" />
     <None Include="..\..\..\modules\imgproc\src\opencl\canny.cl" />
     <None Include="..\..\..\modules\imgproc\src\opencl\clahe.cl" />
@@ -298,12 +299,15 @@
     <None Include="..\..\..\modules\imgproc\src\opencl\covardata.cl" />
     <None Include="..\..\..\modules\imgproc\src\opencl\cvtcolor.cl" />
     <None Include="..\..\..\modules\imgproc\src\opencl\filter2D.cl" />
+    <None Include="..\..\..\modules\imgproc\src\opencl\filter2DSmall.cl" />
     <None Include="..\..\..\modules\imgproc\src\opencl\filterSepCol.cl" />
     <None Include="..\..\..\modules\imgproc\src\opencl\filterSepRow.cl" />
+    <None Include="..\..\..\modules\imgproc\src\opencl\filterSep_singlePass.cl" />
     <None Include="..\..\..\modules\imgproc\src\opencl\gftt.cl" />
     <None Include="..\..\..\modules\imgproc\src\opencl\histogram.cl" />
     <None Include="..\..\..\modules\imgproc\src\opencl\integral_sqrsum.cl" />
     <None Include="..\..\..\modules\imgproc\src\opencl\integral_sum.cl" />
+    <None Include="..\..\..\modules\imgproc\src\opencl\laplacian5.cl" />
     <None Include="..\..\..\modules\imgproc\src\opencl\match_template.cl" />
     <None Include="..\..\..\modules\imgproc\src\opencl\medianFilter.cl" />
     <None Include="..\..\..\modules\imgproc\src\opencl\moments.cl" />

@@ -180,7 +180,6 @@
     <ClCompile Include="..\..\..\modules\stitching\src\stitcher.cpp" />
     <ClCompile Include="..\..\..\modules\stitching\src\util.cpp" />
     <ClCompile Include="..\..\..\modules\stitching\src\warpers.cpp" />
-    <ClCompile Include="..\..\..\modules\stitching\src\warpers_ocl.cpp" />
     <ClCompile Include="opencl_kernels.cpp" />
     <ClCompile Include="opencv_stitching_pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -196,6 +195,7 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">precomp.hpp</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">precomp.hpp</PrecompiledHeaderFile>
     </ClCompile>
+    <None Include="..\..\..\modules\stitching\src\opencl\multibandblend.cl" />
     <None Include="..\..\..\modules\stitching\src\opencl\warpers.cl" />
   </ItemGroup>
   <ItemGroup>

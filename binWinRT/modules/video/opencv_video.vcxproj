@@ -230,6 +230,7 @@
     <ClCompile Include="..\..\..\modules\video\src\bgfg_gaussmix.cpp" />
     <ClCompile Include="..\..\..\modules\video\src\bgfg_gaussmix2.cpp" />
     <ClCompile Include="..\..\..\modules\video\src\bgfg_gmg.cpp" />
+    <ClCompile Include="..\..\..\modules\video\src\bgfg_KNN.cpp" />
     <ClCompile Include="..\..\..\modules\video\src\camshift.cpp" />
     <ClCompile Include="..\..\..\modules\video\src\compat_video.cpp" />
     <ClCompile Include="..\..\..\modules\video\src\ecc.cpp" />
