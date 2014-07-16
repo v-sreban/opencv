@@ -5,15 +5,15 @@
 
 #include "pch.h"
 #include "MainPage.xaml.h"
-#include <Robuffer.h>
-#include <ppl.h>
-#include <ppltasks.h>
+
 #include <opencv2\imgproc\types_c.h>
 #include <opencv2\core\core.hpp>
 #include <opencv2\imgproc\imgproc.hpp>
+#include <Robuffer.h>
+#include <ppl.h>
+#include <ppltasks.h>
 
 using namespace PhoneTutorial;
-
 using namespace Platform;
 using namespace Windows::Foundation;
 using namespace Windows::Foundation::Collections;
