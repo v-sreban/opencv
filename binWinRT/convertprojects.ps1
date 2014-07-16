@@ -23,6 +23,7 @@ $WorkingDir = $PSScriptRoot
 $InputDir = join-path $WorkingDir "..\bin" -Resolve
 $WinRTOutputDir = $WorkingDir
 $WP8OutputDir = join-path $WorkingDir "..\binWP8"
+$WP8_1OutputDir = join-path $WorkingDir "..\binWP8_1"
 
 Function Convert($OutputDir, $platform)
 {
@@ -42,7 +43,6 @@ Function Convert($OutputDir, $platform)
     $photo = "modules\photo\opencv_photo.vcxproj"
     $calib3d = "modules\calib3d\opencv_calib3d.vcxproj"
     $ml = "modules\ml\opencv_ml.vcxproj"
-    $nonfree = "modules\nonfree\opencv_nonfree.vcxproj"
     $objdetect = "modules\objdetect\opencv_objdetect.vcxproj"
     $video = "modules\video\opencv_video.vcxproj"
     $videostab = "modules\videostab\opencv_videostab.vcxproj"
@@ -52,7 +52,7 @@ Function Convert($OutputDir, $platform)
     $shape = "modules\shape\opencv_shape.vcxproj"
     $contrib = "modules\contrib\opencv_contrib.vcxproj"
 
-    $projects = ($zlib, $jpeg, $tiff, $jasper, $png, $core, $imgproc, $flann, $photo, $calib3d, $ml, $nonfree, $objdetect, $video, $videostab, $features2d, $stitching, $legacy, $shape, $contrib)
+    $projects = ($zlib, $jpeg, $tiff, $jasper, $png, $core, $imgproc, $flann, $photo, $calib3d, $ml, $objdetect, $video, $videostab, $features2d, $stitching, $legacy, $shape, $contrib)
 
     foreach($project in $projects)
     {
@@ -128,11 +128,6 @@ Function Convert($OutputDir, $platform)
         Copy-Item (join-path $InputDir "modules\calib3d\opencv_calib3d_pch.cpp") (join-path $OutputDir "modules\calib3d\opencv_calib3d_pch.cpp") 
         Copy-Item (join-path $InputDir "modules\calib3d\opencl_kernels.cpp") (join-path $OutputDir "modules\calib3d\opencl_kernels.cpp") 
         Copy-Item (join-path $InputDir "modules\calib3d\opencl_kernels.hpp") (join-path $OutputDir "modules\calib3d\opencl_kernels.hpp")
-
-        $allProjects += $nonfreeProject = join-path $OutputDir -childpath $nonfree
-        Copy-Item (join-path $InputDir "modules\nonfree\opencv_nonfree_pch.cpp") (join-path $OutputDir "modules\nonfree\opencv_nonfree_pch.cpp")
-        Copy-Item (join-path $InputDir "modules\nonfree\opencl_kernels.cpp") (join-path $OutputDir "modules\nonfree\opencl_kernels.cpp") 
-        Copy-Item (join-path $InputDir "modules\nonfree\opencl_kernels.hpp") (join-path $OutputDir "modules\nonfree\opencl_kernels.hpp")
 
         $allProjects += $mlProject = join-path $OutputDir -childpath $ml
         Copy-Item (join-path $InputDir "modules\ml\opencv_ml_pch.cpp") (join-path $OutputDir "modules\ml\opencv_ml_pch.cpp")
@@ -231,12 +226,6 @@ Function Convert($OutputDir, $platform)
         AddProjectReference $mlProject $coreProject >> $null
         $output = join-path $mlDir "opencv_ml.sln"
         CreateSolutionFile $output $platform ($mlProject, $coreProject, $zlibProject)
-      
-	#create opencv_nonfree sln and project references
-        $nonfreeDir = Split-Path -parent $nonfreeProject
-        AddProjectReference $nonfreeProject $coreProject >> $null
-        $output = join-path $nonfreeDir "opencv_nonfree.sln"
-        CreateSolutionFile $output $platform ($nonfreeProject, $coreProject, $flannProject, $imgprocProject, $features2dProject, $calib3dProject, $zlibProject)
 
         #create opencv_legacy sln and project references
         $legacyDir = Split-Path -parent $legacyProject
@@ -292,6 +281,7 @@ Function Convert($OutputDir, $platform)
     }
 }
 
-#convert Win32 OpenCV projects to WinRT and WP8 
+#convert Win32 OpenCV projects to WinRT, WP8 and WP8_1
 Convert $WinRTOutputDir "winrt"
 Convert $WP8OutputDir "wp8"
+Convert $WP8_1OutputDir "wp8_1"

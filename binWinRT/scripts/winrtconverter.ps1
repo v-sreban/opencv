@@ -112,9 +112,24 @@ Function WinrtConverter($inFile, $outFile, $platform)
             throw "Unknown vcxproj type"
         }
     }
+    elseif($platform -eq "wp8_1")
+    {
+        if($configs[0].Node.ConfigurationType -eq "DynamicLibrary")
+        {
+            $Template = join-path $PSScriptRoot "templates\wp8_1_dll_template.vcxproj"
+        }
+        elseif($configs[0].Node.ConfigurationType -eq "StaticLibrary")
+        {
+            $Template = join-path $PSScriptRoot "templates\wp8_1_lib_template.vcxproj"
+        }
+        else
+        {
+            throw "Unknown vcxproj type"
+        }
+    }
     else
     {
-        throw "Unknown platform argument -p (winrt or wp8)"
+        throw "Unknown platform argument -p (winrt, wp8 or wp8_1)"
     }
 
     $xml_template = New-Object -TypeName XML

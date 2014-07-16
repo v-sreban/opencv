@@ -56,10 +56,14 @@ Function CreateSolution()
             elseif($platform -eq "wp8")
             {
                 $template = join-path $PSScriptRoot "templates\wp8_sln_header_template.txt"
+            }            
+            elseif($platform -eq "wp8_1")
+            {
+                $template = join-path $PSScriptRoot "templates\wp8_1_sln_header_template.txt"
             }
             else
             {
-                throw "Unknown platform argument (winrt or wp8)"
+                throw "Unknown platform argument (winrt, wp8 or wp8_1)"
             }
 
             (Get-Content $template) | 
