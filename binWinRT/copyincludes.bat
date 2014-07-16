@@ -1,6 +1,8 @@
 
 
 rm -rf opencv2
+rm -rf "..\binWP8\opencv2"
+rm -rf "..\binWP8\opencv2"
 
 set IN_DIR=.\..\modules\
 set OUT_DIR=.\opencv2\
@@ -22,6 +24,9 @@ xcopy "%IN_DIR%ts\include\opencv2" "%OUT_DIR%" /eiycq
 xcopy "%IN_DIR%video\include\opencv2" "%OUT_DIR%" /eiycq
 xcopy "%IN_DIR%videostab\include\opencv2" "%OUT_DIR%" /eiycq
 
+
+xcopy ".\opencv2" "..\binWP8\opencv2\" /eiycq
+xcopy ".\opencv2" "..\binWP8_1\opencv2\" /eiycq
 
 
 

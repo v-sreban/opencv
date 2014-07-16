@@ -285,3 +285,4 @@ Function Convert($OutputDir, $platform)
 Convert $WinRTOutputDir "winrt"
 Convert $WP8OutputDir "wp8"
 Convert $WP8_1OutputDir "wp8_1"
+.\copyincludes.bat
