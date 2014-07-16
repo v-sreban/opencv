@@ -405,8 +405,16 @@ public:
 protected:
     virtual void computeImpl( InputArray image, std::vector<KeyPoint>& keypoints, OutputArray descriptors ) const;
     void buildPattern();
-    uchar meanIntensity( InputArray image, InputArray integral, const float kp_x, const float kp_y,
-                         const unsigned int scale, const unsigned int rot, const unsigned int point ) const;
+
+    template <typename imgType, typename iiType>
+    imgType meanIntensity( InputArray image, InputArray integral, const float kp_x, const float kp_y,
+                           const unsigned int scale, const unsigned int rot, const unsigned int point ) const;
+
+    template <typename srcMatType, typename iiMatType>
+    void computeDescriptors( InputArray image, std::vector<KeyPoint>& keypoints, OutputArray descriptors ) const;
+
+    template <typename srcMatType>
+    void extractDescriptor(srcMatType *pointsValue, void ** ptr) const;
 
     bool orientationNormalized; //true if the orientation is normalized, false otherwise
     bool scaleNormalized; //true if the scale is normalized, false otherwise
@@ -616,14 +624,14 @@ protected:
 };
 
 
-class CV_EXPORTS DenseFeatureDetector : public FeatureDetector
+class CV_EXPORTS_W DenseFeatureDetector : public FeatureDetector
 {
 public:
-    explicit DenseFeatureDetector( float initFeatureScale=1.f, int featureScaleLevels=1,
-                                   float featureScaleMul=0.1f,
-                                   int initXyStep=6, int initImgBound=0,
-                                   bool varyXyStepWithScale=true,
-                                   bool varyImgBoundWithScale=false );
+    CV_WRAP explicit DenseFeatureDetector( float initFeatureScale=1.f, int featureScaleLevels=1,
+                                           float featureScaleMul=0.1f,
+                                           int initXyStep=6, int initImgBound=0,
+                                           bool varyXyStepWithScale=true,
+                                           bool varyImgBoundWithScale=false );
     AlgorithmInfo* info() const;
 
 protected:
@@ -887,7 +895,86 @@ protected:
     PixelTestFn test_fn_;
 };
 
+/*!
+KAZE implementation
+*/
+class CV_EXPORTS_W KAZE : public Feature2D
+{
+public:
+    CV_WRAP KAZE();
+    CV_WRAP explicit KAZE(bool extended, bool upright);
 
+    virtual ~KAZE();
+
+    // returns the descriptor size in bytes
+    int descriptorSize() const;
+    // returns the descriptor type
+    int descriptorType() const;
+    // returns the default norm type
+    int defaultNorm() const;
+
+    AlgorithmInfo* info() const;
+
+    // Compute the KAZE features on an image
+    void operator()(InputArray image, InputArray mask, std::vector<KeyPoint>& keypoints) const;
+
+    // Compute the KAZE features and descriptors on an image
+    void operator()(InputArray image, InputArray mask, std::vector<KeyPoint>& keypoints,
+        OutputArray descriptors, bool useProvidedKeypoints = false) const;
+
+protected:
+    void detectImpl(InputArray image, std::vector<KeyPoint>& keypoints, InputArray mask) const;
+    void computeImpl(InputArray image, std::vector<KeyPoint>& keypoints, OutputArray descriptors) const;
+
+    CV_PROP bool extended;
+    CV_PROP bool upright;
+};
+
+/*!
+AKAZE implementation
+*/
+class CV_EXPORTS_W AKAZE : public Feature2D
+{
+public:
+    /// AKAZE Descriptor Type
+    enum DESCRIPTOR_TYPE {
+        DESCRIPTOR_KAZE_UPRIGHT = 2, ///< Upright descriptors, not invariant to rotation
+        DESCRIPTOR_KAZE = 3,
+        DESCRIPTOR_MLDB_UPRIGHT = 4, ///< Upright descriptors, not invariant to rotation
+        DESCRIPTOR_MLDB = 5
+    };
+
+    CV_WRAP AKAZE();
+    explicit AKAZE(DESCRIPTOR_TYPE descriptor_type, int descriptor_size = 0, int descriptor_channels = 3);
+
+    virtual ~AKAZE();
+
+    // returns the descriptor size in bytes
+    int descriptorSize() const;
+    // returns the descriptor type
+    int descriptorType() const;
+    // returns the default norm type
+    int defaultNorm() const;
+
+    // Compute the AKAZE features on an image
+    void operator()(InputArray image, InputArray mask, std::vector<KeyPoint>& keypoints) const;
+
+    // Compute the AKAZE features and descriptors on an image
+    void operator()(InputArray image, InputArray mask, std::vector<KeyPoint>& keypoints,
+        OutputArray descriptors, bool useProvidedKeypoints = false) const;
+
+    AlgorithmInfo* info() const;
+
+protected:
+
+    void computeImpl(InputArray image, std::vector<KeyPoint>& keypoints, OutputArray descriptors) const;
+    void detectImpl(InputArray image, std::vector<KeyPoint>& keypoints, InputArray mask = noArray()) const;
+
+    CV_PROP int descriptor;
+    CV_PROP int descriptor_channels;
+    CV_PROP int descriptor_size;
+
+};
 /****************************************************************************************\
 *                                      Distance                                          *
 \****************************************************************************************/

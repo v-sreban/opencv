@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="..\..\..\modules\flann\src\flann.cpp">
       <Filter>Src</Filter>
@@ -138,22 +138,22 @@
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source Files">
-      <UniqueIdentifier>{90E64889-1D95-460D-BFD9-35EE83FF116F}</UniqueIdentifier>
+      <UniqueIdentifier>{5A2FE3E6-5038-47EF-888F-B9042F531F5D}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files">
-      <UniqueIdentifier>{A963E64D-1554-41B8-BABA-DFAD98933114}</UniqueIdentifier>
+      <UniqueIdentifier>{0CF67FDD-3F4B-4BF9-AECB-25BEA5CB5810}</UniqueIdentifier>
     </Filter>
     <Filter Include="Src">
-      <UniqueIdentifier>{0C71B0CA-A542-4FD0-A602-5AC0D09C952A}</UniqueIdentifier>
+      <UniqueIdentifier>{77DE41D6-46C7-4D22-9EAD-4C65A21738C5}</UniqueIdentifier>
     </Filter>
     <Filter Include="Include">
-      <UniqueIdentifier>{1C4897B5-95FE-4C1A-9356-42E54FEF8D3F}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Include\opencv2\flann">
-      <UniqueIdentifier>{A1BE7D54-3E8E-461A-97D8-68DC65B8B8C9}</UniqueIdentifier>
+      <UniqueIdentifier>{270EF06C-457D-487D-89F9-6B9131DD44E8}</UniqueIdentifier>
     </Filter>
     <Filter Include="Include\opencv2">
-      <UniqueIdentifier>{9D92CB75-6501-449D-B71F-8D872339CFAD}</UniqueIdentifier>
+      <UniqueIdentifier>{F3E23CA5-39A5-47C2-8583-DAD526ACBC40}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include\opencv2\flann">
+      <UniqueIdentifier>{06667566-928D-45FA-8AE9-2792DCF4CE9C}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

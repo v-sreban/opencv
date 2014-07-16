@@ -118,6 +118,8 @@ public:
 
     virtual int kind() const;
     virtual int dims(int i=-1) const;
+    virtual int cols(int i=-1) const;
+    virtual int rows(int i=-1) const;
     virtual Size size(int i=-1) const;
     virtual int sizend(int* sz, int i=-1) const;
     virtual bool sameSize(const _InputArray& arr) const;
@@ -129,6 +131,7 @@ public:
     virtual bool isSubmatrix(int i=-1) const;
     virtual bool empty() const;
     virtual void copyTo(const _OutputArray& arr) const;
+    virtual void copyTo(const _OutputArray& arr, const _InputArray & mask) const;
     virtual size_t offset(int i=-1) const;
     virtual size_t step(int i=-1) const;
     bool isMat() const;
@@ -216,6 +219,9 @@ public:
     virtual void release() const;
     virtual void clear() const;
     virtual void setTo(const _InputArray& value, const _InputArray & mask = _InputArray()) const;
+
+    void assign(const UMat& u) const;
+    void assign(const Mat& m) const;
 };
 
 

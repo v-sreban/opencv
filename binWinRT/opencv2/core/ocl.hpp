@@ -46,12 +46,12 @@
 
 namespace cv { namespace ocl {
 
-CV_EXPORTS bool haveOpenCL();
-CV_EXPORTS bool useOpenCL();
-CV_EXPORTS bool haveAmdBlas();
-CV_EXPORTS bool haveAmdFft();
-CV_EXPORTS void setUseOpenCL(bool flag);
-CV_EXPORTS void finish();
+CV_EXPORTS_W bool haveOpenCL();
+CV_EXPORTS_W bool useOpenCL();
+CV_EXPORTS_W bool haveAmdBlas();
+CV_EXPORTS_W bool haveAmdFft();
+CV_EXPORTS_W void setUseOpenCL(bool flag);
+CV_EXPORTS_W void finish();
 
 class CV_EXPORTS Context;
 class CV_EXPORTS Device;
@@ -150,6 +150,10 @@ public:
     bool hostUnifiedMemory() const;
 
     bool imageSupport() const;
+
+    bool imageFromBufferSupport() const;
+    uint imagePitchAlignment() const;
+    uint imageBaseAddressAlignment() const;
 
     size_t image2DMaxWidth() const;
     size_t image2DMaxHeight() const;
@@ -592,21 +596,36 @@ protected:
 CV_EXPORTS const char* convertTypeStr(int sdepth, int ddepth, int cn, char* buf);
 CV_EXPORTS const char* typeToStr(int t);
 CV_EXPORTS const char* memopTypeToStr(int t);
-CV_EXPORTS String kernelToStr(InputArray _kernel, int ddepth = -1);
+CV_EXPORTS String kernelToStr(InputArray _kernel, int ddepth = -1, const char * name = NULL);
 CV_EXPORTS void getPlatfomsInfo(std::vector<PlatformInfo>& platform_info);
 CV_EXPORTS int predictOptimalVectorWidth(InputArray src1, InputArray src2 = noArray(), InputArray src3 = noArray(),
                                          InputArray src4 = noArray(), InputArray src5 = noArray(), InputArray src6 = noArray(),
                                          InputArray src7 = noArray(), InputArray src8 = noArray(), InputArray src9 = noArray());
 
+CV_EXPORTS void buildOptionsAddMatrixDescription(String& buildOptions, const String& name, InputArray _m);
+
 class CV_EXPORTS Image2D
 {
 public:
     Image2D();
-    explicit Image2D(const UMat &src);
+
+    // src:     The UMat from which to get image properties and data
+    // norm:    Flag to enable the use of normalized channel data types
+    // alias:   Flag indicating that the image should alias the src UMat.
+    //          If true, changes to the image or src will be reflected in
+    //          both objects.
+    explicit Image2D(const UMat &src, bool norm = false, bool alias = false);
     Image2D(const Image2D & i);
     ~Image2D();
 
     Image2D & operator = (const Image2D & i);
+
+    // Indicates if creating an aliased image should succeed.  Depends on the
+    // underlying platform and the dimensions of the UMat.
+    static bool canCreateAlias(const UMat &u);
+
+    // Indicates if the image format is supported.
+    static bool isFormatSupported(int depth, int cn, bool norm);
 
     void* ptr() const;
 protected:
