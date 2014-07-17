@@ -83,11 +83,10 @@ void AppMain::start()
     m_capture = WinRTVideoCapture::create(m_width, m_height);
 
     // start capturing video. Callback will happen on the UI thread
-    // Note HMat is a shared_pointer
-    m_capture->start([this](const HMat mat) {
+    m_capture->start([this](const cv::Mat& mat) {
         // convert to grayscale
         cv::Mat intermediateMat;
-        cv::cvtColor(*(mat.get()), intermediateMat, CV_RGB2GRAY);
+        cv::cvtColor(mat, intermediateMat, CV_RGB2GRAY);
 
         // convert to BGRA
         cv::Mat output;

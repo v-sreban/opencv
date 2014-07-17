@@ -35,7 +35,7 @@ WinRTVideoCapture::~WinRTVideoCapture()
 
 }
 
-void WinRTVideoCapture::start(const std::function<void(HMat)>& callback)
+void WinRTVideoCapture::start(const std::function<void(const cv::Mat&)>& callback)
 {
     m_callback = callback;
 
@@ -68,12 +68,16 @@ void WinRTVideoCapture::GrabFrameAsync(::Media::CaptureFrameGrabber^ frameGrabbe
 {
     create_task(frameGrabber->GetFrameAsync()).then([this, frameGrabber](const ComPtr<IMF2DBuffer2>& buffer)
     {
+        if (m_mat.cols != m_width || m_mat.rows != m_height)
+        {
+            m_mat.create(m_height, m_width, CV_8UC4);
+        }
+
         // create a matrix the size and type of the image
-        HMat mat = std::make_shared<cv::Mat>(m_width, m_height, CV_8UC4);
-        CHK(buffer->ContiguousCopyTo(mat->data, m_width * m_height * 4));
+        CHK(buffer->ContiguousCopyTo(m_mat.data, m_width * m_height * 4));
 
         // callback with the matrix containing the video frame
-        m_callback(mat);
+        m_callback(m_mat);
 
         // grab another frame
         GrabFrameAsync(frameGrabber);

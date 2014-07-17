@@ -27,6 +27,7 @@ MainPage::MainPage()
 	InitializeComponent();
     Windows::UI::ViewManagement::StatusBar::GetForCurrentView()->HideAsync();
     Application::Current->DebugSettings->EnableFrameRateCounter = false;
+    DisplayInformation::AutoRotationPreferences = DisplayOrientations::Landscape;
 }
 
 /// <summary>
@@ -37,9 +38,6 @@ MainPage::MainPage()
 void MainPage::OnNavigatedTo(NavigationEventArgs^ e)
 {
 	(void) e;	// Unused parameter
-
-    // Lock the display rotation before starting the preview.
-    DisplayInformation::AutoRotationPreferences = DisplayOrientations::Landscape;
 
     m_main = std::unique_ptr<AppMain>(new AppMain(Preview));
     m_main->start();
