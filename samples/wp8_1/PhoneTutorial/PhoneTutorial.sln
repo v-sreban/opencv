@@ -5,11 +5,11 @@ VisualStudioVersion = 12.0.30324.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PhoneTutorial", "PhoneTutorial.vcxproj", "{8BEFFBBF-DF41-4539-86BC-A84722831035}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zlib", "D:\GitHub\opencv\binWP8_1\3rdparty\zlib\zlib.vcxproj", "{A7B441A0-6EFE-43A6-8AF2-82DDC57709B7}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zlib", "..\..\..\binWP8_1\3rdparty\zlib\zlib.vcxproj", "{A7B441A0-6EFE-43A6-8AF2-82DDC57709B7}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "opencv_core", "D:\GitHub\opencv\binWP8_1\modules\core\opencv_core.vcxproj", "{6BDC727F-6C6B-4B21-9B4F-19B52D22D009}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "opencv_core", "..\..\..\binWP8_1\modules\core\opencv_core.vcxproj", "{6BDC727F-6C6B-4B21-9B4F-19B52D22D009}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "opencv_imgproc", "D:\GitHub\opencv\binWP8_1\modules\imgproc\opencv_imgproc.vcxproj", "{13FBA904-B1B8-4DE3-AE7B-D6ABAED9E24C}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "opencv_imgproc", "..\..\..\binWP8_1\modules\imgproc\opencv_imgproc.vcxproj", "{13FBA904-B1B8-4DE3-AE7B-D6ABAED9E24C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
