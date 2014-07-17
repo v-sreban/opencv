@@ -7,7 +7,6 @@
 //
 //*@@@---@@@@******************************************************************
 
-#include <opencv2\highgui\cap_winrt\MFIncludes.h>
 #include "MediaStreamSink.h"
 
 using namespace Media;

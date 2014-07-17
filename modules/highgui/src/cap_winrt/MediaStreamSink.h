@@ -9,7 +9,7 @@
 
 #pragma once
 
-#include <opencv2\highgui\cap_winrt\MFIncludes.h>
+#include "MFIncludes.h"
 
 namespace Media {
 

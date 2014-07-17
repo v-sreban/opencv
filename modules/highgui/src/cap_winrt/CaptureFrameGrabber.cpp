@@ -9,7 +9,7 @@
 
 #include "MediaStreamSink.h"
 #include "MediaSink.h"
-#include <opencv2\highgui\cap_winrt\CaptureFrameGrabber.h>
+#include "CaptureFrameGrabber.h"
 
 using namespace Media;
 using namespace Platform;
@@ -20,6 +20,8 @@ using namespace Windows::Media::MediaProperties;
 using namespace concurrency;
 using namespace Microsoft::WRL::Details;
 using namespace Microsoft::WRL;
+
+
 
 task<Media::CaptureFrameGrabber^> Media::CaptureFrameGrabber::CreateAsync(_In_ MediaCapture^ capture, _In_ VideoEncodingProperties^ props, CaptureStreamType streamType)
 {
