@@ -91,7 +91,12 @@
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
-  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Label="UserMacros">
+    <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
+    <AppxBundlePlatforms>x86</AppxBundlePlatforms>
+    <PackageCertificateThumbprint>76D64E4F88C9B7D47ACA757CDFD15D6F3AD81D92</PackageCertificateThumbprint>
+    <PackageCertificateKeyFile>MediaCapture_TemporaryKey.pfx</PackageCertificateKeyFile>
+  </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -166,12 +171,18 @@
     <Image Include="assets\opencv-logo-150.png" />
     <Image Include="assets\opencv-logo-30.png" />
     <Image Include="Assets\splash-sdk.png" />
-    <Image Include="Assets\windows-sdk.png" />
+    <Image Include="Assets\StoreLogo.png" />
+    <Image Include="Assets\windows-sdk.scale-100.png">
+      <DeploymentContent>true</DeploymentContent>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="MediaExtensions\OcvTransform\OcvTransform.vcxproj">
       <Project>{ba69218f-da5c-4d14-a78d-21a9e4dec669}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="MediaCapture_TemporaryKey.pfx" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
