@@ -25,12 +25,16 @@ using namespace Windows::Storage::Streams;
 #include <opencv2\core\core.hpp>
 #include <opencv2\imgproc\imgproc.hpp>
 
+static const int sWidth = 640;
+static const int sHeight = 360;
+
 AppMain::AppMain(Image^ image)
     : m_image(image)
-    , m_width(0)
-    , m_height(0)
+    , m_width(sWidth)
+    , m_height(sHeight)
 {
-
+    image->Width = sWidth;
+    image->Height = sHeight;
 }
 
 AppMain::~AppMain()
@@ -67,7 +71,11 @@ void AppMain::start(int width, int height)
 {
     m_width = width;
     m_height = height;
+    start();
+}
 
+void AppMain::start()
+{
     // create a WriteableBitmap
     m_bitmap = ref new WriteableBitmap(m_width, m_height);
 

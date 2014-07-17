@@ -10,6 +10,7 @@ namespace VideoCapture
 	public:
         AppMain(Windows::UI::Xaml::Controls::Image^ image);
         ~AppMain();
+        void start();
         void start(int width, int height);
         void stop();
 

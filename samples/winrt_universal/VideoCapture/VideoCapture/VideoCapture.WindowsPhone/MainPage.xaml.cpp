@@ -18,12 +18,15 @@ using namespace Windows::UI::Xaml::Data;
 using namespace Windows::UI::Xaml::Input;
 using namespace Windows::UI::Xaml::Media;
 using namespace Windows::UI::Xaml::Navigation;
+using namespace Windows::Graphics::Display;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
 
 MainPage::MainPage()
 {
 	InitializeComponent();
+    Windows::UI::ViewManagement::StatusBar::GetForCurrentView()->HideAsync();
+    Application::Current->DebugSettings->EnableFrameRateCounter = false;
 }
 
 /// <summary>
@@ -35,6 +38,9 @@ void MainPage::OnNavigatedTo(NavigationEventArgs^ e)
 {
 	(void) e;	// Unused parameter
 
+    // Lock the display rotation before starting the preview.
+    DisplayInformation::AutoRotationPreferences = DisplayOrientations::Landscape;
+
     m_main = std::unique_ptr<AppMain>(new AppMain(Preview));
-    m_main->start(640, 360);
+    m_main->start();
 }

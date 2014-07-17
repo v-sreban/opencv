@@ -41,5 +41,5 @@ void MainPage::OnNavigatedTo(NavigationEventArgs^ e)
 {
     (void) e;	// Unused parameter
     m_main = std::unique_ptr<AppMain>(new AppMain(Preview));
-    m_main->start(640, 360);
+    m_main->start();
 }
