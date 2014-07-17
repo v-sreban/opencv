@@ -38,8 +38,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "opencv_legacy", "modules\le
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "opencv_shape", "modules\shape\opencv_shape.vcxproj", "{F49390A2-E9D5-4889-A908-65D2ECD0CDCF}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "opencv_contrib", "modules\contrib\opencv_contrib.vcxproj", "{F8A3FD63-95EF-4CA7-9D90-5EDCE305F4D7}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|ARM = Debug|ARM
@@ -266,18 +264,6 @@ Global
 		{F49390A2-E9D5-4889-A908-65D2ECD0CDCF}.Release|Win32.Build.0 = Release|Win32
 		{F49390A2-E9D5-4889-A908-65D2ECD0CDCF}.Release|x64.ActiveCfg = Release|x64
 		{F49390A2-E9D5-4889-A908-65D2ECD0CDCF}.Release|x64.Build.0 = Release|x64
-		{F8A3FD63-95EF-4CA7-9D90-5EDCE305F4D7}.Debug|ARM.ActiveCfg = Debug|ARM
-		{F8A3FD63-95EF-4CA7-9D90-5EDCE305F4D7}.Debug|ARM.Build.0 = Debug|ARM
-		{F8A3FD63-95EF-4CA7-9D90-5EDCE305F4D7}.Debug|Win32.ActiveCfg = Debug|Win32
-		{F8A3FD63-95EF-4CA7-9D90-5EDCE305F4D7}.Debug|Win32.Build.0 = Debug|Win32
-		{F8A3FD63-95EF-4CA7-9D90-5EDCE305F4D7}.Debug|x64.ActiveCfg = Debug|x64
-		{F8A3FD63-95EF-4CA7-9D90-5EDCE305F4D7}.Debug|x64.Build.0 = Debug|x64
-		{F8A3FD63-95EF-4CA7-9D90-5EDCE305F4D7}.Release|ARM.ActiveCfg = Release|ARM
-		{F8A3FD63-95EF-4CA7-9D90-5EDCE305F4D7}.Release|ARM.Build.0 = Release|ARM
-		{F8A3FD63-95EF-4CA7-9D90-5EDCE305F4D7}.Release|Win32.ActiveCfg = Release|Win32
-		{F8A3FD63-95EF-4CA7-9D90-5EDCE305F4D7}.Release|Win32.Build.0 = Release|Win32
-		{F8A3FD63-95EF-4CA7-9D90-5EDCE305F4D7}.Release|x64.ActiveCfg = Release|x64
-		{F8A3FD63-95EF-4CA7-9D90-5EDCE305F4D7}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

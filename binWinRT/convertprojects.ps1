@@ -50,9 +50,9 @@ Function Convert($OutputDir, $platform)
     $stitching = "modules\stitching\opencv_stitching.vcxproj"
     $legacy = "modules\legacy\opencv_legacy.vcxproj"
     $shape = "modules\shape\opencv_shape.vcxproj"
-    $contrib = "modules\contrib\opencv_contrib.vcxproj"
 
-    $projects = ($zlib, $jpeg, $tiff, $jasper, $png, $core, $imgproc, $flann, $photo, $calib3d, $ml, $objdetect, $video, $videostab, $features2d, $stitching, $legacy, $shape, $contrib)
+
+    $projects = ($zlib, $jpeg, $tiff, $jasper, $png, $core, $imgproc, $flann, $photo, $calib3d, $ml, $objdetect, $video, $videostab, $features2d, $stitching, $legacy, $shape)
 
     foreach($project in $projects)
     {
@@ -168,11 +168,6 @@ Function Convert($OutputDir, $platform)
         $allProjects += $shapeProject = join-path $OutputDir -childpath $shape
         Copy-Item (join-path $InputDir "modules\shape\opencv_shape_pch.cpp") (join-path $OutputDir "modules\shape\opencv_shape_pch.cpp") 
 
-        #opencv_contrib.vcxproj
-        $allProjects += $contribProject = join-path $OutputDir -childpath $contrib
-        Copy-Item (join-path $InputDir "modules\contrib\opencv_contrib_pch.cpp") (join-path $OutputDir "modules\contrib\opencv_contrib_pch.cpp") 
-
-
         #create libpng sln and project references
         $pngDir = Split-Path -parent $pngProject
         AddProjectReference $pngProject $zlibProject >> $null
@@ -238,12 +233,6 @@ Function Convert($OutputDir, $platform)
         AddProjectReference $shapeProject ($coreProject, $imgprocProject, $videoProject) >> $null
         $output = join-path $shapeDir "opencv_shape.sln"
         CreateSolutionFile $output $platform ($shapeProject, $coreProject, $imgprocProject, $videoProject, $zlibProject)
-
-        #create opencv_contrib sln and project references
-        $contribDir = Split-Path -parent $contribProject
-        AddProjectReference $contribProject ($coreProject, $features2dProject, $calib3dProject, $flannProject, $imgprocProject, $mlProject, $objdetectProject, $videoProject) >> $null
-        $output = join-path $contribDir "opencv_contrib.sln"
-        CreateSolutionFile $output $platform ($contribProject, $coreProject, $features2dProject, $calib3dProject, $flannProject, $imgprocProject, $mlProject, $objdetectProject, $videoProject, $zlibProject)
 
         #create opencv_objdetect sln and project references
         $objdetectDir = Split-Path -parent $objdetectProject
