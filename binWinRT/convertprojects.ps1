@@ -48,11 +48,10 @@ Function Convert($OutputDir, $platform)
     $videostab = "modules\videostab\opencv_videostab.vcxproj"
     $features2d = "modules\features2d\opencv_features2d.vcxproj"
     $stitching = "modules\stitching\opencv_stitching.vcxproj"
-    $legacy = "modules\legacy\opencv_legacy.vcxproj"
     $shape = "modules\shape\opencv_shape.vcxproj"
 
 
-    $projects = ($zlib, $jpeg, $tiff, $jasper, $png, $core, $imgproc, $flann, $photo, $calib3d, $ml, $objdetect, $video, $videostab, $features2d, $stitching, $legacy, $shape)
+    $projects = ($zlib, $jpeg, $tiff, $jasper, $png, $core, $imgproc, $flann, $photo, $calib3d, $ml, $objdetect, $video, $videostab, $features2d, $stitching, $shape)
 
     foreach($project in $projects)
     {
@@ -160,10 +159,6 @@ Function Convert($OutputDir, $platform)
         Copy-Item (join-path $InputDir "modules\stitching\opencl_kernels.cpp") (join-path $OutputDir "modules\stitching\opencl_kernels.cpp") 
         Copy-Item (join-path $InputDir "modules\stitching\opencl_kernels.hpp") (join-path $OutputDir "modules\stitching\opencl_kernels.hpp")
        
-        #opencv_legacy.vcxproj
-        $allProjects += $legacyProject = join-path $OutputDir -childpath $legacy
-        Copy-Item (join-path $InputDir "modules\legacy\opencv_legacy_pch.cpp") (join-path $OutputDir "modules\legacy\opencv_legacy_pch.cpp") 
-
         #opencv_shape.vcxproj
         $allProjects += $shapeProject = join-path $OutputDir -childpath $shape
         Copy-Item (join-path $InputDir "modules\shape\opencv_shape_pch.cpp") (join-path $OutputDir "modules\shape\opencv_shape_pch.cpp") 
@@ -221,12 +216,6 @@ Function Convert($OutputDir, $platform)
         AddProjectReference $mlProject $coreProject >> $null
         $output = join-path $mlDir "opencv_ml.sln"
         CreateSolutionFile $output $platform ($mlProject, $coreProject, $zlibProject)
-
-        #create opencv_legacy sln and project references
-        $legacyDir = Split-Path -parent $legacyProject
-        AddProjectReference $legacyProject ($coreProject, $calib3dProject, $features2dProject, $imgprocProject, $mlProject, $videoProject, $flannProject) >> $null
-        $output = join-path $legacyDir "opencv_legacy.sln"
-        CreateSolutionFile $output $platform ($legacyProject, $coreProject, $calib3dProject, $features2dProject, $imgprocProject, $mlProject, $videoProject, $flannProject, $zlibProject)
 
         #create opencv_shape sln and project references
         $shapeDir = Split-Path -parent $shapeProject

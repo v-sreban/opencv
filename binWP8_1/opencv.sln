@@ -33,8 +33,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "opencv_features2d", "module
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "opencv_stitching", "modules\stitching\opencv_stitching.vcxproj", "{474DC391-E5A8-4D32-93D6-5C81BEF0E752}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "opencv_legacy", "modules\legacy\opencv_legacy.vcxproj", "{BE846DF8-2E77-492E-8582-713C5ADC23C9}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "opencv_shape", "modules\shape\opencv_shape.vcxproj", "{50ED9418-5647-41B3-8680-31B2E829F90C}"
 EndProject
 Global
@@ -239,18 +237,6 @@ Global
 		{474DC391-E5A8-4D32-93D6-5C81BEF0E752}.Release|Win32.Build.0 = Release|Win32
 		{474DC391-E5A8-4D32-93D6-5C81BEF0E752}.Release|x64.ActiveCfg = Release|x64
 		{474DC391-E5A8-4D32-93D6-5C81BEF0E752}.Release|x64.Build.0 = Release|x64
-		{BE846DF8-2E77-492E-8582-713C5ADC23C9}.Debug|ARM.ActiveCfg = Debug|ARM
-		{BE846DF8-2E77-492E-8582-713C5ADC23C9}.Debug|ARM.Build.0 = Debug|ARM
-		{BE846DF8-2E77-492E-8582-713C5ADC23C9}.Debug|Win32.ActiveCfg = Debug|Win32
-		{BE846DF8-2E77-492E-8582-713C5ADC23C9}.Debug|Win32.Build.0 = Debug|Win32
-		{BE846DF8-2E77-492E-8582-713C5ADC23C9}.Debug|x64.ActiveCfg = Debug|x64
-		{BE846DF8-2E77-492E-8582-713C5ADC23C9}.Debug|x64.Build.0 = Debug|x64
-		{BE846DF8-2E77-492E-8582-713C5ADC23C9}.Release|ARM.ActiveCfg = Release|ARM
-		{BE846DF8-2E77-492E-8582-713C5ADC23C9}.Release|ARM.Build.0 = Release|ARM
-		{BE846DF8-2E77-492E-8582-713C5ADC23C9}.Release|Win32.ActiveCfg = Release|Win32
-		{BE846DF8-2E77-492E-8582-713C5ADC23C9}.Release|Win32.Build.0 = Release|Win32
-		{BE846DF8-2E77-492E-8582-713C5ADC23C9}.Release|x64.ActiveCfg = Release|x64
-		{BE846DF8-2E77-492E-8582-713C5ADC23C9}.Release|x64.Build.0 = Release|x64
 		{50ED9418-5647-41B3-8680-31B2E829F90C}.Debug|ARM.ActiveCfg = Debug|ARM
 		{50ED9418-5647-41B3-8680-31B2E829F90C}.Debug|ARM.Build.0 = Debug|ARM
 		{50ED9418-5647-41B3-8680-31B2E829F90C}.Debug|Win32.ActiveCfg = Debug|Win32
