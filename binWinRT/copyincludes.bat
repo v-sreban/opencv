@@ -13,7 +13,6 @@ xcopy "%IN_DIR%core\include\opencv2" "%OUT_DIR%" /eiycq
 xcopy "%IN_DIR%features2d\include\opencv2" "%OUT_DIR%" /eiycq
 xcopy "%IN_DIR%flann\include\opencv2" "%OUT_DIR%" /eiycq
 xcopy "%IN_DIR%imgproc\include\opencv2" "%OUT_DIR%" /eiycq
-xcopy "%IN_DIR%legacy\include\opencv2" "%OUT_DIR%" /eiycq
 xcopy "%IN_DIR%ml\include\opencv2" "%OUT_DIR%" /eiycq
 xcopy "%IN_DIR%objdetect\include\opencv2" "%OUT_DIR%" /eiycq
 xcopy "%IN_DIR%photo\include\opencv2" "%OUT_DIR%" /eiycq
