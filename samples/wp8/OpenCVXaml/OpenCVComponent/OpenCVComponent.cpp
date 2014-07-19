@@ -48,7 +48,7 @@ IAsyncOperation<IVectorView<int>^>^ OpenCVLib::ProcessAsync(IVector<int>^ input,
 void CopyIVectorToMatrix(IVector<int>^ input, cv::Mat& mat, int size)
 {
     unsigned char* data = mat.data;
-    for (int i = 0, j = 0; i < size; i++, j += 4)
+    for (int i = 0; i < size; i++)
     {
         int value = input->GetAt(i);
         memcpy(data, (void*) &value, 4);
