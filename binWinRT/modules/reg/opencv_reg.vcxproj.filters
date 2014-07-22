@@ -1,0 +1,111 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="D:\projects\OpenCV\OpenCV_contrib\modules\reg\src\map.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\projects\OpenCV\OpenCV_contrib\modules\reg\src\mapaffine.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\projects\OpenCV\OpenCV_contrib\modules\reg\src\mapper.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\projects\OpenCV\OpenCV_contrib\modules\reg\src\mappergradaffine.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\projects\OpenCV\OpenCV_contrib\modules\reg\src\mappergradeuclid.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\projects\OpenCV\OpenCV_contrib\modules\reg\src\mappergradproj.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\projects\OpenCV\OpenCV_contrib\modules\reg\src\mappergradshift.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\projects\OpenCV\OpenCV_contrib\modules\reg\src\mappergradsimilar.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\projects\OpenCV\OpenCV_contrib\modules\reg\src\mapperpyramid.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\projects\OpenCV\OpenCV_contrib\modules\reg\src\mapprojec.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\projects\OpenCV\OpenCV_contrib\modules\reg\src\mapshift.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\projects\OpenCV\OpenCV_contrib\modules\reg\src\precomp.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="opencv_reg_pch.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="D:\projects\OpenCV\OpenCV_contrib\modules\reg\include\opencv2\reg\map.hpp">
+      <Filter>Include\opencv2\reg</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\projects\OpenCV\OpenCV_contrib\modules\reg\include\opencv2\reg\mapaffine.hpp">
+      <Filter>Include\opencv2\reg</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\projects\OpenCV\OpenCV_contrib\modules\reg\include\opencv2\reg\mapper.hpp">
+      <Filter>Include\opencv2\reg</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\projects\OpenCV\OpenCV_contrib\modules\reg\include\opencv2\reg\mappergradaffine.hpp">
+      <Filter>Include\opencv2\reg</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\projects\OpenCV\OpenCV_contrib\modules\reg\include\opencv2\reg\mappergradeuclid.hpp">
+      <Filter>Include\opencv2\reg</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\projects\OpenCV\OpenCV_contrib\modules\reg\include\opencv2\reg\mappergradproj.hpp">
+      <Filter>Include\opencv2\reg</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\projects\OpenCV\OpenCV_contrib\modules\reg\include\opencv2\reg\mappergradshift.hpp">
+      <Filter>Include\opencv2\reg</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\projects\OpenCV\OpenCV_contrib\modules\reg\include\opencv2\reg\mappergradsimilar.hpp">
+      <Filter>Include\opencv2\reg</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\projects\OpenCV\OpenCV_contrib\modules\reg\include\opencv2\reg\mapperpyramid.hpp">
+      <Filter>Include\opencv2\reg</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\projects\OpenCV\OpenCV_contrib\modules\reg\include\opencv2\reg\mapprojec.hpp">
+      <Filter>Include\opencv2\reg</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\projects\OpenCV\OpenCV_contrib\modules\reg\include\opencv2\reg\mapshift.hpp">
+      <Filter>Include\opencv2\reg</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\projects\OpenCV\OpenCV_contrib\modules\reg\src\precomp.hpp">
+      <Filter>Src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\cvconfig.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\opencv2\opencv_modules.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="D:\projects\OpenCV\OpenCV_contrib\modules\reg\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Include\opencv2">
+      <UniqueIdentifier>{53DB087F-41D0-47AF-ACCB-4577115EC89C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include\opencv2\reg">
+      <UniqueIdentifier>{78510990-A920-4B02-BB36-263653F05D3C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{DB687C02-BC61-4552-A608-6CD4602E2621}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{6AFE2C3E-E87D-4053-8C46-B54798D7265B}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src">
+      <UniqueIdentifier>{6069E42C-B4EA-472A-BD9C-718B0E856597}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include">
+      <UniqueIdentifier>{15E2C5E8-C542-4EBF-985A-0CA03F2DE6F7}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
