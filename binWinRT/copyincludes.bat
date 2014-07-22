@@ -5,6 +5,7 @@ rm -rf "..\binWP8\opencv2"
 rm -rf "..\binWP8\opencv2"
 
 set IN_DIR=.\..\modules\
+set IN_CONTRIB_DIR=.\..\..\OpenCV_contrib\modules\
 set OUT_DIR=.\opencv2\
 
 xcopy "..\bin\opencv2" "%OUT_DIR%" /eiycq
@@ -22,6 +23,9 @@ xcopy "%IN_DIR%ts\include\opencv2" "%OUT_DIR%" /eiycq
 xcopy "%IN_DIR%video\include\opencv2" "%OUT_DIR%" /eiycq
 xcopy "%IN_DIR%videostab\include\opencv2" "%OUT_DIR%" /eiycq
 xcopy "%IN_DIR%highgui\include\opencv2" "%OUT_DIR%" /eiycq
+
+xcopy "%IN_CONTRIB_DIR%bioinspired\include\opencv2" "%OUT_DIR%" /eiycq
+xcopy "%IN_CONTRIB_DIR%reg\include\opencv2" "%OUT_DIR%" /eiycq
 
 xcopy ".\opencv2" "..\binWP8\opencv2\" /eiycq
 xcopy ".\opencv2" "..\binWP8_1\opencv2\" /eiycq
