@@ -50,8 +50,15 @@ Function Convert($OutputDir, $platform)
     $stitching = "modules\stitching\opencv_stitching.vcxproj"
     $shape = "modules\shape\opencv_shape.vcxproj"
 
+    #EXTERNAL CONTRIB MODULES
+    #$contrib_adas = "..\OpenCV_contrib\modules\adas\opencv_adas.vcxproj"
+    $contrib_bioinspired = "..\OpenCV_contrib\modules\bioinspired\opencv_bioinspired.vcxproj"
+    $contrib_reg = "..\OpenCV_contrib\modules\reg\opencv_reg.vcxproj"
+    #$contrib_rgbd = "..\OpenCV_contrib\modules\rgbd\opencv_rgbd.vcxproj"
+    #$contrib_tracking = "..\OpenCV_contrib\modules\tracking\opencv_tracking.vcxproj"
+    #$contrib_xobjdetect = "..\OpenCV_contrib\modules\xobjdetect\opencv_xobjdetect.vcxproj"
 
-    $projects = ($zlib, $jpeg, $tiff, $jasper, $png, $core, $imgproc, $flann, $photo, $calib3d, $ml, $objdetect, $video, $videostab, $features2d, $stitching, $shape)
+    $projects = ($zlib, $jpeg, $tiff, $jasper, $png, $core, $imgproc, $flann, $photo, $calib3d, $ml, $objdetect, $video, $videostab, $features2d, $stitching, $shape, $contrib_bioinspired, $contrib_reg)
 
     foreach($project in $projects)
     {
@@ -163,6 +170,18 @@ Function Convert($OutputDir, $platform)
         $allProjects += $shapeProject = join-path $OutputDir -childpath $shape
         Copy-Item (join-path $InputDir "modules\shape\opencv_shape_pch.cpp") (join-path $OutputDir "modules\shape\opencv_shape_pch.cpp") 
 
+        #EXTERNAL CONTRIB MODULES - START
+	#opencv_bioinspired.vcxproj
+        $allProjects += $bioinspiredProject = join-path $OutputDir -childpath $bioinspired
+        Copy-Item (join-path $InputDir "modules\bioinspired\opencv_contrib_bioinspired_pch.cpp") (join-path $OutputDir "modules\bioinspired\opencv_contrib_bioinspired_pch.cpp")
+        Copy-Item (join-path $InputDir "modules\bioinspired\opencl_kernels.cpp") (join-path $OutputDir "modules\bioinspired\opencl_kernels.cpp") 
+        Copy-Item (join-path $InputDir "modules\bioinspired\opencl_kernels.hpp") (join-path $OutputDir "modules\bioinspired\opencl_kernels.hpp")
+
+	#opencv_reg.vcxproj
+        $allProjects += $regProject = join-path $OutputDir -childpath $reg
+        Copy-Item (join-path $InputDir "modules\reg\opencv_contrib_reg_pch.cpp") (join-path $OutputDir "modules\reg\opencv_contrib_reg_pch.cpp") 
+        #EXTERNAL CONTRIB MODULES - END
+		
         #create libpng sln and project references
         $pngDir = Split-Path -parent $pngProject
         AddProjectReference $pngProject $zlibProject >> $null
@@ -222,6 +241,48 @@ Function Convert($OutputDir, $platform)
         AddProjectReference $shapeProject ($coreProject, $imgprocProject, $videoProject) >> $null
         $output = join-path $shapeDir "opencv_shape.sln"
         CreateSolutionFile $output $platform ($shapeProject, $coreProject, $imgprocProject, $videoProject, $zlibProject)
+
+	#EXTERNAL CONTRIB MODULES - START
+	#create opencv_adas sln and project references
+	#DEPENDS ON XOBJDETECT->HIGHGUI - EXCLUDED
+        #$adasDir = Split-Path -parent $adasProject
+        #AddProjectReference $adasProject ($xobjdetectProject) >> $null
+        #$output = join-path $adasDir "opencv_adas.sln"
+        #CreateSolutionFile $output $platform ($adasProject, $xobjdetectProject)
+
+	#create opencv_bioinspired sln and project references
+        $bioinspiredDir = Split-Path -parent $bioinspiredProject
+        AddProjectReference $bioinspiredProject ($coreProject) >> $null
+        $output = join-path $bioinspiredDir "opencv_bioinspired.sln"
+        CreateSolutionFile $output $platform ($bioinspiredProject, $coreProject)
+
+	#create opencv_reg sln and project references
+        $regDir = Split-Path -parent $regProject
+        AddProjectReference $regProject ($coreProject, $imgprocProject) >> $null
+        $output = join-path $regDir "opencv_reg.sln"
+        CreateSolutionFile $output $platform ($regProject, $coreProject, $imgprocProject)		
+
+	#create opencv_rgbd sln and project references
+	#DEPENDS ON HIGHGUI - EXCLUDED
+        #$rgbdDir = Split-Path -parent $rgbdProject
+        #AddProjectReference $rgbdProject ($coreProject, $calib3dProject, $imgprocProject, $highguiProject) >> $null
+        #$output = join-path $rgbdDir "opencv_rgbd.sln"
+        #CreateSolutionFile $output $platform ($rgbdProject, $calib3dProject, $imgprocProject, $highguiProject)
+
+	#create opencv_tracking sln and project references
+	#DEPENDS ON HIGHGUI & OPTIM - EXCLUDED
+        #$trackingDir = Split-Path -parent $trackingProject
+        #AddProjectReference $trackingProject ($coreProject, $imgprocProject, $videoProject, $optimProject, $highguiProject) >> $null
+        #$output = join-path $trackingDir "opencv_tracking.sln"
+        #CreateSolutionFile $output $platform ($trackingProject, $coreProject, $imgprocProject, $videoProject, $optimProject, $highguiProject)
+
+	#create opencv_xobjdetect sln and project references
+	#DEPENDS ON HIGHGUI - EXCLUDED
+        #$xobjdetectDir = Split-Path -parent $xobjdetectProject
+        #AddProjectReference $xobjdetectProject ($coreProject, $imgprocProject, $highguiProject) >> $null
+        #$output = join-path $xobjdetectDir "opencv_xobjdetect.sln"
+        #CreateSolutionFile $output $platform ($xobjdetectProject, $coreProject, $imgprocProject, $highguiProject)		
+	#EXTERNAL CONTRIB MODULES - END
 
         #create opencv_objdetect sln and project references
         $objdetectDir = Split-Path -parent $objdetectProject
