@@ -148,6 +148,29 @@
 /* #undef HAVE_TBB */
 
 /* TIFF codec */
+/* Compile for 'real' NVIDIA GPU architectures */
+#define CUDA_ARCH_BIN ""
+
+/* Create PTX or BIN for 1.0 compute capability */
+/* #undef CUDA_ARCH_BIN_OR_PTX_10 */
+
+/* NVIDIA GPU features are used */
+#define CUDA_ARCH_FEATURES ""
+
+/* Compile for 'virtual' NVIDIA PTX architectures */
+#define CUDA_ARCH_PTX ""
+
+/* AVFoundation video libraries */
+/* #undef HAVE_AVFOUNDATION */
+
+/* V4L capturing support */
+/* #undef HAVE_CAMV4L */
+
+/* V4L2 capturing support */
+/* #undef HAVE_CAMV4L2 */
+
+/* Carbon windowing environment */
+/* #undef HAVE_CARBON */
 #define HAVE_TIFF
 
 /* Unicap video capture library */
