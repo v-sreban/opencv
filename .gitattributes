@@ -5,6 +5,20 @@
 *.aidl         text
 *.appxmanifest text
 *.bib          text
+*           text=auto whitespace=trailing-space,space-before-tab,-indent-with-non-tab,tab-in-indent,tabwidth=4
+
+.git*       text export-ignore
+
+*.aidl         text
+*.appxmanifest text
+*.bib          text
+*           text=auto whitespace=trailing-space,space-before-tab,-indent-with-non-tab,tab-in-indent,tabwidth=4
+
+.git*       text export-ignore
+
+*.aidl         text
+*.appxmanifest text
+*.bib          text
 *.c            text
 *.cl           text
 *.conf         text
